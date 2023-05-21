@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "api"
+version = "0.1.0"
+description = ""
+authors = ["SzymonJanowski <SzymonJanowski01@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+check_untyped_defs = true
+namespace_packages = true
+plugins = "sqlalchemy.ext.mypy.plugin"
+pretty = true
+show_error_context = true
+exclude = ".venv"
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+  "backoff.*",
+  "opentracing.*",
+]
+ignore_missing_imports = true
