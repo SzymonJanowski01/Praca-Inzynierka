@@ -10,8 +10,9 @@ router = APIRouter(prefix="/user", tags=["user"])
 
 
 class UserSchemaBase(BaseModel):
-    email: str | None = None
     username: str | None = None
+    email: str | None = None
+    password: bytes | None = None
 
 
 class UserSchemaCreate(UserSchemaBase):
@@ -20,6 +21,7 @@ class UserSchemaCreate(UserSchemaBase):
 
 class UserSchema(UserSchemaBase):
     id: str
+    salt: bytes
 
     class Config:
         orm_mode = True
