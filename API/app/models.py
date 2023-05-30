@@ -79,3 +79,29 @@ class Scenario(Base):
         except NoResultFound:
             return None
         return transaction
+
+
+class Phase(Base):
+    __tablename__ = "phases"
+    id = Column(String, primary_key=True)
+    scenario_id = Column(String, ForeignKey("Scenario.id"), nullable=False)
+    name = Column(String, nullable=False)
+
+    @classmethod
+    async def create(cls, db: AsyncSession, id=None, **kwargs):
+        if not id:
+            id = uuid4().hex
+
+        transaction = cls(id=id, **kwargs)
+        db.add(transaction)
+        await db.commit()
+        await db.refresh(transaction)
+        return transaction
+
+    @classmethod
+    async def get_all_scenario_phases(cls, db: AsyncSession, scenario_id: str):
+        try:
+            transaction = (await db.execute(select(cls).where(cls.scenario_id == scenario_id))).scalar().all()
+        except NoResultFound:
+            return None
+        return transaction
