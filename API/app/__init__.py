@@ -24,7 +24,7 @@ def init_app(init_db=True):
     from app.views.phase import router as phase_router
 
     server.include_router(user_router, prefix="/api", tags=["user"])
-    server.include_router(scenario_router, prefix="api", tags=["scenario"])
-    server.include_router(phase_router, prefix="api", tags=["phase"])
+    server.include_router(scenario_router, prefix="/api", tags=["scenario"])
+    server.include_router(phase_router, prefix="/api", tags=["phase"])
 
     return server

@@ -5,7 +5,7 @@ class Config:
     host = ""
     name = ""
 
-    DB_CONFIG = f"postgres+asyncpg://{user}:{password}@{host}/{name}"
+    DB_CONFIG = f"postgresql+asyncpg://{user}:{password}@{host}/{name}"
 
 
 config = Config
