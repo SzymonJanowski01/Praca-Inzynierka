@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.database import get_db
+from app.supporting_functions import convert_to_optional
 
 from ..models import User as UserModel
 
@@ -10,13 +11,17 @@ router = APIRouter(prefix="/user", tags=["user"])
 
 
 class UserSchemaBase(BaseModel):
-    username: str | None = None
-    email: str | None = None
-    password: bytes | None = None
+    username: str
+    email: str
+    password: bytes
 
 
 class UserSchemaCreate(UserSchemaBase):
     pass
+
+
+class UserSchemaUpdate(UserSchemaBase):
+    __annotations__ = convert_to_optional(UserSchemaBase)
 
 
 class UserSchema(UserSchemaBase):

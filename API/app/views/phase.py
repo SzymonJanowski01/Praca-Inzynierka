@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.database import get_db
+from app.supporting_functions import convert_to_optional
 
 from ..models import Phase as PhaseModel
 
@@ -10,16 +11,20 @@ router = APIRouter(prefix="/phase", tags=["phase"])
 
 
 class PhaseSchemaBase(BaseModel):
-    scenario_id: str | None = None
-    name: str | None = None
+    name: str
 
 
 class PhaseSchemaCreate(PhaseSchemaBase):
     pass
 
 
+class PhaseSchemaUpdate(PhaseSchemaBase):
+    __annotations__ = convert_to_optional(PhaseSchemaBase)
+
+
 class PhaseSchema(PhaseSchemaBase):
     id: str
+    scenario_id: str
 
     class Config:
         orm_mode = True

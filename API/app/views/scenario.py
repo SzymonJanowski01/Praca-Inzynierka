@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.database import get_db
+from app.supporting_functions import convert_to_optional
 
 from ..models import Scenario as ScenarioModel
 
@@ -10,16 +11,20 @@ router = APIRouter(prefix="/scenario", tags=["scenario"])
 
 
 class ScenarioSchemaBase(BaseModel):
-    user_id: str | None = None
-    name: str | None = None
+    name: str
 
 
 class ScenarioSchemaCreate(ScenarioSchemaBase):
     pass
 
 
+class ScenarioSchemaUpdate(ScenarioSchemaBase):
+    __annotations__ = convert_to_optional(ScenarioSchemaBase)
+
+
 class ScenarioSchema(ScenarioSchemaBase):
     id: str
+    user_id: str
 
     class Config:
         orm_mode = True

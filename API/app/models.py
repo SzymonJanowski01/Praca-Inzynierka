@@ -21,6 +21,18 @@ class User(Base):
         if not id:
             id = uuid4().hex
 
+        username = kwargs.get("username")
+
+        check_for_existing_username = await db.query(cls).filter_by(username=username).first()
+        if check_for_existing_username:
+            raise ValueError("Username already taken")
+
+        email = kwargs.get("email")
+
+        check_for_existing_email = await db.query(cls).filter_by(email=email).first()
+        if check_for_existing_email:
+            raise ValueError("Account with provided email already exists")
+
         password_data = password_hashing(kwargs.pop("password", None))
 
         kwargs["password"] = password_data[0]
