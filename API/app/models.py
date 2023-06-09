@@ -17,7 +17,7 @@ class User(Base):
     salt = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, db: AsyncSession, id=None, **kwargs):
+    async def create_user(cls, db: AsyncSession, id=None, **kwargs):
         if not id:
             id = uuid4().hex
 
@@ -47,7 +47,7 @@ class User(Base):
         return transaction
 
     @classmethod
-    async def get(cls, db: AsyncSession, id: str):
+    async def get_user(cls, db: AsyncSession, id: str):
         try:
             transaction = await db.get(cls, id)
         except NoResultFound:
@@ -55,7 +55,7 @@ class User(Base):
         return transaction
 
     @classmethod
-    async def get_all(cls, db: AsyncSession):
+    async def get_all_users(cls, db: AsyncSession):
         return (await db.execute(select(cls))).scalar().all()
 
 
@@ -66,7 +66,7 @@ class Scenario(Base):
     name = Column(String, unique=True, nullable=False)
 
     @classmethod
-    async def create(cls, db: AsyncSession, id=None, **kwargs):
+    async def create_scenario(cls, db: AsyncSession, id=None, **kwargs):
         if not id:
             id = uuid4().hex
 
@@ -77,19 +77,32 @@ class Scenario(Base):
         return transaction
 
     @classmethod
-    async def get(cls, db: AsyncSession, id: str):
+    async def get_scenario(cls, db: AsyncSession, scenario_id: str):
         try:
-            transaction = await db.get(cls, id)
+            transaction = await db.get(cls, scenario_id)
         except NoResultFound:
             return None
         return transaction
 
     @classmethod
-    async def get_all(cls, db: AsyncSession, user_id: str):
+    async def get_all_user_scenarios(cls, db: AsyncSession, user_id: str):
         try:
             transaction = (await db.execute(select(cls).where(cls.user_id == user_id))).scalar().all()
         except NoResultFound:
             return None
+        return transaction
+
+    @classmethod
+    async def update_scenario(cls, db: AsyncSession, scenario_id: str, new_name: str):
+        try:
+            transaction = await db.get(cls, scenario_id)
+        except NoResultFound:
+            return None
+
+        transaction.name = new_name
+
+        await db.commit()
+        await db.refresh(transaction)
         return transaction
 
 
@@ -100,7 +113,7 @@ class Phase(Base):
     name = Column(String, nullable=False)
 
     @classmethod
-    async def create(cls, db: AsyncSession, id=None, **kwargs):
+    async def create_phase(cls, db: AsyncSession, id=None, **kwargs):
         if not id:
             id = uuid4().hex
 

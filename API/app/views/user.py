@@ -33,18 +33,18 @@ class UserSchema(UserSchemaBase):
 
 
 @router.get("/get-user", response_model=UserSchema)
-async def get_user(id: str, db: AsyncSession = Depends(get_db)):
-    user = await UserModel.get(db, id)
+async def get_user(user_id: str, db: AsyncSession = Depends(get_db)):
+    user = await UserModel.get_user(db, user_id)
     return user
 
 
 @router.get("/get-users", response_model=list[UserSchema])
 async def get_users(db: AsyncSession = Depends(get_db)):
-    users = await UserModel.get_all(db)
+    users = await UserModel.get_all_users(db)
     return users
 
 
 @router.post("/create-user", response_model=UserSchema)
 async def create_user(user: UserSchemaCreate, db: AsyncSession = Depends(get_db)):
-    user = await UserModel.create(db, **user.dict())
+    user = await UserModel.create_user(db, **user.dict())
     return user
