@@ -56,7 +56,7 @@ class User(Base):
 
     @classmethod
     async def get_all_users(cls, db: AsyncSession):
-        return (await db.execute(select(cls))).scalar().all()
+        return (await db.execute(select(cls))).scalars().all()
 
 
 class Scenario(Base):
@@ -152,3 +152,17 @@ class Phase(Base):
         except NoResultFound:
             return None
         return transaction
+
+    @classmethod
+    async def update_scenario_phases(cls, db: AsyncSession, scenario_id: str, main_character: str,
+                                     firs_alternative_character: str, second_alternative_character: str):
+        phases = (await db.execute(select(Phase).where(Phase.scenario_id == scenario_id))).scalar().all()
+
+        for phase in phases:
+            phase.main_character = main_character
+            phase.firs_alternative_character = firs_alternative_character
+            phase.second_alternative_character = second_alternative_character
+
+        await db.commit()
+
+        return phases

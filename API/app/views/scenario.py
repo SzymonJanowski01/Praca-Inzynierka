@@ -21,7 +21,6 @@ class ScenarioSchemaCreate(ScenarioSchemaBase):
 class ScenarioSchema(ScenarioSchemaBase):
     id: str
     user_id: str
-    phases_count: int
 
     class Config:
         orm_mode = True
