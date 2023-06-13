@@ -32,7 +32,7 @@ class UserSchema(UserSchemaBase):
         orm_mode = True
 
 
-@router.get("/get-user", response_model=UserSchema)
+@router.get("/get-user/{user_id}", response_model=UserSchema)
 async def get_user(user_id: str, db: AsyncSession = Depends(get_db)):
     user = await UserModel.get_user(db, user_id)
     return user

@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, String, select, ForeignKey
+from sqlalchemy import Column, String, select, ForeignKey, delete, INT
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -63,7 +63,7 @@ class Scenario(Base):
     __tablename__ = "scenarios"
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey('User.id'), nullable=False)
-    name = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
 
     @classmethod
     async def create_scenario(cls, db: AsyncSession, id=None, **kwargs):
@@ -105,23 +105,45 @@ class Scenario(Base):
         await db.refresh(transaction)
         return transaction
 
+    @classmethod
+    async def delete_scenario(cls, db: AsyncSession, scenario_id: str):
+        scenario = await cls.get_scenario(db, scenario_id)
+        if not scenario:
+            return None
+
+        await db.execute(delete(Phase).where(Phase.scenario_id == scenario.id))
+        await db.commit()
+
+        await db.delete(scenario)
+        await db.commit()
+
+        return True
+
 
 class Phase(Base):
     __tablename__ = "phases"
     id = Column(String, primary_key=True)
     scenario_id = Column(String, ForeignKey("Scenario.id"), nullable=False)
     name = Column(String, nullable=False)
+    main_character = Column(String, nullable=False)
+    firs_alternative_character = Column(String)
+    second_alternative_character = Column(String)
 
     @classmethod
-    async def create_phase(cls, db: AsyncSession, id=None, **kwargs):
-        if not id:
+    async def create_empty_phases(cls, db: AsyncSession, scenario_id: str):
+        for i in range(1, 6):
             id = uuid4().hex
+            name = f"B{i}"
+            Phase = cls(id=id, scenario_id=scenario_id, name=name, main_character="Any")
+            db.add(Phase)
 
-        transaction = cls(id=id, **kwargs)
-        db.add(transaction)
+        for i in range(1, 6):
+            id = uuid4().hex
+            name = f"R{i}"
+            Phase = cls(id=id, scenario_id=scenario_id, name=name, main_character="Any")
+            db.add(Phase)
+
         await db.commit()
-        await db.refresh(transaction)
-        return transaction
 
     @classmethod
     async def get_all_scenario_phases(cls, db: AsyncSession, scenario_id: str):
