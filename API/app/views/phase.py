@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from typing import List, Dict, Union
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.database import get_db
@@ -43,3 +44,10 @@ async def get_phases(scenario_id: str, db: AsyncSession = Depends(get_db)):
 async def create_phase(phase: PhaseSchemaCreate, db: AsyncSession = Depends(get_db)):
     phase = await PhaseModel.create_phase(db, **phase.dict())
     return phase
+
+
+@router.put("/update-scenario/{scenario_id}")
+async def update_scenario(scenario_id: str, phases_changes: List[Dict[str, Union[int, Dict[str, str]]]],
+                          db: AsyncSession = Depends(get_db)):
+    updated_phases = await PhaseModel.update_scenario_phases(db, scenario_id, phases_changes)
+    return updated_phases

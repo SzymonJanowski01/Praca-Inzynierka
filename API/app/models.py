@@ -1,6 +1,7 @@
 from uuid import uuid4
+from typing import List, Dict, Union
 
-from sqlalchemy import Column, String, select, ForeignKey, delete, INT
+from sqlalchemy import Column, String, select, ForeignKey, delete
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -154,14 +155,24 @@ class Phase(Base):
         return transaction
 
     @classmethod
-    async def update_scenario_phases(cls, db: AsyncSession, scenario_id: str, main_character: str,
-                                     firs_alternative_character: str, second_alternative_character: str):
+    async def update_scenario_phases(cls, db: AsyncSession, scenario_id: str,
+                                     phases_changes: List[Dict[str, Union[int, Dict[str, str]]]]):
         phases = (await db.execute(select(Phase).where(Phase.scenario_id == scenario_id))).scalar().all()
 
-        for phase in phases:
-            phase.main_character = main_character
-            phase.firs_alternative_character = firs_alternative_character
-            phase.second_alternative_character = second_alternative_character
+        for change in phases_changes:
+            phase_index = change['phase_index']
+            attributes = change['attributes']
+
+            if phase_index < 0 or phase_index >= len(phases):
+                raise ValueError(f"Invalid phase index: {phase_index}")
+
+            phase = phases[phase_index]
+
+            for attr, value in attributes.items():
+                if hasattr(phase, attr):
+                    setattr(phase, attr, value)
+                else:
+                    raise ValueError(f"Invalid attribute: {attr}")
 
         await db.commit()
 
