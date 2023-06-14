@@ -1,12 +1,12 @@
 from uuid import uuid4
 from typing import List, Dict, Union
 
-from sqlalchemy import Column, String, select, ForeignKey, delete
+from sqlalchemy import Column, String, select, ForeignKey, delete, or_
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.database import Base
-from app.services.password_operations import password_hashing
+from app.services.password_operations import password_hashing, password_check
 
 
 class User(Base):
@@ -59,6 +59,48 @@ class User(Base):
     async def get_all_users(cls, db: AsyncSession):
         return (await db.execute(select(cls))).scalars().all()
 
+    @classmethod
+    async def verify_credentials(cls, db: AsyncSession, username_or_email: str, provided_password: str):
+        user = await db.query(cls).filter(
+            or_(cls.username == username_or_email, cls.email == username_or_email)).first()
+
+        if not user:
+            return False
+
+        return password_check(provided_password, user.password, user.salt)
+
+    @classmethod
+    async def update_user(cls, db: AsyncSession, user_id: str, new_username: str = None, new_email: str = None,
+                          new_password: str = None):
+        user = await db.get(cls, user_id)
+
+        if not user:
+            return None
+
+        if new_username:
+            existing_user = await db.query(cls).filter(cls.username == new_username)
+            if existing_user:
+                raise ValueError(f"Username '{new_username} is already taken")
+
+            user.username = new_username
+
+        if new_email:
+            existing_email = await db.query(cls).filter(cls.email == new_email)
+            if existing_email:
+                raise ValueError(f"Email '{new_email}' is already taken")
+
+            user.email = new_email
+
+        if new_password:
+            password_data = password_hashing(new_password)
+
+            user.password = password_data[0]
+            user.salt = password_data[1]
+
+        await db.commit()
+        await db.refresh(user)
+        return user
+
 
 class Scenario(Base):
     __tablename__ = "scenarios"
@@ -88,7 +130,7 @@ class Scenario(Base):
     @classmethod
     async def get_all_user_scenarios(cls, db: AsyncSession, user_id: str):
         try:
-            transaction = (await db.execute(select(cls).where(cls.user_id == user_id))).scalar().all()
+            transaction = (await db.execute(select(cls).where(cls.user_id == user_id))).scalars().all()
         except NoResultFound:
             return None
         return transaction
@@ -149,7 +191,7 @@ class Phase(Base):
     @classmethod
     async def get_all_scenario_phases(cls, db: AsyncSession, scenario_id: str):
         try:
-            transaction = (await db.execute(select(cls).where(cls.scenario_id == scenario_id))).scalar().all()
+            transaction = (await db.execute(select(cls).where(cls.scenario_id == scenario_id))).scalars().all()
         except NoResultFound:
             return None
         return transaction
@@ -157,7 +199,7 @@ class Phase(Base):
     @classmethod
     async def update_scenario_phases(cls, db: AsyncSession, scenario_id: str,
                                      phases_changes: List[Dict[str, Union[int, Dict[str, str]]]]):
-        phases = (await db.execute(select(Phase).where(Phase.scenario_id == scenario_id))).scalar().all()
+        phases = (await db.execute(select(Phase).where(Phase.scenario_id == scenario_id))).scalars().all()
 
         for change in phases_changes:
             phase_index = change['phase_index']
