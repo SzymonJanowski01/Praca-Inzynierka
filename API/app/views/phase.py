@@ -37,18 +37,24 @@ class PhaseSchema(PhaseSchemaBase):
 @router.get("/get-scenario-phases/{scenario_id}", response_model=list[PhaseSchema])
 async def get_phases(scenario_id: str, db: AsyncSession = Depends(get_db)):
     phases = await PhaseModel.get_all_scenario_phases(db, scenario_id)
+
+    if not phases:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="No phases associated with provided scenario_id")
+
     return phases
-
-
-@router.post("/create-phase", response_model=PhaseSchema)
-async def create_phase(phase: PhaseSchemaCreate, db: AsyncSession = Depends(get_db)):
-    phase = await PhaseModel.create_phase(db, phase.scenario_id, phase.main_character, phase.firs_alternative_character,
-                                          phase.second_alternative_character)
-    return phase
 
 
 @router.put("/update-scenario/{scenario_id}")
 async def update_scenario(scenario_id: str, phases_changes: List[Dict[str, Union[int, Dict[str, str]]]],
                           db: AsyncSession = Depends(get_db)):
-    updated_phases = await PhaseModel.update_scenario_phases(db, scenario_id, phases_changes)
-    return updated_phases
+    try:
+        updated_phases = await PhaseModel.update_scenario_phases(db, scenario_id, phases_changes)
+
+        if not updated_phases:
+            return HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                 detail="No such phases or scenario does not exist")
+
+        return updated_phases
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

@@ -58,10 +58,18 @@ async def create_scenario(scenario: ScenarioSchemaCreate, db: AsyncSession = Dep
 @router.put("/update_scenario/{scenario_id}", response_model=ScenarioSchema)
 async def update_scenario(scenario_id: str, updated_name: str, db: AsyncSession = Depends(get_db)):
     updated_scenario = await ScenarioModel.update_scenario(db, scenario_id, updated_name)
+
+    if not updated_scenario:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such scenario.")
+
     return updated_scenario
 
 
 @router.delete("/delete_scenario/{scenario_id}")
 async def delete_scenario(scenario_id: str, db: AsyncSession = Depends(get_db)):
-    await ScenarioModel.delete_scenario(db, scenario_id)
+    deleted = await ScenarioModel.delete_scenario(db, scenario_id)
+
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such scenario.")
+
     return True

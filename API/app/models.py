@@ -128,6 +128,7 @@ class Scenario(Base):
 
         scenario = cls(scenario_id=scenario_id, user_id=user_id, name=name)
         db.add(scenario)
+
         await db.commit()
         await db.refresh(scenario)
         return scenario
@@ -162,6 +163,7 @@ class Scenario(Base):
     @classmethod
     async def delete_scenario(cls, db: AsyncSession, scenario_id: str):
         scenario = await cls.get_scenario(db, scenario_id)
+
         if not scenario:
             return None
 
@@ -198,10 +200,8 @@ class Phase(Base):
 
     @classmethod
     async def get_all_scenario_phases(cls, db: AsyncSession, scenario_id: str):
-        try:
-            phases = (await db.execute(select(cls).where(cls.scenario_id == scenario_id))).scalars().all()
-        except NoResultFound:
-            return None
+        phases = (await db.execute(select(cls).where(cls.scenario_id == scenario_id))).scalars().all()
+
         return phases
 
     @classmethod
@@ -210,12 +210,9 @@ class Phase(Base):
         phases = (await db.execute(select(Phase).where(Phase.scenario_id == scenario_id))).scalars().all()
 
         if not phases:
-            raise ValueError("No phases associated with provided scenario_id.")
+            return None
 
         scenario = await db.get(Scenario, scenario_id)
-
-        if not scenario:
-            raise ValueError("No such scenario.")
 
         for change in phases_changes:
             phase_index = change['phase_index']
