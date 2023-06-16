@@ -13,7 +13,7 @@ router = APIRouter(prefix="/user", tags=["user"])
 class UserSchemaBase(BaseModel):
     username: str
     email: str
-    password: bytes
+    password: str
 
 
 class UserSchemaCreate(UserSchemaBase):
@@ -25,7 +25,7 @@ class UserSchemaUpdate(UserSchemaBase):
 
 
 class UserSchema(UserSchemaBase):
-    id: str
+    user_id: str
     salt: bytes
 
     class Config:
@@ -54,8 +54,11 @@ async def get_users(db: AsyncSession = Depends(get_db)):
 
 @router.post("/create-user", response_model=UserSchema)
 async def create_user(user: UserSchemaCreate, db: AsyncSession = Depends(get_db)):
-    user = await UserModel.create_user(db, **user.dict())
-    return user
+    try:
+        user = await UserModel.create_user(db, user.username, user.email, user.password)
+        return user
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
 
 
 @router.post("/check-credentials")
@@ -73,11 +76,23 @@ async def check_credentials(username_or_email: str, provided_password: str, db: 
 @router.put("/update-user/{user_id}", response_model=UserSchema)
 async def update_user(user_id: str, new_username: str = None, new_email: str = None, new_password: str = None,
                       db: AsyncSession = Depends(get_db)):
-    user = await UserModel.update_user(db, user_id, new_username, new_email, new_password)
-    return user
+    try:
+        user = await UserModel.update_user(db, user_id, new_username, new_email, new_password)
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such user.")
+
+        return user
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
 
 
 @router.delete("/delete-user/{user_id}")
 async def delete_user(user_id: str, db: AsyncSession = Depends(get_db)):
-    await UserModel.delete_user(db, user_id)
+    deleted = await UserModel.delete_user(db, user_id)
+
+    if not deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such user.")
+
     return True
+

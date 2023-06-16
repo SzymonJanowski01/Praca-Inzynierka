@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,6 +12,7 @@ router = APIRouter(prefix="/scenario", tags=["scenario"])
 
 class ScenarioSchemaBase(BaseModel):
     name: str
+    user_id: str
 
 
 class ScenarioSchemaCreate(ScenarioSchemaBase):
@@ -19,8 +20,7 @@ class ScenarioSchemaCreate(ScenarioSchemaBase):
 
 
 class ScenarioSchema(ScenarioSchemaBase):
-    id: str
-    user_id: str
+    scenario_id: str
 
     class Config:
         orm_mode = True
@@ -29,18 +29,26 @@ class ScenarioSchema(ScenarioSchemaBase):
 @router.get("/get-scenario/{scenario_id}", response_model=ScenarioSchema)
 async def get_scenario(scenario_id: str, db: AsyncSession = Depends(get_db)):
     scenario = await ScenarioModel.get_scenario(db, scenario_id)
+
+    if not scenario:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such scenario.")
+
     return scenario
 
 
 @router.get("/get-user-scenarios/{user_id}", response_model=list[ScenarioSchema])
 async def get_user_scenarios(user_id: str, db: AsyncSession = Depends(get_db)):
     scenarios = await ScenarioModel.get_all_user_scenarios(db, user_id)
+
+    if not scenarios:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No scenarios associated with the user.")
+
     return scenarios
 
 
 @router.post("/create-scenario", response_model=ScenarioSchema)
 async def create_scenario(scenario: ScenarioSchemaCreate, db: AsyncSession = Depends(get_db)):
-    scenario = await ScenarioModel.create_scenario(db, **scenario.dict())
+    scenario = await ScenarioModel.create_scenario(db, scenario.user_id, scenario.name)
 
     await PhaseModel.create_empty_phases(db, scenario_id=scenario.id)
 

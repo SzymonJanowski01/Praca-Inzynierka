@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from typing import List, Dict, Union
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,6 +12,7 @@ router = APIRouter(prefix="/phase", tags=["phase"])
 
 
 class PhaseSchemaBase(BaseModel):
+    scenario_id: str
     main_character: str
     firs_alternative_character: str
     second_alternative_character: str
@@ -26,8 +27,7 @@ class PhaseSchemaUpdate(PhaseSchemaBase):
 
 
 class PhaseSchema(PhaseSchemaBase):
-    id: str
-    scenario_id: str
+    phase_id: str
     name: str
 
     class Config:
@@ -42,7 +42,8 @@ async def get_phases(scenario_id: str, db: AsyncSession = Depends(get_db)):
 
 @router.post("/create-phase", response_model=PhaseSchema)
 async def create_phase(phase: PhaseSchemaCreate, db: AsyncSession = Depends(get_db)):
-    phase = await PhaseModel.create_phase(db, **phase.dict())
+    phase = await PhaseModel.create_phase(db, phase.scenario_id, phase.main_character, phase.firs_alternative_character,
+                                          phase.second_alternative_character)
     return phase
 
 

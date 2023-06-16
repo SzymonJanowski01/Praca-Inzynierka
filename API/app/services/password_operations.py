@@ -1,17 +1,19 @@
 import hashlib
 import os
 
+from typing import Dict
+
 SALT_LENGTH = 32
 
 
-def password_hashing(password: str):
+def password_hashing(password: str) -> Dict[str, bytes]:
     """
     Function for hashing provided password using pbkf2_hmac.
 
     :param password: Provided by the user to undergo encryption.
-    :return: List containing hashed password, and salt in the following order: [hashed_password, salt].
+    :return: Dictionary containing hashed password, and salt in the following order: {"hashed_password": password, "salt": salt}.
     """
-    password_data = []
+    password_data: Dict[str, bytes] = {}
 
     salt = os.urandom(SALT_LENGTH)
     key = hashlib.pbkdf2_hmac(
@@ -21,8 +23,8 @@ def password_hashing(password: str):
         100000
     )
 
-    password_data.append(key)
-    password_data.append(salt)
+    password_data['hashed_password'] = key
+    password_data['salt'] = salt
 
     return password_data
 

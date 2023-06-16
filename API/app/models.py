@@ -1,7 +1,8 @@
 from uuid import uuid4
 from typing import List, Dict, Union
+from datetime import datetime
 
-from sqlalchemy import Column, String, select, ForeignKey, or_
+from sqlalchemy import Column, String, select, ForeignKey, or_, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,7 +13,7 @@ from app.services.password_operations import password_hashing, password_check
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(String, primary_key=True)
+    user_id = Column(String, primary_key=True)
     username = Column(String, unique=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
@@ -21,42 +22,37 @@ class User(Base):
     scenarios = relationship("Scenario", cascade="all, delete-orphan")
 
     @classmethod
-    async def create_user(cls, db: AsyncSession, id=None, **kwargs):
-        if not id:
-            id = uuid4().hex
-
-        username = kwargs.get("username")
+    async def create_user(cls, db: AsyncSession, username: str, email: str, password: str):
+        user_id = uuid4().hex
 
         check_for_existing_username = (await db.execute(select(cls).where(cls.username == username))).scalars().first()
         if check_for_existing_username:
             raise ValueError("Username already taken")
 
-        email = kwargs.get("email")
-
         check_for_existing_email = (await db.execute(select(cls).where(cls.email == email))).scalars().first()
         if check_for_existing_email:
             raise ValueError("Account with provided email already exists")
 
-        password_data = password_hashing(kwargs.pop("password", None))
+        password_data = password_hashing(password)
 
-        kwargs["password"] = password_data[0]
-        kwargs["salt"] = password_data[1]
+        hashed_password = password_data["hashed_password"]
+        salt = password_data["salt"]
 
-        transaction = cls(id=id, **kwargs)
-        db.add(transaction)
+        user = cls(user_id=user_id, username=username, email=email, password=hashed_password, salt=salt)
+        db.add(user)
 
         await db.commit()
-        await db.refresh(transaction)
+        await db.refresh(user)
 
-        return transaction
+        return user
 
     @classmethod
-    async def get_user(cls, db: AsyncSession, id: str):
+    async def get_user(cls, db: AsyncSession, user_id: str):
         try:
-            transaction = await db.get(cls, id)
+            user = await db.get(cls, user_id)
         except NoResultFound:
             return None
-        return transaction
+        return user
 
     @classmethod
     async def get_all_users(cls, db: AsyncSession):
@@ -97,8 +93,8 @@ class User(Base):
         if new_password:
             password_data = password_hashing(new_password)
 
-            user.password = password_data[0]
-            user.salt = password_data[1]
+            user.password = password_data["hashed_password"]
+            user.salt = password_data["salt"]
 
         await db.commit()
         await db.refresh(user)
@@ -118,51 +114,50 @@ class User(Base):
 
 class Scenario(Base):
     __tablename__ = "scenarios"
-    id = Column(String, primary_key=True)
+    scenario_id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey('User.id', ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    last_modified_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     phases = relationship("Phase", cascade="all, delete-orphan")
 
     @classmethod
-    async def create_scenario(cls, db: AsyncSession, id=None, **kwargs):
-        if not id:
-            id = uuid4().hex
+    async def create_scenario(cls, db: AsyncSession, user_id: str, name: str):
+        scenario_id = uuid4().hex
 
-        transaction = cls(id=id, **kwargs)
-        db.add(transaction)
+        scenario = cls(scenario_id=scenario_id, user_id=user_id, name=name)
+        db.add(scenario)
         await db.commit()
-        await db.refresh(transaction)
-        return transaction
+        await db.refresh(scenario)
+        return scenario
 
     @classmethod
     async def get_scenario(cls, db: AsyncSession, scenario_id: str):
         try:
-            transaction = await db.get(cls, scenario_id)
+            scenario = await db.get(cls, scenario_id)
         except NoResultFound:
             return None
-        return transaction
+        return scenario
 
     @classmethod
     async def get_all_user_scenarios(cls, db: AsyncSession, user_id: str):
-        try:
-            transaction = (await db.execute(select(cls).where(cls.user_id == user_id))).scalars().all()
-        except NoResultFound:
-            return None
-        return transaction
+        scenarios = (await db.execute(select(cls.name).where(cls.user_id == user_id))).scalars().all()
+
+        return scenarios
 
     @classmethod
     async def update_scenario(cls, db: AsyncSession, scenario_id: str, new_name: str):
         try:
-            transaction = await db.get(cls, scenario_id)
+            scenario = await db.get(cls, scenario_id)
         except NoResultFound:
             return None
 
-        transaction.name = new_name
+        scenario.name = new_name
 
         await db.commit()
-        await db.refresh(transaction)
-        return transaction
+        await db.refresh(scenario)
+        return scenario
 
     @classmethod
     async def delete_scenario(cls, db: AsyncSession, scenario_id: str):
@@ -178,7 +173,7 @@ class Scenario(Base):
 
 class Phase(Base):
     __tablename__ = "phases"
-    id = Column(String, primary_key=True)
+    phase_id = Column(String, primary_key=True)
     scenario_id = Column(String, ForeignKey("Scenario.id", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
     main_character = Column(String, nullable=False)
@@ -188,31 +183,39 @@ class Phase(Base):
     @classmethod
     async def create_empty_phases(cls, db: AsyncSession, scenario_id: str):
         for i in range(1, 6):
-            id = uuid4().hex
+            phase_id = uuid4().hex
             name = f"B{i}"
-            Phase = cls(id=id, scenario_id=scenario_id, name=name, main_character="Any")
-            db.add(Phase)
+            phase = cls(phase_id=phase_id, scenario_id=scenario_id, name=name, main_character="Any")
+            db.add(phase)
 
         for i in range(1, 6):
-            id = uuid4().hex
+            phase_id = uuid4().hex
             name = f"R{i}"
-            Phase = cls(id=id, scenario_id=scenario_id, name=name, main_character="Any")
-            db.add(Phase)
+            phase = cls(phase_id=phase_id, scenario_id=scenario_id, name=name, main_character="Any")
+            db.add(phase)
 
         await db.commit()
 
     @classmethod
     async def get_all_scenario_phases(cls, db: AsyncSession, scenario_id: str):
         try:
-            transaction = (await db.execute(select(cls).where(cls.scenario_id == scenario_id))).scalars().all()
+            phases = (await db.execute(select(cls).where(cls.scenario_id == scenario_id))).scalars().all()
         except NoResultFound:
             return None
-        return transaction
+        return phases
 
     @classmethod
     async def update_scenario_phases(cls, db: AsyncSession, scenario_id: str,
                                      phases_changes: List[Dict[str, Union[int, Dict[str, str]]]]):
         phases = (await db.execute(select(Phase).where(Phase.scenario_id == scenario_id))).scalars().all()
+
+        if not phases:
+            raise ValueError("No phases associated with provided scenario_id.")
+
+        scenario = await db.get(Scenario, scenario_id)
+
+        if not scenario:
+            raise ValueError("No such scenario.")
 
         for change in phases_changes:
             phase_index = change['phase_index']
@@ -228,6 +231,8 @@ class Phase(Base):
                     setattr(phase, attr, value)
                 else:
                     raise ValueError(f"Invalid attribute: {attr}")
+
+        scenario.last_modified_at = datetime.utcnow()
 
         await db.commit()
 
