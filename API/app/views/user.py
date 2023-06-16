@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -35,12 +35,20 @@ class UserSchema(UserSchemaBase):
 @router.get("/get-user/{user_id}", response_model=UserSchema)
 async def get_user(user_id: str, db: AsyncSession = Depends(get_db)):
     user = await UserModel.get_user(db, user_id)
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such user.")
+
     return user
 
 
 @router.get("/get-users", response_model=list[UserSchema])
 async def get_users(db: AsyncSession = Depends(get_db)):
     users = await UserModel.get_all_users(db)
+
+    if not users:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No users found.")
+
     return users
 
 
@@ -53,10 +61,23 @@ async def create_user(user: UserSchemaCreate, db: AsyncSession = Depends(get_db)
 @router.post("/check-credentials")
 async def check_credentials(username_or_email: str, provided_password: str, db: AsyncSession = Depends(get_db)):
     is_valid = await UserModel.verify_credentials(db, username_or_email, provided_password)
+
+    if is_valid is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such user.")
+    elif is_valid is False:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Provided credentials are invalid.")
+
     return is_valid
 
 
 @router.put("/update-user/{user_id}", response_model=UserSchema)
-async def update_user(user_id: str, new_username: str = None, new_email: str = None, new_password: str = None, db: AsyncSession = Depends(get_db)):
+async def update_user(user_id: str, new_username: str = None, new_email: str = None, new_password: str = None,
+                      db: AsyncSession = Depends(get_db)):
     user = await UserModel.update_user(db, user_id, new_username, new_email, new_password)
     return user
+
+
+@router.delete("/delete-user/{user_id}")
+async def delete_user(user_id: str, db: AsyncSession = Depends(get_db)):
+    await UserModel.delete_user(db, user_id)
+    return True

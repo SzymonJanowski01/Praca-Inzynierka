@@ -1,7 +1,8 @@
 from uuid import uuid4
 from typing import List, Dict, Union
 
-from sqlalchemy import Column, String, select, ForeignKey, delete, or_
+from sqlalchemy import Column, String, select, ForeignKey, or_
+from sqlalchemy.orm import relationship
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,6 +18,8 @@ class User(Base):
     password = Column(String, nullable=False)
     salt = Column(String, nullable=False)
 
+    scenarios = relationship("Scenario", cascade="all, delete-orphan")
+
     @classmethod
     async def create_user(cls, db: AsyncSession, id=None, **kwargs):
         if not id:
@@ -24,13 +27,13 @@ class User(Base):
 
         username = kwargs.get("username")
 
-        check_for_existing_username = await db.query(cls).filter_by(username=username).first()
+        check_for_existing_username = (await db.execute(select(cls).where(cls.username == username))).scalars().first()
         if check_for_existing_username:
             raise ValueError("Username already taken")
 
         email = kwargs.get("email")
 
-        check_for_existing_email = await db.query(cls).filter_by(email=email).first()
+        check_for_existing_email = (await db.execute(select(cls).where(cls.email == email))).scalars().first()
         if check_for_existing_email:
             raise ValueError("Account with provided email already exists")
 
@@ -61,11 +64,11 @@ class User(Base):
 
     @classmethod
     async def verify_credentials(cls, db: AsyncSession, username_or_email: str, provided_password: str):
-        user = await db.query(cls).filter(
-            or_(cls.username == username_or_email, cls.email == username_or_email)).first()
+        user = (await db.execute(select(cls).where(
+            or_(cls.username == username_or_email, cls.email == username_or_email)))).scalars().first()
 
         if not user:
-            return False
+            return None
 
         return password_check(provided_password, user.password, user.salt)
 
@@ -78,14 +81,14 @@ class User(Base):
             return None
 
         if new_username:
-            existing_user = await db.query(cls).filter(cls.username == new_username)
+            existing_user = (await db.execute(select(cls).where(cls.username == new_username))).scalars().first()
             if existing_user:
                 raise ValueError(f"Username '{new_username} is already taken")
 
             user.username = new_username
 
         if new_email:
-            existing_email = await db.query(cls).filter(cls.email == new_email)
+            existing_email = (await db.execute(select(cls).where(cls.email == new_email))).scalars().first()
             if existing_email:
                 raise ValueError(f"Email '{new_email}' is already taken")
 
@@ -101,12 +104,25 @@ class User(Base):
         await db.refresh(user)
         return user
 
+    @classmethod
+    async def delete_user(cls, db: AsyncSession, user_id: str):
+        user = await cls.get_user(db, user_id)
+
+        if not user:
+            return None
+
+        await db.delete(user)
+        await db.commit()
+        return True
+
 
 class Scenario(Base):
     __tablename__ = "scenarios"
     id = Column(String, primary_key=True)
-    user_id = Column(String, ForeignKey('User.id'), nullable=False)
+    user_id = Column(String, ForeignKey('User.id', ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
+
+    phases = relationship("Phase", cascade="all, delete-orphan")
 
     @classmethod
     async def create_scenario(cls, db: AsyncSession, id=None, **kwargs):
@@ -154,9 +170,6 @@ class Scenario(Base):
         if not scenario:
             return None
 
-        await db.execute(delete(Phase).where(Phase.scenario_id == scenario.id))
-        await db.commit()
-
         await db.delete(scenario)
         await db.commit()
 
@@ -166,7 +179,7 @@ class Scenario(Base):
 class Phase(Base):
     __tablename__ = "phases"
     id = Column(String, primary_key=True)
-    scenario_id = Column(String, ForeignKey("Scenario.id"), nullable=False)
+    scenario_id = Column(String, ForeignKey("Scenario.id", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
     main_character = Column(String, nullable=False)
     firs_alternative_character = Column(String)
