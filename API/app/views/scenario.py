@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.database import get_db
+from app.supporting_functions import convert_to_optional
 
 from ..models import Scenario as ScenarioModel
 from ..models import Phase as PhaseModel
@@ -12,15 +13,19 @@ router = APIRouter(prefix="/scenario", tags=["scenario"])
 
 class ScenarioSchemaBase(BaseModel):
     name: str
-    user_id: str
 
 
 class ScenarioSchemaCreate(ScenarioSchemaBase):
     pass
 
 
+class ScenarioSchemaUpdate(ScenarioSchemaBase):
+    __annotations__ = convert_to_optional(ScenarioSchemaBase)
+
+
 class ScenarioSchema(ScenarioSchemaBase):
     scenario_id: str
+    user_id: str
 
     class Config:
         orm_mode = True
@@ -46,9 +51,9 @@ async def get_user_scenarios(user_id: str, db: AsyncSession = Depends(get_db)):
     return scenarios
 
 
-@router.post("/create-scenario", response_model=ScenarioSchema)
-async def create_scenario(scenario: ScenarioSchemaCreate, db: AsyncSession = Depends(get_db)):
-    scenario = await ScenarioModel.create_scenario(db, scenario.user_id, scenario.name)
+@router.post("/create-scenario/{user_id}", response_model=ScenarioSchema)
+async def create_scenario(user_id: str, scenario: ScenarioSchemaCreate, db: AsyncSession = Depends(get_db)):
+    scenario = await ScenarioModel.create_scenario(db, user_id, scenario.name)
 
     await PhaseModel.create_empty_phases(db, scenario_id=scenario.id)
 
@@ -56,8 +61,8 @@ async def create_scenario(scenario: ScenarioSchemaCreate, db: AsyncSession = Dep
 
 
 @router.put("/update_scenario/{scenario_id}", response_model=ScenarioSchema)
-async def update_scenario(scenario_id: str, updated_name: str, db: AsyncSession = Depends(get_db)):
-    updated_scenario = await ScenarioModel.update_scenario(db, scenario_id, updated_name)
+async def update_scenario(scenario_id: str, scenario: ScenarioSchemaUpdate, db: AsyncSession = Depends(get_db)):
+    updated_scenario = await ScenarioModel.update_scenario(db, scenario_id, scenario.name)
 
     if not updated_scenario:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such scenario.")

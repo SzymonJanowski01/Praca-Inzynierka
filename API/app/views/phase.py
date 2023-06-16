@@ -4,7 +4,6 @@ from typing import List, Dict, Union
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.database import get_db
-from app.supporting_functions import convert_to_optional
 
 from ..models import Phase as PhaseModel
 
@@ -16,14 +15,6 @@ class PhaseSchemaBase(BaseModel):
     main_character: str
     firs_alternative_character: str
     second_alternative_character: str
-
-
-class PhaseSchemaCreate(PhaseSchemaBase):
-    pass
-
-
-class PhaseSchemaUpdate(PhaseSchemaBase):
-    __annotations__ = convert_to_optional(PhaseSchemaBase)
 
 
 class PhaseSchema(PhaseSchemaBase):

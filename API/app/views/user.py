@@ -74,10 +74,9 @@ async def check_credentials(username_or_email: str, provided_password: str, db: 
 
 
 @router.put("/update-user/{user_id}", response_model=UserSchema)
-async def update_user(user_id: str, new_username: str = None, new_email: str = None, new_password: str = None,
-                      db: AsyncSession = Depends(get_db)):
+async def update_user(user_id: str, user: UserSchemaUpdate, db: AsyncSession = Depends(get_db)):
     try:
-        user = await UserModel.update_user(db, user_id, new_username, new_email, new_password)
+        user = await UserModel.update_user(db, user_id, user.username, user.email, user.password)
 
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such user.")

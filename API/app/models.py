@@ -207,7 +207,7 @@ class Phase(Base):
     @classmethod
     async def update_scenario_phases(cls, db: AsyncSession, scenario_id: str,
                                      phases_changes: List[Dict[str, Union[int, Dict[str, str]]]]):
-        phases = (await db.execute(select(Phase).where(Phase.scenario_id == scenario_id))).scalars().all()
+        phases = (await db.execute(select(cls).where(cls.scenario_id == scenario_id))).scalars().all()
 
         if not phases:
             return None
