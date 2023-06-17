@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
+from datetime import datetime
 
 from app.services.database import get_db
 from app.supporting_functions import convert_to_optional
@@ -26,6 +27,8 @@ class ScenarioSchemaUpdate(ScenarioSchemaBase):
 class ScenarioSchema(ScenarioSchemaBase):
     scenario_id: str
     user_id: str
+    created_at: datetime
+    last_modified_at: datetime
 
     class Config:
         orm_mode = True
@@ -55,7 +58,7 @@ async def get_user_scenarios(user_id: str, db: AsyncSession = Depends(get_db)):
 async def create_scenario(user_id: str, scenario: ScenarioSchemaCreate, db: AsyncSession = Depends(get_db)):
     scenario = await ScenarioModel.create_scenario(db, user_id, scenario.name)
 
-    await PhaseModel.create_empty_phases(db, scenario_id=scenario.id)
+    await PhaseModel.create_empty_phases(db, scenario.scenario_id)
 
     return scenario
 

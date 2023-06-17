@@ -13,8 +13,8 @@ router = APIRouter(prefix="/phase", tags=["phase"])
 class PhaseSchemaBase(BaseModel):
     scenario_id: str
     main_character: str
-    firs_alternative_character: str
-    second_alternative_character: str
+    first_alternative_character: str | None = None
+    second_alternative_character: str | None = None
 
 
 class PhaseSchema(PhaseSchemaBase):

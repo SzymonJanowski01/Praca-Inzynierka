@@ -35,8 +35,8 @@ class User(Base):
 
         password_data = password_hashing(password)
 
-        hashed_password = password_data["hashed_password"]
-        salt = password_data["salt"]
+        hashed_password = password_data["hashed_password"].hex()
+        salt = password_data["salt"].hex()
 
         user = cls(user_id=user_id, username=username, email=email, password=hashed_password, salt=salt)
         db.add(user)
@@ -115,7 +115,7 @@ class User(Base):
 class Scenario(Base):
     __tablename__ = "scenarios"
     scenario_id = Column(String, primary_key=True)
-    user_id = Column(String, ForeignKey('User.id', ondelete="CASCADE"), nullable=False)
+    user_id = Column(String, ForeignKey('users.user_id', ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     last_modified_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -143,7 +143,7 @@ class Scenario(Base):
 
     @classmethod
     async def get_all_user_scenarios(cls, db: AsyncSession, user_id: str):
-        scenarios = (await db.execute(select(cls.name).where(cls.user_id == user_id))).scalars().all()
+        scenarios = (await db.execute(select(cls).where(cls.user_id == user_id))).scalars().all()
 
         return scenarios
 
@@ -176,10 +176,10 @@ class Scenario(Base):
 class Phase(Base):
     __tablename__ = "phases"
     phase_id = Column(String, primary_key=True)
-    scenario_id = Column(String, ForeignKey("Scenario.id", ondelete="CASCADE"), nullable=False)
+    scenario_id = Column(String, ForeignKey("scenarios.scenario_id", ondelete="CASCADE"), nullable=False)
     name = Column(String, nullable=False)
     main_character = Column(String, nullable=False)
-    firs_alternative_character = Column(String)
+    first_alternative_character = Column(String)
     second_alternative_character = Column(String)
 
     @classmethod
