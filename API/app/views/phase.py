@@ -54,6 +54,6 @@ async def update_scenario(scenario_id: str, phases_changes: List[Dict[str, Union
             return HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                  detail="No such phases or scenario does not exist")
 
-        return updated_phases
+        return True
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

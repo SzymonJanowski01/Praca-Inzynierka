@@ -187,19 +187,25 @@ class Phase(Base):
 
     @classmethod
     async def create_empty_phases(cls, db: AsyncSession, scenario_id: str):
+        phase_ids = []
+
         for i in range(1, 6):
             phase_id = uuid4().hex
             name = f"B{i}"
             phase = cls(phase_id=phase_id, scenario_id=scenario_id, name=name, main_character="Any")
+            phase_ids.append(phase_id)
             db.add(phase)
 
         for i in range(1, 6):
             phase_id = uuid4().hex
             name = f"R{i}"
             phase = cls(phase_id=phase_id, scenario_id=scenario_id, name=name, main_character="Any")
+            phase_ids.append(phase_id)
             db.add(phase)
 
         await db.commit()
+
+        return phase_ids
 
     @classmethod
     async def get_all_scenario_phases(cls, db: AsyncSession, scenario_id: str):
