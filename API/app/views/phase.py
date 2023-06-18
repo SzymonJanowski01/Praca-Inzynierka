@@ -36,6 +36,14 @@ async def get_phases(scenario_id: str, db: AsyncSession = Depends(get_db)):
     return phases
 
 
+@router.post("/create-empty-phases/{scenario_id}")
+async def create_empty_phases(scenario_id: str, db: AsyncSession = Depends(get_db)):
+
+    phases = await PhaseModel.create_empty_phases(db, scenario_id)
+
+    return phases
+
+
 @router.put("/update-scenario/{scenario_id}")
 async def update_scenario(scenario_id: str, phases_changes: List[Dict[str, Union[int, Dict[str, str]]]],
                           db: AsyncSession = Depends(get_db)):

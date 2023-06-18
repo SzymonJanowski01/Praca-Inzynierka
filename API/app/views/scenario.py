@@ -58,8 +58,6 @@ async def get_user_scenarios(user_id: str, db: AsyncSession = Depends(get_db)):
 async def create_scenario(user_id: str, scenario: ScenarioSchemaCreate, db: AsyncSession = Depends(get_db)):
     scenario = await ScenarioModel.create_scenario(db, user_id, scenario.name)
 
-    await PhaseModel.create_empty_phases(db, scenario.scenario_id)
-
     return scenario
 
 

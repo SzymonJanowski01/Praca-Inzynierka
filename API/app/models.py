@@ -66,7 +66,10 @@ class User(Base):
         if not user:
             return None
 
-        return password_check(provided_password, user.password, user.salt)
+        password_as_bytes = bytes.fromhex(user.password)
+        salt_as_bytes = bytes.fromhex(user.salt)
+
+        return password_check(provided_password, password_as_bytes, salt_as_bytes)
 
     @classmethod
     async def update_user(cls, db: AsyncSession, user_id: str, new_username: str = None, new_email: str = None,
@@ -93,8 +96,8 @@ class User(Base):
         if new_password:
             password_data = password_hashing(new_password)
 
-            user.password = password_data["hashed_password"]
-            user.salt = password_data["salt"]
+            user.password = password_data["hashed_password"].hex()
+            user.salt = password_data["salt"].hex()
 
         await db.commit()
         await db.refresh(user)
@@ -211,6 +214,8 @@ class Phase(Base):
 
         if not phases:
             return None
+
+        phases = sorted(phases, key=lambda phase: phase.name)
 
         scenario = await db.get(Scenario, scenario_id)
 
