@@ -211,6 +211,8 @@ class Phase(Base):
     async def get_all_scenario_phases(cls, db: AsyncSession, scenario_id: str):
         phases = (await db.execute(select(cls).where(cls.scenario_id == scenario_id))).scalars().all()
 
+        phases = sorted(phases, key=lambda phase: phase.name)
+
         return phases
 
     @classmethod

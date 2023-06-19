@@ -38,7 +38,6 @@ async def get_phases(scenario_id: str, db: AsyncSession = Depends(get_db)):
 
 @router.post("/create-empty-phases/{scenario_id}")
 async def create_empty_phases(scenario_id: str, db: AsyncSession = Depends(get_db)):
-
     phases = await PhaseModel.create_empty_phases(db, scenario_id)
 
     return phases
@@ -51,8 +50,8 @@ async def update_scenario(scenario_id: str, phases_changes: List[Dict[str, Union
         updated_phases = await PhaseModel.update_scenario_phases(db, scenario_id, phases_changes)
 
         if not updated_phases:
-            return HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                 detail="No such phases or scenario does not exist")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="No such phases or scenario does not exist")
 
         return True
     except ValueError as e:
