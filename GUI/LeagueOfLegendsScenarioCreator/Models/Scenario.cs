@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LeagueOfLegendsScenarioMaker.Models
+namespace LeagueOfLegendsScenarioCreator.Models
 {
     public class Scenario : ReactiveObject
     {

@@ -1,7 +1,7 @@
-﻿using LeagueOfLegendsScenarioMaker.Models;
+﻿using LeagueOfLegendsScenarioCreator.Models;
 using ReactiveUI.Fody.Helpers;
 
-namespace LeagueOfLegendsScenarioMaker.ViewModels
+namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {

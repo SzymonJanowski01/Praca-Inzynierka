@@ -7,7 +7,7 @@ using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LeagueOfLegendsScenarioMaker.ViewModels
+namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
@@ -27,7 +27,7 @@ namespace LeagueOfLegendsScenarioMaker.ViewModels
 
         private async void Login()
         {
-            
+
         }
     }
 }

@@ -2,7 +2,7 @@
 using Avalonia.ReactiveUI;
 using System;
 
-namespace LeagueOfLegendsScenarioMaker
+namespace LeagueOfLegendsScenarioCreator
 {
     internal class Program
     {

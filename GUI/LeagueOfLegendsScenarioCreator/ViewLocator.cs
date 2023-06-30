@@ -1,9 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using LeagueOfLegendsScenarioMaker.ViewModels;
+using LeagueOfLegendsScenarioCreator.ViewModels;
 using System;
 
-namespace LeagueOfLegendsScenarioMaker
+namespace LeagueOfLegendsScenarioCreator
 {
     public class ViewLocator : IDataTemplate
     {

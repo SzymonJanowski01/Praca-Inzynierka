@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace LeagueOfLegendsScenarioMaker.ViewModels
+namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
     public class ViewModelBase : ReactiveObject
     {
