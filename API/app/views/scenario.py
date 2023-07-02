@@ -4,10 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
 
 from app.services.database import get_db
-from app.supporting_functions import convert_to_optional
+from app.supporting_functions import convert_to_optional, Paging
 
 from ..models import Scenario as ScenarioModel
-from ..models import Phase as PhaseModel
 
 router = APIRouter(prefix="/scenario", tags=["scenario"])
 
@@ -34,19 +33,20 @@ class ScenarioSchema(ScenarioSchemaBase):
         orm_mode = True
 
 
-@router.get("/get-scenario/{scenario_id}", response_model=ScenarioSchema)
-async def get_scenario(scenario_id: str, db: AsyncSession = Depends(get_db)):
-    scenario = await ScenarioModel.get_scenario(db, scenario_id)
+@router.get("/get-user-scenarios-names/{user_id}")
+async def get_scenario(user_id: str, db: AsyncSession = Depends(get_db)):
+    scenario = await ScenarioModel.get_scenarios_names(db, user_id)
 
     if not scenario:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such scenario.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User does not have scenarios.")
 
     return scenario
 
 
 @router.get("/get-user-scenarios/{user_id}", response_model=list[ScenarioSchema])
-async def get_user_scenarios(user_id: str, db: AsyncSession = Depends(get_db)):
-    scenarios = await ScenarioModel.get_all_user_scenarios(db, user_id)
+async def get_user_scenarios(user_id: str, db: AsyncSession = Depends(get_db), paging: Paging = Depends(),
+                             filter_param: str = None):
+    scenarios = await ScenarioModel.get_all_user_scenarios(db, user_id, paging, filter_param)
 
     if not scenarios:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No scenarios associated with the user.")
@@ -61,7 +61,7 @@ async def create_scenario(user_id: str, scenario: ScenarioSchemaCreate, db: Asyn
     return scenario
 
 
-@router.put("/update_scenario/{scenario_id}", response_model=ScenarioSchema)
+@router.put("/update-scenario/{scenario_id}", response_model=ScenarioSchema)
 async def update_scenario(scenario_id: str, scenario: ScenarioSchemaUpdate, db: AsyncSession = Depends(get_db)):
     updated_scenario = await ScenarioModel.update_scenario(db, scenario_id, scenario.name)
 
@@ -71,7 +71,7 @@ async def update_scenario(scenario_id: str, scenario: ScenarioSchemaUpdate, db: 
     return updated_scenario
 
 
-@router.delete("/delete_scenario/{scenario_id}")
+@router.delete("/delete-scenario/{scenario_id}")
 async def delete_scenario(scenario_id: str, db: AsyncSession = Depends(get_db)):
     deleted = await ScenarioModel.delete_scenario(db, scenario_id)
 

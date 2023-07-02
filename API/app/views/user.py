@@ -24,6 +24,11 @@ class UserSchemaUpdate(UserSchemaBase):
     __annotations__ = convert_to_optional(UserSchemaBase)
 
 
+class UserCredentials(BaseModel):
+    username_or_email: str
+    password: str
+
+
 class UserSchema(UserSchemaBase):
     user_id: str
     salt: bytes
@@ -62,8 +67,8 @@ async def create_user(user: UserSchemaCreate, db: AsyncSession = Depends(get_db)
 
 
 @router.post("/check-credentials")
-async def check_credentials(username_or_email: str, provided_password: str, db: AsyncSession = Depends(get_db)):
-    is_valid = await UserModel.verify_credentials(db, username_or_email, provided_password)
+async def check_credentials(user_credentials: UserCredentials, db: AsyncSession = Depends(get_db)):
+    is_valid = await UserModel.verify_credentials(db, user_credentials.username_or_email, user_credentials.password)
 
     if is_valid is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such user.")

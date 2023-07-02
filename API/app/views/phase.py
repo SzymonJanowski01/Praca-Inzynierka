@@ -43,8 +43,8 @@ async def create_empty_phases(scenario_id: str, db: AsyncSession = Depends(get_d
     return phases
 
 
-@router.put("/update-scenario/{scenario_id}")
-async def update_scenario(scenario_id: str, phases_changes: List[Dict[str, Union[int, Dict[str, str]]]],
+@router.put("/update-scenario-phases/{scenario_id}")
+async def update_scenario_phases(scenario_id: str, phases_changes: List[Dict[str, Union[int, Dict[str, str]]]],
                           db: AsyncSession = Depends(get_db)):
     try:
         updated_phases = await PhaseModel.update_scenario_phases(db, scenario_id, phases_changes)

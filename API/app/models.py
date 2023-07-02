@@ -2,7 +2,7 @@ from uuid import uuid4
 from typing import List, Dict, Union
 from datetime import datetime
 
-from sqlalchemy import Column, String, select, ForeignKey, or_, DateTime
+from sqlalchemy import Column, String, select, ForeignKey, or_, DateTime, and_, desc
 from sqlalchemy.orm import relationship
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -69,7 +69,10 @@ class User(Base):
         password_as_bytes = bytes.fromhex(user.password)
         salt_as_bytes = bytes.fromhex(user.salt)
 
-        return password_check(provided_password, password_as_bytes, salt_as_bytes)
+        if password_check(provided_password, password_as_bytes, salt_as_bytes):
+            return user.user_id
+        else:
+            return False
 
     @classmethod
     async def update_user(cls, db: AsyncSession, user_id: str, new_username: str = None, new_email: str = None,
@@ -137,16 +140,22 @@ class Scenario(Base):
         return scenario
 
     @classmethod
-    async def get_scenario(cls, db: AsyncSession, scenario_id: str):
-        try:
-            scenario = await db.get(cls, scenario_id)
-        except NoResultFound:
-            return None
-        return scenario
+    async def get_scenarios_names(cls, db: AsyncSession, user_id: str):
+        scenarios_names = (await db.execute(select(cls.name).where(cls.user_id == user_id))).scalars().all()
+
+        return scenarios_names
 
     @classmethod
-    async def get_all_user_scenarios(cls, db: AsyncSession, user_id: str):
-        scenarios = (await db.execute(select(cls).where(cls.user_id == user_id))).scalars().all()
+    async def get_all_user_scenarios(cls, db: AsyncSession, user_id: str, paging, filter_param: str = None):
+        query = select(cls).where(cls.user_id == user_id)
+
+        if filter_param:
+            query = query.where(and_(cls.name.like(f"%{filter_param}%")))
+
+        query = query.order_by(desc(cls.last_modified_at))
+        query = query.offset(paging.skip).limit(paging.limit)
+
+        scenarios = (await db.execute(query)).scalars().all()
 
         return scenarios
 
