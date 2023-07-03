@@ -1,5 +1,7 @@
 ﻿using LeagueOfLegendsScenarioCreator.Models;
+using LeagueOfLegendsScenarioCreator.Services;
 using ReactiveUI.Fody.Helpers;
+using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
@@ -7,9 +9,38 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
     {
         [Reactive]
         public ViewModelBase? Content { get; set; }
+
         [Reactive]
         public User? User { get; set; }
 
-        public MainWindowViewModel() { }
+        [Reactive]
+        public Scenario? Scenario { get; set; }
+
+        public MainWindowViewModel() 
+        {
+            Content = new LoginViewModel(this);
+            Task.Run(() => LocalDatabase.CreateTables());
+        }
+
+        public void ToLogin()
+        {
+            Content = new LoginViewModel(this);
+        }
+
+        public void ToRegister()
+        {
+            Content = new RegisterViewModel(this);
+        }
+
+        public void ToScenarios()
+        {
+            Content = new ScenariosViewModel(this);
+        }
+
+        public void LogOut()
+        {
+            User = null;
+            Content = new LoginViewModel(this);
+        }
     }
 }

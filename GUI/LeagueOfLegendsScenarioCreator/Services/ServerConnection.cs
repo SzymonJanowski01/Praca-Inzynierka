@@ -30,7 +30,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return user!;
         }
 
-        public static async Task CreateUser(string username, string email, string password)
+        public static async Task<User?> CreateUser(string username, string email, string password)
         {
             using StringContent json = new(
                 JsonSerializer.Serialize(new
@@ -42,6 +42,10 @@ namespace LeagueOfLegendsScenarioCreator.Services
 
             using HttpResponseMessage response = await sharedClient.PostAsync("/api/user/create-user", json);
             response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            User? user = JsonSerializer.Deserialize<User> (jsonResponse);
+            return user;
         }
 
         public static async Task<string?> CheckCredentials(string usernameOrEmail, string password)

@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using LeagueOfLegendsScenarioCreator.Services;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,13 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
     {
         [Reactive]
         public MainWindowViewModel? MainWindowContent { get; set; }
+
         [Reactive]
-        public string? Username { get; set; }
+        public string? UsernameOrEmail { get; set; }
+
         [Reactive]
         public string? Password { get; set; }
+
         public ReactiveCommand<Unit, Unit> LoginCommand { get; private set; }
 
         public LoginViewModel(MainWindowViewModel? mainWindowContent)
@@ -27,7 +31,14 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         private async void Login()
         {
+            var id = await ServerConnection.CheckCredentials(UsernameOrEmail!, Password!);
 
+            var user = await ServerConnection.GetUser(id!);
+            MainWindowContent!.User = user;
+            MainWindowContent!.User.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
+            MainWindowContent!.User.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+
+            MainWindowContent!.ToScenarios();
         }
     }
 }
