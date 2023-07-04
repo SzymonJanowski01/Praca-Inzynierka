@@ -38,7 +38,7 @@ async def get_scenario(user_id: str, db: AsyncSession = Depends(get_db)):
     scenario = await ScenarioModel.get_scenarios_names(db, user_id)
 
     if not scenario:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User does not have scenarios.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No scenarios associated with the user.")
 
     return scenario
 

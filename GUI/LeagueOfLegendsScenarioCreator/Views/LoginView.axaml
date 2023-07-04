@@ -7,12 +7,31 @@
         x:Class="LeagueOfLegendsScenarioCreator.Views.LoginView"
         x:DataType="vm:LoginViewModel">
 
-	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-		<vm:LoginViewModel/>
-	</Design.DataContext>
+	<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" RowDefinitions="*,*,*,*" ColumnDefinitions="*,*" Margin ="8">
+		<TextBlock Text="Log In" TextAlignment="Center" FontSize="30" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
 
-	<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+		<TextBox Name="LoginBox" Text="{Binding UsernameOrEmail}" Watermark="Username or email" Grid.Row="1" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
+		<TextBox Name="PasswordBox" Text="{Binding Password}" Watermark="Password" PasswordChar="*" Grid.Row="2" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
+		<Button Content="Log-in" Command="{Binding LoginCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="3" IsDefault="True" Margin="{Binding $parent.Margin}">
+			<Button.IsEnabled>
+				<MultiBinding Converter="{x:Static BoolConverters.And}">
+					<Binding Path="#LoginBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+					<Binding Path="#PasswordBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+				</MultiBinding>
+			</Button.IsEnabled>
+		</Button>
+		<Button 
+			Content="No Account? Register here!" 
+			Command="{Binding $parent[Window].DataContext.ToRegister}" 
+			HorizontalAlignment="Stretch" 
+			VerticalAlignment="Stretch" 
+			HorizontalContentAlignment="Center" 
+			VerticalContentAlignment="Center" 
+			Grid.Row="3" 
+			Grid.Column="1"
+			Background="Black"
+			Margin="{Binding $parent.Margin}"
+			FontSize="10"/>
+	</Grid>
 
 </UserControl>

@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Data;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.Models

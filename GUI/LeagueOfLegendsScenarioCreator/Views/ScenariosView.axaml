@@ -7,12 +7,42 @@
         x:Class="LeagueOfLegendsScenarioCreator.Views.ScenariosView"
         x:DataType="vm:ScenariosViewModel">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:ScenariosViewModel/>
-    </Design.DataContext>
+	<Grid ColumnDefinitions="100, *, *, *, *, *, 100" RowDefinitions="50, 1, 50, 50, Auto, *, 100" Margin ="8">
+		<TextBlock Text="Scenarios" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Left" FontSize="20" Grid.Row="0" Grid.Column="0" Margin="{Binding $parent.Margin}"/>
+		<TextBlock Text="{Binding MainWindowContent.User.Username}" VerticalAlignment="Top" HorizontalAlignment="Right" TextAlignment="Right" FontSize="20" Grid.Row="0" Grid.Column="6" Margin="{Binding $parent.Margin}"/>
+		<TextBlock Text="" VerticalAlignment="Top" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Margin="{Binding $parent.Margin}"/>
+		
+		<GridSplitter Grid.ColumnSpan="7" Grid.Row="1" Background="Gray" VerticalAlignment="Top" Margin="{Binding $parent.Margin}"/>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+		<WrapPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="{Binding $parent.Margin}">
+			<TextBlock Text="Create scenario:" VerticalAlignment="Center" FontSize="15" Margin="{Binding $parent.Margin}"/>
+			<TextBox Name="ScenarioNameTextBox" VerticalAlignment="Center" Text="{Binding NameInput}" Watermark="Scenario name" Margin="{Binding $parent.Margin}"/>
+			<Button Content="+" Command="{Binding AddScenarioCommand}" MinHeight="30" MinWidth="30" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Green" Margin="{Binding $parent.Margin}"/>
+		</WrapPanel>
 
+		<StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="5" Margin="{Binding $parent.Margin}">
+			<Grid RowDefinitions="*, *" ColumnDefinitions="*, *, *">
+				<TextBlock Text="Name:" Margin="{Binding $parent.Margin}"/>
+				<TextBlock Text="Created at:" Grid.Column="1" Margin="{Binding $parent.Margin}"/>
+				<TextBlock Text="Last modified at:" Grid.Column="2" Margin="{Binding $parent.Margin}"/>				
+			</Grid>
+			<ListBox Grid.Row="1" Background="Transparent" Items="{Binding MainWindowContent.User.Scenarios}" SelectedItem="{Binding SelectedItem}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid ColumnDefinitions="*, *, *">
+							<TextBlock Text="{Binding ScenarioName}"/>
+							<TextBlock Text="{Binding CreatedAt}" Grid.Column="1"/>
+							<TextBlock Text="{Binding LastModifiedAt}" Grid.Column="2"/>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</StackPanel>
+		
+		<Button Content="Previous page" Command="{Binding ChangePageCommand}" CommandParameter="p" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="{Binding $parent.Margin}"/>
+		<NumericUpDown Value="{Binding CurrentPage}" Minimum="1" Maximum="{Binding TotalPages}" ShowButtonSpinner="False" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="6" Grid.Column="2" HorizontalContentAlignment="Center" AllowSpin="False"/>
+		<TextBlock Text="out of" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Row="6" Grid.Column="3" Margin="{Binding $parent.Margin}"/>
+		<TextBlock Text="{Binding TotalPages}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Row="6" Grid.Column="4" Margin="{Binding $parent.Margin}"/>
+		<Button Content="Next page" Command="{Binding ChangePageCommand}" CommandParameter="n" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="6" Grid.Column="5" Margin="{Binding $parent.Margin}"/>
+	</Grid>
 </UserControl>

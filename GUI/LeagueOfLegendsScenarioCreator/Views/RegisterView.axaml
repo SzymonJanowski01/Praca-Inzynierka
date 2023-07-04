@@ -3,15 +3,49 @@
         xmlns:vm="using:LeagueOfLegendsScenarioCreator.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:converters="clr-namespace:LeagueOfLegendsScenarioCreator.Converters;assembly=LeagueOfLegendsScenarioCreator"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="LeagueOfLegendsScenarioCreator.Views.RegisterView">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:RegisterViewModel/>
-    </Design.DataContext>
+	<UserControl.Resources>
+		<converters:EmailFormatConverter x:Key="EmailFormatConverter" />
+	</UserControl.Resources>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+	<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="*,*" Margin ="8">
+		<TextBlock Text="Register" TextAlignment="Center" FontSize="30" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
+
+		<TextBox Name="LoginBox" Text="{Binding Username}" Watermark="Username" Grid.Row="1" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
+		<TextBox Name="EmailBox" Text="{Binding Email}" Watermark="Email" Grid.Row="2" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
+		<TextBlock Text="Email must be in a format of x@x.x" HorizontalAlignment="Stretch" TextAlignment="Left" Grid.Row="3" Grid.ColumnSpan="2" FontSize="12" Foreground="Red" Background="Black" Margin="{Binding $parent.Margin}">
+			<TextBlock.IsVisible>
+				<MultiBinding Converter="{x:Static BoolConverters.And}">
+					<Binding Path="#EmailBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+					<Binding Path="#EmailBox.Text" Converter="{StaticResource EmailFormatConverter}" />
+				</MultiBinding>
+			</TextBlock.IsVisible>
+		</TextBlock>
+		<TextBox Name="PasswordBox" Text="{Binding Password}" Watermark="Password" PasswordChar="*" Grid.Row="4" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>		
+		<Button Content="Register" Command="{Binding RegisterCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="5" IsDefault="True" Margin="{Binding $parent.Margin}">
+			<Button.IsEnabled>
+				<MultiBinding Converter="{x:Static BoolConverters.And}">
+					<Binding Path="#LoginBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+					<Binding Path="#EmailBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+					<Binding Path="#PasswordBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+				</MultiBinding>
+			</Button.IsEnabled>
+		</Button>
+		<Button
+			Content="Already registered? Log in here!"
+			Command="{Binding $parent[Window].DataContext.ToLogin}"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			HorizontalContentAlignment="Center"
+			VerticalContentAlignment="Center"
+			Grid.Row="5"
+			Grid.Column="1"
+			Background="Black"
+			Margin="{Binding $parent.Margin}"
+			FontSize="10"/>
+	</Grid>
 
 </UserControl>

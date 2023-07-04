@@ -174,7 +174,7 @@ class Scenario(Base):
 
     @classmethod
     async def delete_scenario(cls, db: AsyncSession, scenario_id: str):
-        scenario = await cls.get_scenario(db, scenario_id)
+        scenario = await db.get(cls, scenario_id)
 
         if not scenario:
             return None

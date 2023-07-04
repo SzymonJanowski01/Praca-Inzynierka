@@ -39,7 +39,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             MainWindowContent = mainWindowContent;
             Filter = string.Empty;
             CurrentPage = 1;
-            TotalPages = (int)Math.Ceiling((double)MainWindowContent!.User!.ScenariosNames!.Count / 10);
+            TotalPages = MainWindowContent!.User!.ScenariosNames! != null ? (int)Math.Ceiling((double)MainWindowContent!.User!.ScenariosNames!.Count / 5) : 1;
             NameInput = string.Empty;
 
             AddScenarioCommand = ReactiveCommand.Create(AddScenario);
@@ -62,13 +62,13 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
             CurrentPage = parameter switch
             {
-                "p" => CurrentPage - 1,
-                "n" => CurrentPage + 1,
+                "p" when CurrentPage > 1 => CurrentPage - 1,
+                "n" when CurrentPage < TotalPages => CurrentPage + 1,
                 _ when int.TryParse(parameter, out int pageNumber) && pageNumber >= 1 && pageNumber <= TotalPages => pageNumber,
                 _ => CurrentPage
             };
 
-            MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, (CurrentPage * 10) - 10, null, string.IsNullOrEmpty(Filter) ? null : Filter);
+            MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, (CurrentPage * 5) - 5, null, string.IsNullOrEmpty(Filter) ? null : Filter);
         }
 
         public void OpenScenario()

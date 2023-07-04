@@ -15,7 +15,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
 {
     public static class ServerConnection
     {
-        private readonly static string _baseAddress = "127.0.0.1";
+        private readonly static string _baseAddress = "http://127.0.0.1:8000";
 
         private static readonly HttpClient sharedClient = new() { BaseAddress = new Uri(_baseAddress) };
 
@@ -105,20 +105,18 @@ namespace LeagueOfLegendsScenarioCreator.Services
             }
 
             using HttpResponseMessage response = await sharedClient.GetAsync(requestUrl);
-            response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
-            ObservableCollection<Scenario>? scenarios = JsonSerializer.Deserialize<ObservableCollection<Scenario>>(json);
+            ObservableCollection<Scenario>? scenarios = json.Contains("No scenarios associated with the user.") ? null : JsonSerializer.Deserialize<ObservableCollection<Scenario>>(json);
             return scenarios!;
         }
 
         public static async Task<ObservableCollection<string>> GetUserScenariosNames(string userId)
         {
             using HttpResponseMessage response = await sharedClient.GetAsync($"/api/scenario/get-user-scenarios-names/{userId}");
-            response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
-            ObservableCollection<string>? scenarios = JsonSerializer.Deserialize<ObservableCollection<string>>(json);
+            ObservableCollection<string>? scenarios = json.Contains("No scenarios associated with the user.") ? null : JsonSerializer.Deserialize<ObservableCollection<string>>(json);
             return scenarios!;
         }
 
