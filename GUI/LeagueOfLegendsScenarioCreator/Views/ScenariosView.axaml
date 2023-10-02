@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
         x:Class="LeagueOfLegendsScenarioCreator.Views.ScenariosView"
         x:DataType="vm:ScenariosViewModel">
 
@@ -40,7 +42,8 @@
 		</StackPanel>
 		
 		<Button Content="Previous page" Command="{Binding ChangePageCommand}" CommandParameter="p" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="{Binding $parent.Margin}"/>
-		<NumericUpDown Value="{Binding CurrentPage}" Minimum="1" Maximum="{Binding TotalPages}" ShowButtonSpinner="False" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="6" Grid.Column="2" HorizontalContentAlignment="Center" AllowSpin="False"/>
+		<NumericUpDown x:Name="SelectedPageUpDown" Value="{Binding CurrentPage}" Minimum="1" Maximum="{Binding TotalPages}" ShowButtonSpinner="False" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="6" Grid.Column="2" HorizontalContentAlignment="Center" AllowSpin="False">
+		</NumericUpDown>
 		<TextBlock Text="out of" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Row="6" Grid.Column="3" Margin="{Binding $parent.Margin}"/>
 		<TextBlock Text="{Binding TotalPages}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Row="6" Grid.Column="4" Margin="{Binding $parent.Margin}"/>
 		<Button Content="Next page" Command="{Binding ChangePageCommand}" CommandParameter="n" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="6" Grid.Column="5" Margin="{Binding $parent.Margin}"/>

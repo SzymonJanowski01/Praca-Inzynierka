@@ -33,12 +33,15 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         {
             var id = await ServerConnection.CheckCredentials(UsernameOrEmail!, Password!);
 
-            var user = await ServerConnection.GetUser(id!);
-            MainWindowContent!.User = user;
-            MainWindowContent!.User.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
-            MainWindowContent!.User.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+            if (id != "NotFound" && id != "Unauthorized")
+            {
+                var user = await ServerConnection.GetUser(id!);
+                MainWindowContent!.User = user;
+                MainWindowContent!.User.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
+                MainWindowContent!.User.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
 
-            MainWindowContent!.ToScenarios();
+                MainWindowContent!.ToScenarios();
+            }
         }
     }
 }

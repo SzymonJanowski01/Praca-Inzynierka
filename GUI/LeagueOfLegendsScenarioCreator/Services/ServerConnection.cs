@@ -58,11 +58,28 @@ namespace LeagueOfLegendsScenarioCreator.Services
                 }), Encoding.UTF8, "application/json");
 
             using HttpResponseMessage response = await sharedClient.PostAsync($"/api/user/check-credentials", json);
-            response.EnsureSuccessStatusCode();
 
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            string? userId = JsonSerializer.Deserialize<string?>(jsonResponse);
-            return userId;
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return "NotFound";
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    return "Unauthorized";
+                }
+                else
+                {
+                    throw new Exception($"Unexpected response status code: {response.StatusCode}");
+                }
+            }
+            else
+            {
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                string? userId = JsonSerializer.Deserialize<string?>(jsonResponse);
+                return userId;
+            }        
         }
 
         public static async Task<User> UpdateUser(string userId, string? username, string? email, string? password)
