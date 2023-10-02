@@ -20,7 +20,7 @@
 			<TextBlock.IsVisible>
 				<MultiBinding Converter="{x:Static BoolConverters.And}">
 					<Binding Path="#EmailBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
-					<Binding Path="#EmailBox.Text" Converter="{StaticResource EmailFormatConverter}" />
+					<Binding Path="#EmailBox.Text" Converter="{StaticResource EmailFormatConverter}" ConverterParameter="True"/>
 				</MultiBinding>
 			</TextBlock.IsVisible>
 		</TextBlock>
@@ -31,6 +31,7 @@
 					<Binding Path="#LoginBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
 					<Binding Path="#EmailBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
 					<Binding Path="#PasswordBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+					<Binding Path="#EmailBox.Text" Converter="{StaticResource EmailFormatConverter}"/>
 				</MultiBinding>
 			</Button.IsEnabled>
 		</Button>

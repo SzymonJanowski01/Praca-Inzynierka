@@ -1,6 +1,7 @@
 ﻿using Avalonia.Data.Converters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -15,11 +16,13 @@ namespace LeagueOfLegendsScenarioCreator.Converters
         {
             if (value is string email)
             {
+                bool negate = parameter != null && bool.TryParse(parameter.ToString(), out _);
+
                 if (Regex.IsMatch(email, @"^\w+@\w+\.\w+$"))
                 {
-                    return false;
+                    return negate ? false : true;
                 }
-                return true;
+                return negate ? true : false;
             }
             return true;
         }
