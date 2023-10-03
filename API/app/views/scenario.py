@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
@@ -58,7 +60,9 @@ async def get_user_scenarios(user_id: str, db: AsyncSession = Depends(get_db), p
 async def create_scenario(user_id: str, scenario: ScenarioSchemaCreate, db: AsyncSession = Depends(get_db)):
     scenario = await ScenarioModel.create_scenario(db, user_id, scenario.name)
 
-    return scenario
+    scenario_dict = jsonable_encoder(scenario)
+
+    return JSONResponse(status_code=201, content=scenario_dict)
 
 
 @router.put("/update-scenario/{scenario_id}", response_model=ScenarioSchema)

@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -61,7 +63,10 @@ async def get_users(db: AsyncSession = Depends(get_db)):
 async def create_user(user: UserSchemaCreate, db: AsyncSession = Depends(get_db)):
     try:
         user = await UserModel.create_user(db, user.username, user.email, user.password)
-        return user
+        user_dict = jsonable_encoder(user)
+
+        return JSONResponse(status_code=201, content=user_dict)
+
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
 

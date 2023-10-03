@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from typing import List, Dict, Union
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -40,7 +42,9 @@ async def get_phases(scenario_id: str, db: AsyncSession = Depends(get_db)):
 async def create_empty_phases(scenario_id: str, db: AsyncSession = Depends(get_db)):
     phases = await PhaseModel.create_empty_phases(db, scenario_id)
 
-    return phases
+    phases_dict = jsonable_encoder(phases)
+
+    return JSONResponse(status_code=201, content=phases_dict)
 
 
 @router.put("/update-scenario-phases/{scenario_id}")
