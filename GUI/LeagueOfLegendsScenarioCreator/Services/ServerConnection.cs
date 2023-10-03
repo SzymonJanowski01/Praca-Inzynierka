@@ -179,7 +179,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             }
         }
 
-        public static async Task<Scenario> UpdateScenario(string scenarioId, string name)
+        public static async Task<Scenario?> UpdateScenario(string scenarioId, string name)
         {
             using StringContent json = new(
                 JsonSerializer.Serialize(new
@@ -187,7 +187,18 @@ namespace LeagueOfLegendsScenarioCreator.Services
                     name
                 }), Encoding.UTF8, "application/json");
             using HttpResponseMessage response = await sharedClient.PutAsync($"/api/scenario/update-scenario/{scenarioId}", json);
-            response.EnsureSuccessStatusCode();
+            
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound) 
+                {
+                    return null;
+                }
+                else
+                {
+                    throw new Exception($"Unexpected response status code: {response.StatusCode}");
+                }
+            }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             Scenario? scenario = JsonSerializer.Deserialize<Scenario>(jsonResponse);
