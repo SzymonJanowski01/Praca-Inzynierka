@@ -41,7 +41,18 @@ namespace LeagueOfLegendsScenarioCreator.Services
                 }), Encoding.UTF8, "application/json");
 
             using HttpResponseMessage response = await sharedClient.PostAsync("/api/user/create-user", json);
-            response.EnsureSuccessStatusCode();
+            
+            if (response.StatusCode != System.Net.HttpStatusCode.Created) 
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    return null;
+                }
+                else
+                {
+                    throw new Exception($"Unexpected response status code: {response.StatusCode}");
+                }
+            }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             User? user = JsonSerializer.Deserialize<User> (jsonResponse);
@@ -68,6 +79,10 @@ namespace LeagueOfLegendsScenarioCreator.Services
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     return "Unauthorized";
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    return "Server not available";
                 }
                 else
                 {
