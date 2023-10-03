@@ -212,10 +212,21 @@ namespace LeagueOfLegendsScenarioCreator.Services
         }
         #endregion
         #region Phase
-        public static async Task<ObservableCollection<Phase>> GetScenarioPhases(string scenarioId)
+        public static async Task<ObservableCollection<Phase>?> GetScenarioPhases(string scenarioId)
         {
             using HttpResponseMessage response = await sharedClient.GetAsync($"/api/phase/get-scenario-phases/{scenarioId}");
-            response.EnsureSuccessStatusCode();
+            
+            if (response.StatusCode != System.Net.HttpStatusCode.OK) 
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+                else
+                {
+                    throw new Exception($"Unexpected response status code: {response.StatusCode}");
+                }
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             ObservableCollection<Phase>? phases = JsonSerializer.Deserialize<ObservableCollection<Phase>>(json);
