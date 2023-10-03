@@ -172,7 +172,11 @@ namespace LeagueOfLegendsScenarioCreator.Services
                 }), Encoding.UTF8, "application/json");
 
             using HttpResponseMessage response = await sharedClient.PostAsync($"/api/scenario/create-scenario/{userId}", json);
-            response.EnsureSuccessStatusCode();
+            
+            if (response.StatusCode != System.Net.HttpStatusCode.Created)
+            {
+                throw new Exception($"Unexpected response status code: {response.StatusCode}");
+            }
         }
 
         public static async Task<Scenario> UpdateScenario(string scenarioId, string name)
