@@ -247,7 +247,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return phasesIds!;
         }
 
-        public static async Task UpdateScenarioPhases (string scenarioId, List<Phase> phases)
+        public static async Task<bool?> UpdateScenarioPhases (string scenarioId, List<Phase> phases)
         {
             List<object> jsonPhases = new();
 
@@ -280,7 +280,24 @@ namespace LeagueOfLegendsScenarioCreator.Services
                 }), Encoding.UTF8, "application/json");
 
             using HttpResponseMessage response = await sharedClient.PutAsync($"/api/phase/update-scenario-phases/{scenarioId}", json);
-            response.EnsureSuccessStatusCode();
+            
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound) 
+                {
+                    return null;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    return false;
+                }
+                else
+                {
+                    throw new Exception($"Unexpected response status code: {response.StatusCode}");
+                }
+            }
+
+            return true;
         }
         #endregion
     }
