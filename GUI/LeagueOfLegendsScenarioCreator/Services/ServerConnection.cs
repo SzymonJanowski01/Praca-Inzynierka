@@ -97,7 +97,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             }        
         }
 
-        public static async Task<User> UpdateUser(string userId, string? username, string? email, string? password)
+        public static async Task<User?> UpdateUser(string userId, string? username, string? email, string? password)
         {
             using StringContent json = new(
                 JsonSerializer.Serialize(new
@@ -107,7 +107,18 @@ namespace LeagueOfLegendsScenarioCreator.Services
                     password
                 }), Encoding.UTF8, "application/json");
             using HttpResponseMessage response = await sharedClient.PutAsync($"/api/user/update-user/{userId}", json);
-            response.EnsureSuccessStatusCode();
+            
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+                {
+                    return null;
+                }
+                else
+                {
+                    throw new Exception($"Unexpected response status code: {response.StatusCode}");
+                }
+            }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             User? user = JsonSerializer.Deserialize<User>(jsonResponse);
