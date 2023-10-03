@@ -236,7 +236,11 @@ namespace LeagueOfLegendsScenarioCreator.Services
         public static async Task<ObservableCollection<string>> CreateEmptyPhases(string scenarioId)
         {
             using HttpResponseMessage response = await sharedClient.PostAsync($"/api/phase/create-empty-phases/{scenarioId}", null);
-            response.EnsureSuccessStatusCode();
+            
+            if (response.StatusCode != System.Net.HttpStatusCode.Created)
+            {
+                throw new Exception($"Unexpected response status code: {response.StatusCode}");
+            }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             ObservableCollection<string>? phasesIds = JsonSerializer.Deserialize<ObservableCollection<string>>(jsonResponse);
