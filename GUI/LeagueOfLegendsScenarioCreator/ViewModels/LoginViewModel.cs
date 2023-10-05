@@ -1,4 +1,5 @@
-﻿using LeagueOfLegendsScenarioCreator.Services;
+﻿using LeagueOfLegendsScenarioCreator.CustomExceptions;
+using LeagueOfLegendsScenarioCreator.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -31,17 +32,29 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         private async void Login()
         {
-            var id = await ServerConnection.CheckCredentials(UsernameOrEmail!, Password!);
-
-            if (id != "NotFound" && id != "Unauthorized")
+            try
             {
-                var user = await ServerConnection.GetUser(id!);
-                MainWindowContent!.User = user;
-                MainWindowContent!.User.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
-                MainWindowContent!.User.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+                var id = await ServerConnection.CheckCredentials(UsernameOrEmail!, Password!);
 
-                MainWindowContent!.ToScenarios();
+                if (id != "NotFound" && id != "Unauthorized")
+                {
+                    var user = await ServerConnection.GetUser(id!);
+                    MainWindowContent!.User = user;
+                    MainWindowContent!.User.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
+                    MainWindowContent!.User.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+
+                    MainWindowContent!.ToScenarios();
+                }
             }
+            catch (ServiceUnavailableException)
+            {
+
+            }
+            catch (Exception)
+            {
+
+            }
+            
         }
     }
 }

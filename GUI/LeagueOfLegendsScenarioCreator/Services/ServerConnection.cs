@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using DynamicData.Diagnostics;
+using LeagueOfLegendsScenarioCreator.CustomExceptions;
 using LeagueOfLegendsScenarioCreator.Models;
 
 namespace LeagueOfLegendsScenarioCreator.Services
@@ -44,9 +45,13 @@ namespace LeagueOfLegendsScenarioCreator.Services
             
             if (response.StatusCode != System.Net.HttpStatusCode.Created) 
             {
-                if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 {
-                    return null;
+                    throw new UserConflictException();
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    throw new ServiceUnavailableException();
                 }
                 else
                 {
@@ -82,7 +87,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
                 {
-                    return "Server not available";
+                    throw new ServiceUnavailableException();
                 }
                 else
                 {

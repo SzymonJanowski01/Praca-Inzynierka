@@ -1,4 +1,5 @@
-﻿using LeagueOfLegendsScenarioCreator.Services;
+﻿using LeagueOfLegendsScenarioCreator.CustomExceptions;
+using LeagueOfLegendsScenarioCreator.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -34,12 +35,29 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         private async void Register()
         {
-            var user = await ServerConnection.CreateUser(Username!, Email!, Password!);
-            MainWindowContent!.User = user;
-            MainWindowContent!.User!.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
-            MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+            try
+            {
+                var user = await ServerConnection.CreateUser(Username!, Email!, Password!);
+                MainWindowContent!.User = user;
+                MainWindowContent!.User!.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
+                MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
 
-            MainWindowContent!.ToScenarios();
+                MainWindowContent!.ToScenarios();
+            }
+
+            catch (ServiceUnavailableException) 
+            {
+
+            }
+            catch (UserConflictException)
+            {
+
+            }
+            catch (Exception) 
+            {
+
+            }
+            
         }
     }
 }
