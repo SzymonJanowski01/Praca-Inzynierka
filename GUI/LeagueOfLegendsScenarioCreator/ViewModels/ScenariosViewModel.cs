@@ -33,6 +33,8 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         public ReactiveCommand<Unit, Unit> OpenScenarioCommand { get; private set; }
 
+        public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
+
 
         public ScenariosViewModel(MainWindowViewModel? mainWindowContent)
         {
@@ -45,6 +47,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             AddScenarioCommand = ReactiveCommand.Create(AddScenario);
             ChangePageCommand = ReactiveCommand.Create<string>(ChangePage);
             OpenScenarioCommand = ReactiveCommand.Create(OpenScenario);
+            LogoutCommand = ReactiveCommand.Create(Logout);
         }
 
         public async void AddScenario()
@@ -76,6 +79,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             MainWindowContent!.Scenario!.ScenarioId = SelectedItem!.ScenarioId!;
 
             MainWindowContent!.ToScenarios();
+        }
+
+        public void Logout()
+        {
+            MainWindowContent!.LogOut();
         }
     }
 }

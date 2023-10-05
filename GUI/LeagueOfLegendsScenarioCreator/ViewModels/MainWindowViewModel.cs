@@ -40,6 +40,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public void LogOut()
         {
             User = null;
+            Scenario = null;
             Content = new LoginViewModel(this);
         }
     }
