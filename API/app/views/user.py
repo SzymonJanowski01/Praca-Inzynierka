@@ -48,7 +48,8 @@ async def get_user(user_id: str, db: AsyncSession = Depends(get_db)):
 
     return user
 
-#delete before production
+
+# delete before production
 @router.get("/get-users", response_model=list[UserSchema])
 async def get_users(db: AsyncSession = Depends(get_db)):
     users = await UserModel.get_all_users(db)
