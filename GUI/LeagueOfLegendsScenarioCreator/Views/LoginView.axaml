@@ -16,6 +16,7 @@
 				<MultiBinding Converter="{x:Static BoolConverters.And}">
 					<Binding Path="#LoginBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
 					<Binding Path="#PasswordBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+					<Binding Path="!LoginLock" RelativeSource="{RelativeSource DataContext}"/>
 				</MultiBinding>
 			</Button.IsEnabled>
 		</Button>
