@@ -24,10 +24,10 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public string? Password { get; set; }
 
         [Reactive]
-        public string? IncorrectData { get; set; }
+        public string? LoginIncorrectData { get; set; }
 
         [Reactive]
-        public bool Lock { get; set; }
+        public bool LoginLock { get; set; }
 
         public ReactiveCommand<Unit, Unit> LoginCommand { get; private set; }
 
@@ -35,17 +35,17 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         {
             MainWindowContent = mainWindowContent;
             LoginCommand = ReactiveCommand.Create(Login);
-            IncorrectData = string.Empty;
-            Lock = false;
+            LoginIncorrectData = string.Empty;
+            LoginLock = false;
         }
 
         private async void Login()
         {
-            IncorrectData = string.Empty;
+            LoginIncorrectData = string.Empty;
 
             try
             {
-                Lock = true;
+                LoginLock = true;
 
                 var id = await ServerConnection.CheckCredentials(UsernameOrEmail!, Password!);
 
@@ -61,27 +61,27 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                 else if (id == "Unauthorized")
                 {
                     await Task.Delay(1500);
-                    IncorrectData = "Wrong password!";
-                    Lock = false;
+                    LoginIncorrectData = "Wrong password!";
+                    LoginLock = false;
                 }
                 else
                 {
                     await Task.Delay(1500);
-                    IncorrectData = "User with provided username/email does not exist";
-                    Lock = false;
+                    LoginIncorrectData = "User with provided username/email does not exist";
+                    LoginLock = false;
                 }
             }
             catch (ServiceUnavailableException)
             {
                 await Task.Delay(1500);
-                IncorrectData = "Service unavaible";
-                Lock = false;
+                LoginIncorrectData = "Service unavaible";
+                LoginLock = false;
             }
             catch (Exception ex)
             {
                 await Task.Delay(1500);
-                IncorrectData = $"{ex}";
-                Lock = false;
+                LoginIncorrectData = $"{ex}";
+                LoginLock = false;
             }
         }
     }
