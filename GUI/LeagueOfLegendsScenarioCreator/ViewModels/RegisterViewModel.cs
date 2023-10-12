@@ -25,16 +25,22 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         [Reactive]
         public string? Password { get; set; }
 
+        [Reactive]
+        public string? RegisterIncorrectData { get; set; }
+
         public ReactiveCommand<Unit, Unit> RegisterCommand { get; private set; }
 
         public RegisterViewModel(MainWindowViewModel? mainWindowContent)
         {
             MainWindowContent = mainWindowContent;
             RegisterCommand = ReactiveCommand.Create(Register);
+            RegisterIncorrectData = string.Empty;
         }
 
         private async void Register()
         {
+            RegisterIncorrectData = string.Empty;
+
             try
             {
                 var user = await ServerConnection.CreateUser(Username!, Email!, Password!);
@@ -47,15 +53,18 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
             catch (ServiceUnavailableException) 
             {
-
+                await Task.Delay(1500);
+                RegisterIncorrectData = "Service unavaible";
             }
             catch (UserConflictException)
             {
-
+                await Task.Delay(1500);
+                RegisterIncorrectData = "E-mail or username already taken!";
             }
-            catch (Exception) 
+            catch (Exception ex) 
             {
-
+                await Task.Delay(1500);
+                RegisterIncorrectData = $"{ex}";
             }
             
         }

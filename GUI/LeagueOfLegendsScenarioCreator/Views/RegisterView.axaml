@@ -11,7 +11,7 @@
 		<converters:EmailFormatConverter x:Key="EmailFormatConverter" />
 	</UserControl.Resources>
 
-	<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" RowDefinitions="*,*,*,*,*,*" ColumnDefinitions="*,*" Margin ="8">
+	<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" RowDefinitions="*,*,*,*,*,*,*" ColumnDefinitions="*,*" Margin ="8">
 		<TextBlock Text="Register" TextAlignment="Center" FontSize="30" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
 
 		<TextBox Name="LoginBox" Text="{Binding Username}" Watermark="Username" Grid.Row="1" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
@@ -47,6 +47,9 @@
 			Background="Black"
 			Margin="{Binding $parent.Margin}"
 			FontSize="10"/>
+		<Border Margin="5" CornerRadius="5" HorizontalAlignment="Center" Background="Black" BorderBrush="Red" BorderThickness="3" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" IsVisible="{Binding RegisterIncorrectData, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+			<TextBlock Name="IncorrectDataBox" Text="{Binding RegisterIncorrectData}" TextWrapping="Wrap" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5 10 5"/>
+		</Border>
 	</Grid>
 
 </UserControl>
