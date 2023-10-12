@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.ViewModels
@@ -22,16 +23,23 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         [Reactive]
         public string? Password { get; set; }
 
+        [Reactive]
+        public string? IncorrectData { get; set; }
+
+
         public ReactiveCommand<Unit, Unit> LoginCommand { get; private set; }
 
         public LoginViewModel(MainWindowViewModel? mainWindowContent)
         {
             MainWindowContent = mainWindowContent;
             LoginCommand = ReactiveCommand.Create(Login);
+            IncorrectData = string.Empty;  
         }
 
         private async void Login()
         {
+            IncorrectData = string.Empty;
+
             try
             {
                 var id = await ServerConnection.CheckCredentials(UsernameOrEmail!, Password!);
@@ -45,16 +53,27 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
                     MainWindowContent!.ToScenarios();
                 }
+                else if (id == "Unauthorized")
+                {
+                    await Task.Delay(1500);
+                    IncorrectData = "Wrong password!";
+                }
+                else
+                {
+                    await Task.Delay(1500);
+                    IncorrectData = "User with provided username/email does not exist";
+                }
             }
             catch (ServiceUnavailableException)
             {
-
+                await Task.Delay(1500);
+                IncorrectData = "Service unavaible";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                await Task.Delay(1500);
+                IncorrectData = $"{ex}";
             }
-            
         }
     }
 }
