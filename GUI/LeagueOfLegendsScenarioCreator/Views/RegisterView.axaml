@@ -32,6 +32,7 @@
 					<Binding Path="#EmailBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
 					<Binding Path="#PasswordBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
 					<Binding Path="#EmailBox.Text" Converter="{StaticResource EmailFormatConverter}"/>
+					<Binding Path="!RegisterLock" RelativeSource="{RelativeSource DataContext}"/>
 				</MultiBinding>
 			</Button.IsEnabled>
 		</Button>
