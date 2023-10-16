@@ -40,7 +40,16 @@
 				</Button.IsEnabled>
 			</Button>
 		</WrapPanel>
-
+		
+		<!-- Scenario control section -->
+		<WrapPanel Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="{Binding $parent.Margin}">
+			<Button Content="Edit" Command="{Binding OpenScenarioCommand}" MinHeight="30" MinWidth="70" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Yellow">
+				<Button.IsEnabled>
+					<Binding Path="!SelectedItem" RelativeSource="{RelativeSource DataContext}" Converter="{x:Static ObjectConverters.IsNull}"/>
+				</Button.IsEnabled>
+			</Button>
+		</WrapPanel>
+		
 		<!-- Scenarios list section -->
 		<StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="5" Margin="{Binding $parent.Margin}">
 			<Grid RowDefinitions="*, *" ColumnDefinitions="*, *, *">
@@ -48,7 +57,7 @@
 				<TextBlock Text="Created at:" Grid.Column="1" Margin="{Binding $parent.Margin}"/>
 				<TextBlock Text="Last modified at:" Grid.Column="2" Margin="{Binding $parent.Margin}"/>				
 			</Grid>
-			<ListBox Grid.Row="1" Background="Transparent" Items="{Binding MainWindowContent.User.Scenarios}" SelectedItem="{Binding SelectedItem}">
+			<ListBox Grid.Row="1" Background="Transparent" Items="{Binding MainWindowContent.User.Scenarios}" SelectedItem="{Binding SelectedItem}" SelectionMode="Single,Toggle">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Grid ColumnDefinitions="*, *, *">
@@ -63,8 +72,7 @@
 		
 		<!-- Bottom buttons section -->
 		<Button Content="Previous page" Command="{Binding ChangePageCommand}" CommandParameter="p" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="{Binding $parent.Margin}"/>
-		<NumericUpDown x:Name="SelectedPageUpDown" Value="{Binding CurrentPage}" Minimum="1" Maximum="{Binding TotalPages}" ShowButtonSpinner="False" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="6" Grid.Column="2" HorizontalContentAlignment="Center" AllowSpin="False">
-		</NumericUpDown>
+		<NumericUpDown x:Name="SelectedPageUpDown" Value="{Binding CurrentPage}" Minimum="1" Maximum="{Binding TotalPages}" ShowButtonSpinner="False" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="6" Grid.Column="2" HorizontalContentAlignment="Center" AllowSpin="False"/>
 		<TextBlock Text="out of" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Row="6" Grid.Column="3" Margin="{Binding $parent.Margin}"/>
 		<TextBlock Text="{Binding TotalPages}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Row="6" Grid.Column="4" Margin="{Binding $parent.Margin}"/>
 		<Button Content="Next page" Command="{Binding ChangePageCommand}" CommandParameter="n" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="6" Grid.Column="5" Margin="{Binding $parent.Margin}"/>
