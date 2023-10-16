@@ -168,7 +168,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return scenarios!;
         }
 
-        public static async Task CreateScenario(string userId, string name)
+        public static async Task<Scenario?> CreateScenario(string userId, string name)
         {
             using StringContent json = new(
                 JsonSerializer.Serialize(new
@@ -182,6 +182,10 @@ namespace LeagueOfLegendsScenarioCreator.Services
             {
                 throw new Exception($"Unexpected response status code: {response.StatusCode}");
             }
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            Scenario? scenario = JsonSerializer.Deserialize<Scenario>(jsonResponse);
+            return scenario!;
         }
 
         public static async Task<Scenario?> UpdateScenario(string scenarioId, string name)
