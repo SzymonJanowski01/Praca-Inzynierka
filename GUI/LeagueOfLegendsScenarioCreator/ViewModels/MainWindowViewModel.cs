@@ -37,6 +37,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             Content = new ScenariosViewModel(this);
         }
 
+        public void ToScenario()
+        {
+            Content = new ScenarioViewModel(this);
+        }
+
         public void LogOut()
         {
             User = null;

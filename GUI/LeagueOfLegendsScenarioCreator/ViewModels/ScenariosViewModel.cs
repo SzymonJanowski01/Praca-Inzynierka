@@ -47,6 +47,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             TotalPages = MainWindowContent!.User!.ScenariosNames! != null ? (int)Math.Ceiling((double)MainWindowContent!.User!.ScenariosNames!.Count / 5) : 1;
             NameInput = string.Empty;
             ScenarioCreationLock = false;
+            SelectedItem = null;
 
             AddScenarioCommand = ReactiveCommand.Create(AddScenario);
             ChangePageCommand = ReactiveCommand.Create<string>(ChangePage);
@@ -84,9 +85,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         public void OpenScenario()
         {
-            MainWindowContent!.Scenario!.ScenarioId = SelectedItem!.ScenarioId!;
+            MainWindowContent!.Scenario = SelectedItem;
 
-            MainWindowContent!.ToScenarios();
+            MainWindowContent!.ToScenario();
         }
 
         public void Logout()
