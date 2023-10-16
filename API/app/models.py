@@ -31,7 +31,7 @@ class User(Base):
 
         check_for_existing_email = (await db.execute(select(cls).where(cls.email == email))).scalars().first()
         if check_for_existing_email:
-            raise ValueError("Account with provided email already exists")
+            raise ValueError("Email already taken")
 
         password_data = password_hashing(password)
 
