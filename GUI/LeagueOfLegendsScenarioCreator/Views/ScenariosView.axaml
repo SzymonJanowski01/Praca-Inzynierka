@@ -31,7 +31,14 @@
 		<WrapPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="{Binding $parent.Margin}">
 			<TextBlock Text="Create scenario:" VerticalAlignment="Center" FontSize="15" Margin="{Binding $parent.Margin}"/>
 			<TextBox Name="ScenarioNameTextBox" VerticalAlignment="Center" Text="{Binding NameInput}" Watermark="Scenario name" Margin="{Binding $parent.Margin}"/>
-			<Button Content="+" Command="{Binding AddScenarioCommand}" MinHeight="30" MinWidth="30" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Green" Margin="{Binding $parent.Margin}"/>
+			<Button Content="+" Command="{Binding AddScenarioCommand}" MinHeight="30" MinWidth="30" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Green" Margin="{Binding $parent.Margin}">
+				<Button.IsEnabled>
+					<MultiBinding Converter="{x:Static BoolConverters.And}">
+						<Binding Path="#ScenarioNameTextBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+						<Binding Path="!ScenarioCreationLock" RelativeSource="{RelativeSource DataContext}"/>
+					</MultiBinding>
+				</Button.IsEnabled>
+			</Button>
 		</WrapPanel>
 
 		<!-- Scenarios list section -->

@@ -27,6 +27,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         [Reactive]
         public int? TotalPages { get; set; }
 
+        [Reactive]
+        public bool ScenarioCreationLock { get; set; }
+
         public ReactiveCommand<Unit, Unit> AddScenarioCommand { get; private set; }
 
         public ReactiveCommand<string, Unit> ChangePageCommand { get; private set; }
@@ -43,6 +46,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             CurrentPage = 1;
             TotalPages = MainWindowContent!.User!.ScenariosNames! != null ? (int)Math.Ceiling((double)MainWindowContent!.User!.ScenariosNames!.Count / 5) : 1;
             NameInput = string.Empty;
+            ScenarioCreationLock = false;
 
             AddScenarioCommand = ReactiveCommand.Create(AddScenario);
             ChangePageCommand = ReactiveCommand.Create<string>(ChangePage);
@@ -52,12 +56,16 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         public async void AddScenario()
         {
-            await ServerConnection.CreateScenario(MainWindowContent!.User!.UserId!, NameInput);
+            ScenarioCreationLock = true;
+
+            var scenario = await ServerConnection.CreateScenario(MainWindowContent!.User!.UserId!, NameInput);
+            await ServerConnection.CreateEmptyPhases(scenario!.ScenarioId!);
 
             MainWindowContent!.User!.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
             MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
 
             MainWindowContent!.ToScenarios();
+            ScenarioCreationLock = false;
         }
 
         public async void ChangePage(string parameter)
