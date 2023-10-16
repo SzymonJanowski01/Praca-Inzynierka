@@ -217,7 +217,18 @@ namespace LeagueOfLegendsScenarioCreator.Services
         public static async Task DeleteScenario(string scenarioId)
         {
             using HttpResponseMessage response = await sharedClient.DeleteAsync($"/api/scenario/delete-scenario/{scenarioId}");
-            response.EnsureSuccessStatusCode();
+            
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new NotFoundException();
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
         }
         #endregion
         #region Phase

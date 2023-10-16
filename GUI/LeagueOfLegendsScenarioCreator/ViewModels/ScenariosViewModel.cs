@@ -1,4 +1,5 @@
-﻿using LeagueOfLegendsScenarioCreator.Models;
+﻿using LeagueOfLegendsScenarioCreator.CustomExceptions;
+using LeagueOfLegendsScenarioCreator.Models;
 using LeagueOfLegendsScenarioCreator.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -36,6 +37,8 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         public ReactiveCommand<Unit, Unit> OpenScenarioCommand { get; private set; }
 
+        public ReactiveCommand<Unit, Unit> DeleteScenarioCommand { get; private set; }
+
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
 
 
@@ -52,6 +55,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             AddScenarioCommand = ReactiveCommand.Create(AddScenario);
             ChangePageCommand = ReactiveCommand.Create<string>(ChangePage);
             OpenScenarioCommand = ReactiveCommand.Create(OpenScenario);
+            DeleteScenarioCommand = ReactiveCommand.Create(DeleteScenario);
             LogoutCommand = ReactiveCommand.Create(Logout);
         }
 
@@ -88,6 +92,27 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             MainWindowContent!.Scenario = SelectedItem;
 
             MainWindowContent!.ToScenario();
+        }
+
+        public async void DeleteScenario()
+        {
+            try
+            {
+                await ServerConnection.DeleteScenario(SelectedItem!.ScenarioId!);
+
+                MainWindowContent!.User!.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
+                MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+
+                MainWindowContent!.ToScenarios();
+            }
+            catch(NotFoundException)
+            {
+
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public void Logout()

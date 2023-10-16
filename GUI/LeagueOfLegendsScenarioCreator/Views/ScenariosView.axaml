@@ -48,6 +48,11 @@
 					<Binding Path="!SelectedItem" RelativeSource="{RelativeSource DataContext}" Converter="{x:Static ObjectConverters.IsNull}"/>
 				</Button.IsEnabled>
 			</Button>
+			<Button Content="Delete" Command="{Binding DeleteScenarioCommand}" MinHeight="30" MinWidth="70" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Red">
+				<Button.IsEnabled>
+					<Binding Path="!SelectedItem" RelativeSource="{RelativeSource DataContext}" Converter="{x:Static ObjectConverters.IsNull}"/>
+				</Button.IsEnabled>
+			</Button>
 		</WrapPanel>
 		
 		<!-- Scenarios list section -->
