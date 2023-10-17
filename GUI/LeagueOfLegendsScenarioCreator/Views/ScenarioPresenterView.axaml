@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:vm="using:LeagueOfLegendsScenarioCreator.ViewModels"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LeagueOfLegendsScenarioCreator.Views.ScenarioPresenterView">
+	<Grid ColumnDefinitions="Auto, *, *, *, *, *, 100" RowDefinitions="50, 1, 50, 50, Auto, *, 100" Margin ="8">
+
+		<!-- Top section -->
+		<TextBlock Text="{Binding MainWindowContent.Scenario.ScenarioName}" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Left" FontSize="20" Grid.Row="0" Grid.Column="0" Margin="{Binding $parent.Margin}"/>
+
+		<Button Content="{Binding MainWindowContent.User.Username}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="20" Grid.Row="0" Grid.Column="6" Margin="{Binding $parent.Margin}">
+			<Button.Flyout>
+				<MenuFlyout Placement="BottomEdgeAlignedRight">
+					<MenuItem Header="Settings"/>
+					<MenuItem Header="-"/>
+					<MenuItem Header="Log-out" Command="{Binding LogoutCommand}"/>
+				</MenuFlyout>
+			</Button.Flyout>
+		</Button>
+		<TextBlock Text="" VerticalAlignment="Top" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Margin="{Binding $parent.Margin}"/>
+
+		<GridSplitter Grid.ColumnSpan="7" Grid.Row="1" Background="Gray" VerticalAlignment="Top" Margin="{Binding $parent.Margin}"/>
+	</Grid>
+</UserControl>

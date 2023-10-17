@@ -43,7 +43,7 @@
 		
 		<!-- Scenario control section -->
 		<WrapPanel Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="{Binding $parent.Margin}">
-			<Button Content="Edit" Command="{Binding OpenScenarioCommand}" MinHeight="30" MinWidth="70" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Yellow">
+			<Button Content="Edit" Command="{Binding OpenScenarioEditorCommand}" MinHeight="30" MinWidth="70" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Yellow">
 				<Button.IsEnabled>
 					<Binding Path="!SelectedItem" RelativeSource="{RelativeSource DataContext}" Converter="{x:Static ObjectConverters.IsNull}"/>
 				</Button.IsEnabled>

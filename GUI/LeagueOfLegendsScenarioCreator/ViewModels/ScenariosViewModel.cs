@@ -37,6 +37,8 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         public ReactiveCommand<Unit, Unit> OpenScenarioPresenterCommand { get; private set; }
 
+        public ReactiveCommand<Unit, Unit> OpenScenarioEditorCommand { get; private set; }
+
         public ReactiveCommand<Unit, Unit> DeleteScenarioCommand { get; private set; }
 
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
@@ -55,6 +57,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             AddScenarioCommand = ReactiveCommand.Create(AddScenario);
             ChangePageCommand = ReactiveCommand.Create<string>(ChangePage);
             OpenScenarioPresenterCommand = ReactiveCommand.Create(OpenScenarioPresenter);
+            OpenScenarioEditorCommand = ReactiveCommand.Create(OpenScenarioEditor);
             DeleteScenarioCommand = ReactiveCommand.Create(DeleteScenario);
             LogoutCommand = ReactiveCommand.Create(Logout);
         }
@@ -92,6 +95,13 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             MainWindowContent!.Scenario = SelectedItem;
 
             MainWindowContent!.ToScenarioPresenter();
+        }
+
+        public void OpenScenarioEditor()
+        {
+            MainWindowContent!.Scenario = SelectedItem;
+
+            MainWindowContent!.ToScenarioEditor();
         }
 
         public async void DeleteScenario()

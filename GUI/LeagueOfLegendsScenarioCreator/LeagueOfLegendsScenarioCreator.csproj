@@ -33,8 +33,5 @@
     <Compile Update="Views\ScenariosView.axaml.cs">
       <DependentUpon>ScenariosView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ScenarioPresenterView.axaml.cs">
-      <DependentUpon>ScenarioPresenterView.axaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 </Project>
