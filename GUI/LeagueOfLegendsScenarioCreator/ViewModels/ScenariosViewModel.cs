@@ -4,7 +4,9 @@ using LeagueOfLegendsScenarioCreator.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Diagnostics;
 using System.Reactive;
+using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
@@ -83,7 +85,6 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             {
                 "p" when CurrentPage > 1 => CurrentPage - 1,
                 "n" when CurrentPage < TotalPages => CurrentPage + 1,
-                _ when int.TryParse(parameter, out int pageNumber) && pageNumber >= 1 && pageNumber <= TotalPages => pageNumber,
                 _ => CurrentPage
             };
 

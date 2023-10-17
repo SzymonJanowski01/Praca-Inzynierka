@@ -42,7 +42,17 @@
 		</WrapPanel>
 		
 		<!-- Scenario control section -->
+		<WrapPanel Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="{Binding $parent.Margin}">
+			<AutoCompleteBox Text="{Binding Filter}" FilterMode="Contains" Watermark="Search for scenario" Items="{Binding MainWindowContent.User.ScenariosNames}"/>
+			<Button Content="Search" Command="{Binding ChangePageCommand}" MinHeight="30" MinWidth="70" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+		</WrapPanel>
+		
 		<WrapPanel Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="{Binding $parent.Margin}">
+			<Button Content="View" Command="{Binding OpenScenarioPresenterCommand}" MinHeight="30" MinWidth="70" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Blue">
+				<Button.IsEnabled>
+					<Binding Path="!SelectedItem" RelativeSource="{RelativeSource DataContext}" Converter="{x:Static ObjectConverters.IsNull}"/>
+				</Button.IsEnabled>
+			</Button>
 			<Button Content="Edit" Command="{Binding OpenScenarioEditorCommand}" MinHeight="30" MinWidth="70" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Yellow">
 				<Button.IsEnabled>
 					<Binding Path="!SelectedItem" RelativeSource="{RelativeSource DataContext}" Converter="{x:Static ObjectConverters.IsNull}"/>
@@ -77,7 +87,7 @@
 		
 		<!-- Bottom buttons section -->
 		<Button Content="Previous page" Command="{Binding ChangePageCommand}" CommandParameter="p" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="{Binding $parent.Margin}"/>
-		<NumericUpDown x:Name="SelectedPageUpDown" Value="{Binding CurrentPage}" Minimum="1" Maximum="{Binding TotalPages}" ShowButtonSpinner="False" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="6" Grid.Column="2" HorizontalContentAlignment="Center" AllowSpin="False"/>
+		<TextBlock Text="{Binding CurrentPage}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Row="6" Grid.Column="2" Margin="{Binding $parent.Margin}"/>
 		<TextBlock Text="out of" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Row="6" Grid.Column="3" Margin="{Binding $parent.Margin}"/>
 		<TextBlock Text="{Binding TotalPages}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Grid.Row="6" Grid.Column="4" Margin="{Binding $parent.Margin}"/>
 		<Button Content="Next page" Command="{Binding ChangePageCommand}" CommandParameter="n" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Grid.Row="6" Grid.Column="5" Margin="{Binding $parent.Margin}"/>

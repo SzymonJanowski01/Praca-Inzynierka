@@ -145,7 +145,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             {
                 var sb = new StringBuilder(requestUrl + "?");
 
-                sb.Append(!string.IsNullOrEmpty(filter) ? $"filter={Uri.EscapeDataString(filter)}&" : "");
+                sb.Append(!string.IsNullOrEmpty(filter) ? $"filter_param={Uri.EscapeDataString(filter)}&" : "");
                 sb.Append(skip.HasValue ? $"skip={skip}&" : "");
                 sb.Append(limit.HasValue ? $"limit={limit}&" : "");
 

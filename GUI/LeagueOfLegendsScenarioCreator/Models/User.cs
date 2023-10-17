@@ -1,4 +1,5 @@
-﻿using Avalonia.Data;
+﻿
+using Avalonia.Data;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
