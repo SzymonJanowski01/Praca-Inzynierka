@@ -5,10 +5,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="LeagueOfLegendsScenarioCreator.Views.ScenarioPresenterView">
-	<Grid ColumnDefinitions="Auto, *, *, *, *, *, 100" RowDefinitions="50, 1, 50, 50, Auto, *, 100" Margin ="8">
+	<Grid ColumnDefinitions="100, *, *, *, *, *, 100" RowDefinitions="50, 1, 50, 50, Auto, *, 100" Margin ="8">
 
 		<!-- Top section -->
-		<TextBlock Text="{Binding MainWindowContent.Scenario.ScenarioName}" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Left" FontSize="20" Grid.Row="0" Grid.Column="0" Margin="{Binding $parent.Margin}"/>
+		<TextBlock Text="{Binding MainWindowContent.Scenario.ScenarioName}" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Left" FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
 
 		<Button Content="{Binding MainWindowContent.User.Username}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="20" Grid.Row="0" Grid.Column="6" Margin="{Binding $parent.Margin}">
 			<Button.Flyout>

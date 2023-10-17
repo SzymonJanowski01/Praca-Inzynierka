@@ -14,12 +14,22 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         [Reactive]
         public MainWindowViewModel? MainWindowContent { get; set; }
 
+        public ReactiveCommand<Unit, Unit> CancelCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
+
         public ScenarioEditorViewModel(MainWindowViewModel? mainViewModel)
         {
             MainWindowContent = mainViewModel;
 
+            CancelCommand = ReactiveCommand.Create(Cancel);
             LogoutCommand = ReactiveCommand.Create(Logout);
+        }
+
+        public void Cancel()
+        {
+            MainWindowContent!.Scenario = null;
+
+            MainWindowContent!.ToScenarios();
         }
 
         public void Logout()
