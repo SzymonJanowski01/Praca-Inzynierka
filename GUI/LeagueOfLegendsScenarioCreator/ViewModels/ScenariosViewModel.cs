@@ -65,7 +65,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         }
 
         public async void AddScenario()
-        {
+        { 
             ScenarioCreationLock = true;
 
             var scenario = await ServerConnection.CreateScenario(MainWindowContent!.User!.UserId!, NameInput);
@@ -91,16 +91,18 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, (CurrentPage * 5) - 5, null, string.IsNullOrEmpty(Filter) ? null : Filter);
         }
 
-        public void OpenScenarioPresenter()
+        public async void OpenScenarioPresenter()
         {
             MainWindowContent!.Scenario = SelectedItem;
+            MainWindowContent!.Scenario!.Phases = await ServerConnection.GetScenarioPhases(SelectedItem!.ScenarioId!);
 
             MainWindowContent!.ToScenarioPresenter();
         }
 
-        public void OpenScenarioEditor()
+        public async void OpenScenarioEditor()
         {
             MainWindowContent!.Scenario = SelectedItem;
+            MainWindowContent!.Scenario!.Phases = await ServerConnection.GetScenarioPhases(SelectedItem!.ScenarioId!);
 
             MainWindowContent!.ToScenarioEditor();
         }
