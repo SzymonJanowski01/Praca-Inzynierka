@@ -20,6 +20,7 @@ mypy = "*"
 [tool.poetry.group.test]
 [tool.poetry.group.test.dependencies]
 pytest = "*"
+pytest-asyncio = "*"
 pytest-postgresql = "^5.0.0"
 psycopg = "^3.1.9"
 httpx = "^0.24.1"
@@ -34,6 +35,7 @@ python_files ="test_*.py"
 python_functions = "test_*"
 python_classes = "Test* *Tests"
 addopts = "-vv -x"
+asyncio_mode = "auto"
 pythonpath = ["."]
 
 [tool.mypy]
