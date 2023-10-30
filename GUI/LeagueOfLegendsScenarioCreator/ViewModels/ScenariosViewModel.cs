@@ -65,7 +65,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         }
 
         public async void AddScenario()
-        { 
+        {
             ScenarioCreationLock = true;
 
             var scenario = await ServerConnection.CreateScenario(MainWindowContent!.User!.UserId!, NameInput);
