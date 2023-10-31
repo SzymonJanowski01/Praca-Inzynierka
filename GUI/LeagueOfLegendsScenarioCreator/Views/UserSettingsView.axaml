@@ -7,9 +7,9 @@
         x:Class="LeagueOfLegendsScenarioCreator.Views.UserSettingsView"
 		x:DataType="vm:UserSettingsViewModel">
 
-	<Grid ColumnDefinitions="100, *, *, 100" RowDefinitions="50, 1, *, *, *" Margin ="8">
+	<Grid ColumnDefinitions="100, *, *, 100" RowDefinitions="50, 1, 90, *, 50" Margin ="8">
 		<!-- Top section -->
-		<TextBlock Text="Scenarios" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Left" FontSize="20" Grid.Row="0" Grid.Column="0" Margin="{Binding $parent.Margin}"/>
+		<TextBlock Text="Settings" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Left" FontSize="20" Grid.Row="0" Grid.Column="0" Margin="{Binding $parent.Margin}"/>
 
 		<Button Content="{Binding MainWindowContent.User.Username}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="20" Grid.Row="0" Grid.Column="6" Margin="{Binding $parent.Margin}">
 			<Button.Flyout>
@@ -24,7 +24,74 @@
 
 		<GridSplitter Grid.ColumnSpan="7" Grid.Row="1" Background="Gray" VerticalAlignment="Top" Margin="{Binding $parent.Margin}"/>
 
-
+		<!-- App settings -->
+		<Border Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="{Binding $parent.Margin}">
+			<StackPanel Margin="{Binding $parent.Margin}">
+				<TextBlock Text="Application settings" HorizontalAlignment="Center"/>
+				<Grid ColumnDefinitions="*, *" RowDefinitions="*, *" Margin="{Binding $parent.Margin}">
+					<TextBlock Text="Theme:" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center"/>
+					<WrapPanel  Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center">	
+						<ToggleButton Content="Dark" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinHeight="30" MinWidth="60"/>
+						<ToggleButton Content="Bright" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinHeight="30" MinWidth="60"/>
+					</WrapPanel>
+			
+					<TextBlock Text="Language:" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center"/>
+					<StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center">	
+						<ComboBox SelectedIndex="0">
+							<ComboBoxItem>English</ComboBoxItem>
+							<ComboBoxItem>Polish</ComboBoxItem>
+							<ComboBoxItem>German</ComboBoxItem>
+						</ComboBox>
+					</StackPanel>
+				</Grid>	
+			</StackPanel>
+		</Border>
+		
+		<!-- User settings -->
+		<Border Grid.Column="1" Grid.Row="3" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="{Binding $parent.Margin}">
+			<StackPanel Margin="{Binding $parent.Margin}">
+				<TextBlock Text="User settings" HorizontalAlignment="Center"/>
+				<Grid RowDefinitions="*, *" Margin="{Binding $parent.Margin}">	
+					<StackPanel Grid.Row="0">
+						<TextBlock Text="Username:"/>
+						<TextBox Watermark="Provide new username"/>
+						<TextBlock Text="Email:" Margin="0, 20, 0, 0"/>
+						<TextBox Watermark="Provide new email"/>
+						<TextBlock Text="Password:" Margin="0, 20, 0, 0"/>
+						<TextBox Watermark="Provide new password"/>
+						<TextBox Watermark="Repeat the passowrd" Margin="0, 2, 0, 0"/>
+					</StackPanel>
+					<StackPanel Grid.Row="1">
+						<Button Content="Delete account" Background="Red" Margin="0, 20, 0, 0"/>
+						<Border BorderBrush="Red" BorderThickness="1" CornerRadius="5" Margin="0, 5, 0, 0">
+							<TextBlock Text="This action is irreversible and will result in permament loss of account and all associated scenarios and phases! Enter passowrd to procced regardless:" TextWrapping="Wrap" Foreground="Red" Margin="8"/>
+						</Border>
+						<TextBox Watermark="Enter password here" Margin="0, 5, 0, 0"/>
+						<WrapPanel Margin="0, 5, 0, 0">
+							<Button Content="Confirm deletion" Background="Red"/>
+							<Button Content="Cancel"/>
+						</WrapPanel>
+					</StackPanel>
+				</Grid>
+			</StackPanel>
+		</Border>
+		
+		<!-- Scenarios settings -->
+		<Border Grid.Column="2" Grid.Row="3" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="{Binding $parent.Margin}">
+			<StackPanel Margin="{Binding $parent.Margin}">
+				<TextBlock Text="Scenarios settings" HorizontalAlignment="Center"/>
+				<Grid Margin="{Binding $parent.Margin}">
+					<Button Grid.Row="0" Content="Delete all scenarios" VerticalAlignment="Top" Background="Red" Margin="{Binding $parent.Margin}"/>				
+				</Grid>
+			</StackPanel>
+		</Border>
+		
+		<!-- Bottom buttons -->
+		<WrapPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{Binding $parent.Margin}">
+			<Button Content="Save and Exit" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
+			<Button Content="Save" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
+			<Button Content="Cancel" Command="{Binding CancelCommand}" Background="Red" MinWidth="120" HorizontalContentAlignment="Center"/>
+		</WrapPanel>
 	</Grid>
 
 </UserControl>
