@@ -13,7 +13,7 @@
 		<Button Content="{Binding MainWindowContent.User.Username}" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="20" Grid.Row="0" Grid.Column="6" Margin="{Binding $parent.Margin}">
 			<Button.Flyout>
 				<MenuFlyout Placement="BottomEdgeAlignedRight">
-					<MenuItem Header="Settings"/>
+					<MenuItem Header="Settings" Command="{Binding UserSettingsCommand}"/>
 					<MenuItem Header="-"/>
 					<MenuItem Header="Log-out" Command="{Binding LogoutCommand}"/>
 				</MenuFlyout>

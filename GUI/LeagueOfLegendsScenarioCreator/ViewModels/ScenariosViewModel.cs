@@ -43,6 +43,8 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         public ReactiveCommand<Unit, Unit> DeleteScenarioCommand { get; private set; }
 
+        public ReactiveCommand<Unit, Unit> UserSettingsCommand { get; private set; }
+
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
 
 
@@ -61,6 +63,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             OpenScenarioPresenterCommand = ReactiveCommand.Create(OpenScenarioPresenter);
             OpenScenarioEditorCommand = ReactiveCommand.Create(OpenScenarioEditor);
             DeleteScenarioCommand = ReactiveCommand.Create(DeleteScenario);
+            UserSettingsCommand = ReactiveCommand.Create(UserSettings);
             LogoutCommand = ReactiveCommand.Create(Logout);
         }
 
@@ -126,6 +129,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             {
 
             }
+        }
+
+        public void UserSettings()
+        {
+            MainWindowContent!.ToUserSettings();
         }
 
         public void Logout()
