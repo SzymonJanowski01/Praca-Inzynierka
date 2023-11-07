@@ -15,13 +15,38 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         [Reactive]
         public MainWindowViewModel? MainWindowContent { get; set; }
 
+        [Reactive]
+        public bool DeletionConfirmation { get; set; }
+
+        public ReactiveCommand<string, Unit> ChangeVisibilityCommand { get; private set; }
+        public ReactiveCommand<Unit, Unit> CancelCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
 
         public UserSettingsViewModel(MainWindowViewModel? mainWindowContent)
         {
             MainWindowContent = mainWindowContent;
+            DeletionConfirmation = false;
 
+            ChangeVisibilityCommand = ReactiveCommand.Create<string>(ChangeConfirmationVisibility);
+            CancelCommand = ReactiveCommand.Create(Cancel);
             LogoutCommand = ReactiveCommand.Create(Logout);
+        }
+
+        public void ChangeConfirmationVisibility(string parameter)
+        {
+            if (parameter == "t") 
+            {
+                DeletionConfirmation = true;
+            }
+            else
+            {
+                DeletionConfirmation = false;
+            }
+        }
+
+        public void Cancel()
+        {
+            MainWindowContent!.ToScenarios();
         }
 
         public void Logout()
