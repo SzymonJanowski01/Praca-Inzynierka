@@ -66,9 +66,13 @@
 						<Border BorderBrush="Red" BorderThickness="1" CornerRadius="5" Margin="0, 5, 0, 0">
 							<TextBlock Text="This action is irreversible and will result in permament loss of account and all associated scenarios and phases! Enter passowrd to procced regardless:" TextWrapping="Wrap" Foreground="Red" Margin="8"/>
 						</Border>
-						<TextBox Watermark="Enter password here" Margin="0, 5, 0, 0"/>
+						<TextBox Name="ConfirmPassowrdBox" Text="{Binding Password}" Watermark="Enter password here" Margin="0, 5, 0, 0"/>
 						<WrapPanel Margin="0, 5, 0, 0">
-							<Button Content="Confirm deletion" Background="Red"/>
+							<Button Content="Confirm deletion" Command="{Binding DeleteAccountCommand}" Background="Red">
+								<Button.IsEnabled>
+									<Binding Path="#ConfirmPassowrdBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+								</Button.IsEnabled>
+							</Button>
 							<Button Content="Cancel" Command="{Binding ChangeVisibilityCommand}" CommandParameter="f"/>
 						</WrapPanel>
 					</StackPanel>
