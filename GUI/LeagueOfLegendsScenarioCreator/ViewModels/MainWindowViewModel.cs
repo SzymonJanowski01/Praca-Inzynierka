@@ -52,11 +52,16 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             Content = new UserSettingsViewModel(this);
         }
 
-        public void LogOut()
+        public void WipeData()
         {
             User = null;
             Scenario = null;
-            Content = new LoginViewModel(this);
+        }
+
+        public void LogOut()
+        {
+            WipeData();
+            ToLogin();
         }
     }
 }
