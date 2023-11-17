@@ -105,4 +105,3 @@ async def delete_user(user_id: str, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No such user.")
 
     return True
-
