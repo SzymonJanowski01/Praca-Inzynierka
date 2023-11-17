@@ -23,6 +23,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         [Reactive]
         public string? Password { get; set; }
+        [Reactive]
+        public string? DeletionIncorrectData { get; set; }
+
+        [Reactive]
+        public bool DeletionLock { get; set; }
 
         public ReactiveCommand<string, Unit> ChangeVisibilityCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> DeleteAccountCommand { get; private set; }
@@ -33,6 +38,8 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         {
             MainWindowContent = mainWindowContent;
             DeletionConfirmation = false;
+            DeletionIncorrectData = string.Empty;
+            DeletionLock = false;
 
             ChangeVisibilityCommand = ReactiveCommand.Create<string>(ChangeConfirmationVisibility);
             DeleteAccountCommand = ReactiveCommand.Create(DeleteAccount);
@@ -56,6 +63,8 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         {
             try
             {
+                DeletionLock = true;
+
                 var CheckPassword = await ServerConnection.CheckCredentials(MainWindowContent!.User!.Email!, Password!);
 
                 if (CheckPassword != "Unauthorized")
@@ -64,10 +73,20 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                     MainWindowContent!.WipeData();
                     MainWindowContent!.ToRegister();
                 }
+                else
+                {
+                    DeletionIncorrectData = "Wrong password provided";
+                    await Task.Delay(1500);
+                    DeletionIncorrectData = string.Empty;
+                    DeletionLock = false;
+                }
             }
             catch (ServiceUnavailableException)
             {
-
+                DeletionIncorrectData = "Service unavaible";
+                await Task.Delay(1500);
+                DeletionIncorrectData = string.Empty;
+                DeletionLock = false;
             }
         }
 
