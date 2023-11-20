@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using LeagueOfLegendsScenarioCreator.Services;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,10 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             LogoutCommand = ReactiveCommand.Create(Logout);
         }
 
-        public void Cancel()
+        public async void Cancel()
         {
             MainWindowContent!.Scenario = null;
+            MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
 
             MainWindowContent!.ToScenarios();
         }
