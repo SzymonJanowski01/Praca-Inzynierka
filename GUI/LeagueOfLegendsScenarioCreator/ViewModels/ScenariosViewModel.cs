@@ -92,6 +92,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             };
 
             MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, (CurrentPage * 5) - 5, null, string.IsNullOrEmpty(Filter) ? null : Filter);
+            TotalPages = string.IsNullOrEmpty(Filter) ? (int)Math.Ceiling((double)MainWindowContent!.User!.ScenariosNames!.Count / 5) : (int)Math.Ceiling((double)MainWindowContent!.User!.Scenarios!.Count / 5);
         }
 
         public async void OpenScenarioPresenter()
