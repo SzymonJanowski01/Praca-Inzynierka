@@ -98,8 +98,8 @@
 		
 		<!-- Bottom buttons -->
 		<StackPanel  Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{Binding $parent.Margin}">
-			<Border Margin="5" CornerRadius="5" HorizontalAlignment="Center" Background="Black" BorderBrush="Red" BorderThickness="3" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" IsVisible="{Binding UpdateIncorrectData, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-				<TextBlock Name="IncorrectUpdateDataBox" Text="{Binding UpdateIncorrectData}" TextWrapping="Wrap" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5 10 5"/>
+			<Border Margin="5" CornerRadius="5" HorizontalAlignment="Center" Background="Black" BorderBrush="{Binding InformationBorderColor}" BorderThickness="3" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" IsVisible="{Binding UpdateMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+				<TextBlock Name="UpdateMessageBox" Text="{Binding UpdateMessage}" TextWrapping="Wrap" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5 10 5"/>
 			</Border>
 			<WrapPanel VerticalAlignment="Center" HorizontalAlignment="Center">
 				<Button Content="Save and Exit" Command="{Binding SaveAndExitCommand}" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>

@@ -31,7 +31,10 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public string? ConfirmPasswordUpdate { get; set; }
         
         [Reactive]
-        public string? UpdateIncorrectData { get; set; }
+        public string? UpdateMessage { get; set; }
+
+        [Reactive]
+        public string? InformationBorderColor { get; set; }
 
         [Reactive]
         public bool IsButtonEnabled { get; set; }
@@ -58,6 +61,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public UserSettingsViewModel(MainWindowViewModel? mainWindowContent)
         {
             MainWindowContent = mainWindowContent;
+            InformationBorderColor = "Red";
             DeletionConfirmation = false;
             DeletionIncorrectData = string.Empty;
             DeletionLock = false;
@@ -78,62 +82,78 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                 {
                     if (string.IsNullOrEmpty(UsernameUpdate) && string.IsNullOrEmpty(EmailUpdate))
                     {
-                        UpdateIncorrectData = "At least one setting must be changed!";
+                        InformationBorderColor = "Red";
+                        UpdateMessage = "At least one setting must be changed!";
                         await Task.Delay(1500);
-                        UpdateIncorrectData = string.Empty;
+                        UpdateMessage = string.Empty;
                     }
                     else
                     {
+                        InformationBorderColor = "Green";
                         var tempScenariosNames = MainWindowContent!.User!.ScenariosNames;
                         var tempScenarios = MainWindowContent!.User!.Scenarios;
                         var user = await ServerConnection.UpdateUser(MainWindowContent!.User!.UserId!, UsernameUpdate, EmailUpdate, PasswordUpdate);
                         MainWindowContent!.User = user;
                         MainWindowContent!.User!.ScenariosNames = tempScenariosNames;
                         MainWindowContent!.User!.Scenarios = tempScenarios;
+
+                        UpdateMessage = "Successfully updated!";
+                        await Task.Delay(1500);
+                        UpdateMessage = string.Empty;
                     }
                 }
                 else if (!string.IsNullOrEmpty(PasswordUpdate) && !string.IsNullOrEmpty(ConfirmPasswordUpdate))
                 {
                     if (PasswordUpdate == ConfirmPasswordUpdate)
                     {
+                        InformationBorderColor = "Green";
                         var tempScenariosNames = MainWindowContent!.User!.ScenariosNames;
                         var tempScenarios = MainWindowContent!.User!.Scenarios;
                         var user = await ServerConnection.UpdateUser(MainWindowContent!.User!.UserId!, UsernameUpdate, EmailUpdate, PasswordUpdate);
                         MainWindowContent!.User = user;
                         MainWindowContent!.User!.ScenariosNames = tempScenariosNames;
                         MainWindowContent!.User!.Scenarios = tempScenarios;
+
+                        UpdateMessage = "Successfully updated!";
+                        await Task.Delay(1500);
+                        UpdateMessage = string.Empty;
                     }
                     else
                     {
-                        UpdateIncorrectData = "Password fields do not match each other!";
+                        InformationBorderColor = "Red";
+                        UpdateMessage = "Password fields do not match each other!";
                         await Task.Delay(1500);
-                        UpdateIncorrectData = string.Empty;
+                        UpdateMessage = string.Empty;
                     }
                 }
                 else
                 {
-                    UpdateIncorrectData = "When updating password both password and confirm password fields must be filled!";
+                    InformationBorderColor = "Red";
+                    UpdateMessage = "When updating password both password and confirm password fields must be filled!";
                     await Task.Delay(2000);
-                    UpdateIncorrectData = string.Empty;
+                    UpdateMessage = string.Empty;
                 }
             }
             catch (UserConflictException ex)
             {
-                UpdateIncorrectData = $"{ex.Message}";
+                InformationBorderColor = "Red";
+                UpdateMessage = $"{ex.Message}";
                 await Task.Delay(1500);
-                UpdateIncorrectData = string.Empty;
+                UpdateMessage = string.Empty;
             }
             catch (ServiceUnavailableException)
             {
-                UpdateIncorrectData = "Service is currently unavailable";
+                InformationBorderColor = "Red";
+                UpdateMessage = "Service is currently unavailable";
                 await Task.Delay(1500);
-                UpdateIncorrectData = string.Empty;
+                UpdateMessage = string.Empty;
             }
             catch (Exception ex)
             {
-                UpdateIncorrectData = $"{ex.Message}";
+                InformationBorderColor = "Red";
+                UpdateMessage = $"{ex.Message}";
                 await Task.Delay(1500);
-                UpdateIncorrectData = string.Empty;
+                UpdateMessage = string.Empty;
             }
         }
 
