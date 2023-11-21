@@ -72,7 +72,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             catch (Exception ex) 
             {
                 await Task.Delay(1500);
-                RegisterIncorrectData = $"{ex}";
+                RegisterIncorrectData = $"{ex.Message}";
                 RegisterLock = false;
             }
             

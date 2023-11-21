@@ -113,7 +113,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
             catch (UserConflictException ex)
             {
-                UpdateIncorrectData = $"{ex}";
+                UpdateIncorrectData = $"{ex.Message}";
                 await Task.Delay(1500);
                 UpdateIncorrectData = string.Empty;
             }
@@ -125,7 +125,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
             catch (Exception ex)
             {
-                UpdateIncorrectData = $"{ex}";
+                UpdateIncorrectData = $"{ex.Message}";
                 await Task.Delay(1500);
                 UpdateIncorrectData = string.Empty;
             }

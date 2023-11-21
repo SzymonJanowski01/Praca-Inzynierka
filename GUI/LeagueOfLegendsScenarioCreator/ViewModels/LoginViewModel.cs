@@ -80,7 +80,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             catch (Exception ex)
             {
                 await Task.Delay(1500);
-                LoginIncorrectData = $"{ex}";
+                LoginIncorrectData = $"{ex.Message}";
                 LoginLock = false;
             }
         }
