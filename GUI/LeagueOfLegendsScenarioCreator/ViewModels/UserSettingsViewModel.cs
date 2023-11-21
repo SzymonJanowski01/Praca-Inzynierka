@@ -104,6 +104,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                         UpdateMessage = "Successfully updated!";
                         await Task.Delay(1500);
                         UpdateMessage = string.Empty;
+
+                        UsernameUpdate = string.Empty;
+                        EmailUpdate = string.Empty;
+                        PasswordUpdate = string.Empty;
+                        ConfirmPasswordUpdate = string.Empty;
                     }
                 }
                 else if (!string.IsNullOrEmpty(PasswordUpdate) && !string.IsNullOrEmpty(ConfirmPasswordUpdate))
@@ -121,6 +126,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                         UpdateMessage = "Successfully updated!";
                         await Task.Delay(1500);
                         UpdateMessage = string.Empty;
+
+                        UsernameUpdate = string.Empty;
+                        EmailUpdate = string.Empty;
+                        PasswordUpdate = string.Empty;
+                        ConfirmPasswordUpdate = string.Empty;
                     }
                     else
                     {
