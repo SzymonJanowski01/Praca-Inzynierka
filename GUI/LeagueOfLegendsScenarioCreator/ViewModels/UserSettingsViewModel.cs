@@ -84,20 +84,24 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                     }
                     else
                     {
+                        var tempScenariosNames = MainWindowContent!.User!.ScenariosNames;
+                        var tempScenarios = MainWindowContent!.User!.Scenarios;
                         var user = await ServerConnection.UpdateUser(MainWindowContent!.User!.UserId!, UsernameUpdate, EmailUpdate, PasswordUpdate);
                         MainWindowContent!.User = user;
-                        MainWindowContent!.User!.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
-                        MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+                        MainWindowContent!.User!.ScenariosNames = tempScenariosNames;
+                        MainWindowContent!.User!.Scenarios = tempScenarios;
                     }
                 }
                 else if (!string.IsNullOrEmpty(PasswordUpdate) && !string.IsNullOrEmpty(ConfirmPasswordUpdate))
                 {
                     if (PasswordUpdate == ConfirmPasswordUpdate)
                     {
+                        var tempScenariosNames = MainWindowContent!.User!.ScenariosNames;
+                        var tempScenarios = MainWindowContent!.User!.Scenarios;
                         var user = await ServerConnection.UpdateUser(MainWindowContent!.User!.UserId!, UsernameUpdate, EmailUpdate, PasswordUpdate);
                         MainWindowContent!.User = user;
-                        MainWindowContent!.User!.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
-                        MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+                        MainWindowContent!.User!.ScenariosNames = tempScenariosNames;
+                        MainWindowContent!.User!.Scenarios = tempScenarios;
                     }
                     else
                     {
