@@ -171,10 +171,14 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
-        public void SaveAndExit()
+        public async void SaveAndExit()
         {
             UpdateUser();
-            Back();
+            await Task.Delay(500);
+            if (InformationBorderColor == "Green")
+            {
+                Back();
+            }
         }
 
         public void ChangeConfirmationVisibility(string parameter)
