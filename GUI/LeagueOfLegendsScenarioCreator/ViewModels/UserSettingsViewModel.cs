@@ -51,6 +51,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         [Reactive]
         public bool DeletionLock { get; set; }
 
+        [Reactive]
+        public bool BackConfirmation { get; set; }
+
         public ReactiveCommand<Unit, Unit> UpdateCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> SaveAndExitCommand { get; private set; }
         public ReactiveCommand<string, Unit> ChangeVisibilityCommand { get; private set; }
@@ -65,6 +68,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             DeletionConfirmation = false;
             DeletionIncorrectData = string.Empty;
             DeletionLock = false;
+            BackConfirmation = false;
 
             UpdateCommand = ReactiveCommand.Create(UpdateUser);
             SaveAndExitCommand = ReactiveCommand.Create(SaveAndExit);
@@ -206,9 +210,28 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
-        public void Back()
+        public async void Back()
         {
-            MainWindowContent!.ToScenarios();
+            if (BackConfirmation)
+            {
+                MainWindowContent!.ToScenarios();
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(UsernameUpdate) || !string.IsNullOrEmpty(EmailUpdate) || !string.IsNullOrEmpty(PasswordUpdate) || !string.IsNullOrEmpty(ConfirmPasswordUpdate))
+                {
+                    InformationBorderColor = "Red";
+                    UpdateMessage = $"You have unsaved changes! Press once again to dismiss this message.";
+                    await Task.Delay(1500);
+                    UpdateMessage = string.Empty;
+
+                    BackConfirmation = true;
+                }
+                else
+                {
+                    MainWindowContent!.ToScenarios();
+                }
+            }
         }
 
         public void Logout()
