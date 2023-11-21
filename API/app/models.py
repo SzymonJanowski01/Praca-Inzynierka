@@ -85,7 +85,7 @@ class User(Base):
         if new_username:
             existing_user = (await db.execute(select(cls).where(cls.username == new_username))).scalars().first()
             if existing_user:
-                raise ValueError(f"Username '{new_username} is already taken")
+                raise ValueError(f"Username '{new_username}' is already taken")
 
             user.username = new_username
 
