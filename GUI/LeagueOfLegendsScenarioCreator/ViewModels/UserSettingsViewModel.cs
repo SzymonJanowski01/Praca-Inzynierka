@@ -78,97 +78,77 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             LogoutCommand = ReactiveCommand.Create(Logout);
         }
 
-        public async void UpdateUser()
+        public void UpdateUser()
         {
-            try
+            if (string.IsNullOrEmpty(PasswordUpdate) && string.IsNullOrEmpty(ConfirmPasswordUpdate))
             {
-                if (string.IsNullOrEmpty(PasswordUpdate) && string.IsNullOrEmpty(ConfirmPasswordUpdate))
+                if (string.IsNullOrEmpty(UsernameUpdate) && string.IsNullOrEmpty(EmailUpdate))
                 {
-                    if (string.IsNullOrEmpty(UsernameUpdate) && string.IsNullOrEmpty(EmailUpdate))
-                    {
-                        InformationBorderColor = "Red";
-                        UpdateMessage = "At least one setting must be changed!";
-                        await Task.Delay(1500);
-                        UpdateMessage = string.Empty;
-                    }
-                    else
-                    {
-                        InformationBorderColor = "Green";
-                        var tempScenariosNames = MainWindowContent!.User!.ScenariosNames;
-                        var tempScenarios = MainWindowContent!.User!.Scenarios;
-                        var user = await ServerConnection.UpdateUser(MainWindowContent!.User!.UserId!, UsernameUpdate, EmailUpdate, PasswordUpdate);
-                        MainWindowContent!.User = user;
-                        MainWindowContent!.User!.ScenariosNames = tempScenariosNames;
-                        MainWindowContent!.User!.Scenarios = tempScenarios;
-
-                        UpdateMessage = "Successfully updated!";
-                        await Task.Delay(1500);
-                        UpdateMessage = string.Empty;
-
-                        UsernameUpdate = string.Empty;
-                        EmailUpdate = string.Empty;
-                        PasswordUpdate = string.Empty;
-                        ConfirmPasswordUpdate = string.Empty;
-                    }
-                }
-                else if (!string.IsNullOrEmpty(PasswordUpdate) && !string.IsNullOrEmpty(ConfirmPasswordUpdate))
-                {
-                    if (PasswordUpdate == ConfirmPasswordUpdate)
-                    {
-                        InformationBorderColor = "Green";
-                        var tempScenariosNames = MainWindowContent!.User!.ScenariosNames;
-                        var tempScenarios = MainWindowContent!.User!.Scenarios;
-                        var user = await ServerConnection.UpdateUser(MainWindowContent!.User!.UserId!, UsernameUpdate, EmailUpdate, PasswordUpdate);
-                        MainWindowContent!.User = user;
-                        MainWindowContent!.User!.ScenariosNames = tempScenariosNames;
-                        MainWindowContent!.User!.Scenarios = tempScenarios;
-
-                        UpdateMessage = "Successfully updated!";
-                        await Task.Delay(1500);
-                        UpdateMessage = string.Empty;
-
-                        UsernameUpdate = string.Empty;
-                        EmailUpdate = string.Empty;
-                        PasswordUpdate = string.Empty;
-                        ConfirmPasswordUpdate = string.Empty;
-                    }
-                    else
-                    {
-                        InformationBorderColor = "Red";
-                        UpdateMessage = "Password fields do not match each other!";
-                        await Task.Delay(1500);
-                        UpdateMessage = string.Empty;
-                    }
+                    IncorrectUpdate("At least one setting must be changed!", 1500);
                 }
                 else
                 {
-                    InformationBorderColor = "Red";
-                    UpdateMessage = "When updating password both password and confirm password fields must be filled!";
-                    await Task.Delay(2000);
-                    UpdateMessage = string.Empty;
+                    CorrectUpdate();
                 }
+            }
+            else if (!string.IsNullOrEmpty(PasswordUpdate) && !string.IsNullOrEmpty(ConfirmPasswordUpdate))
+            {
+                if (PasswordUpdate == ConfirmPasswordUpdate)
+                {
+                    CorrectUpdate();
+                }
+                else
+                {
+                    IncorrectUpdate("Password fields do not match each other!", 1500);
+                }
+            }
+            else
+            {
+                IncorrectUpdate("When updating password both password and confirm password fields must be filled!", 2000);
+            } 
+        }
+
+        public async void CorrectUpdate()
+        {
+            try
+            {
+                InformationBorderColor = "Green";
+                var tempScenariosNames = MainWindowContent!.User!.ScenariosNames;
+                var tempScenarios = MainWindowContent!.User!.Scenarios;
+                var user = await ServerConnection.UpdateUser(MainWindowContent!.User!.UserId!, UsernameUpdate, EmailUpdate, PasswordUpdate);
+                MainWindowContent!.User = user;
+                MainWindowContent!.User!.ScenariosNames = tempScenariosNames;
+                MainWindowContent!.User!.Scenarios = tempScenarios;
+
+                UpdateMessage = "Successfully updated!";
+                await Task.Delay(1500);
+                UpdateMessage = string.Empty;
+
+                UsernameUpdate = string.Empty;
+                EmailUpdate = string.Empty;
+                PasswordUpdate = string.Empty;
+                ConfirmPasswordUpdate = string.Empty;
             }
             catch (UserConflictException ex)
             {
-                InformationBorderColor = "Red";
-                UpdateMessage = $"{ex.Message}";
-                await Task.Delay(1500);
-                UpdateMessage = string.Empty;
+                IncorrectUpdate($"{ex.Message}", 1500);
             }
             catch (ServiceUnavailableException)
             {
-                InformationBorderColor = "Red";
-                UpdateMessage = "Service is currently unavailable";
-                await Task.Delay(1500);
-                UpdateMessage = string.Empty;
+                IncorrectUpdate("Service is currently unavailable", 1500);
             }
             catch (Exception ex)
             {
-                InformationBorderColor = "Red";
-                UpdateMessage = $"{ex.Message}";
-                await Task.Delay(1500);
-                UpdateMessage = string.Empty;
+                IncorrectUpdate($"{ex.Message}", 1500);
             }
+        }
+
+        public async void IncorrectUpdate(string message, int delay)
+        {
+            InformationBorderColor = "Red";
+            UpdateMessage = message;
+            await Task.Delay(delay);
+            UpdateMessage = string.Empty;
         }
 
         public async void SaveAndExit()
@@ -224,7 +204,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
-        public async void Back()
+        public void Back()
         {
             if (BackConfirmation)
             {
@@ -234,10 +214,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             {
                 if (!string.IsNullOrEmpty(UsernameUpdate) || !string.IsNullOrEmpty(EmailUpdate) || !string.IsNullOrEmpty(PasswordUpdate) || !string.IsNullOrEmpty(ConfirmPasswordUpdate))
                 {
-                    InformationBorderColor = "Red";
-                    UpdateMessage = $"You have unsaved changes! Press once again to dismiss this message.";
-                    await Task.Delay(1500);
-                    UpdateMessage = string.Empty;
+                    IncorrectUpdate("You have unsaved changes! Press once again to dismiss this message.", 1500);
 
                     BackConfirmation = true;
                 }
