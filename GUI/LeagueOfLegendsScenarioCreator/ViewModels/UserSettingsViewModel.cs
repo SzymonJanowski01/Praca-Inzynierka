@@ -19,19 +19,39 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public MainWindowViewModel? MainWindowContent { get; set; }
 
         [Reactive]
+        public string? UsernameUpdate { get; set; }
+
+        [Reactive]
+        public string? EmailUpdate { get; set; }
+
+        [Reactive]
+        public string? PasswordUpdate { get; set; }
+
+        [Reactive]
+        public string? ConfirmPasswordUpdate { get; set; }
+        
+        [Reactive]
+        public string? UpdateIncorrectData { get; set; }
+
+        [Reactive]
+        public bool IsButtonEnabled { get; set; }
+
+        [Reactive]
         public bool DeletionConfirmation { get; set; }
 
         [Reactive]
         public string? Password { get; set; }
+
         [Reactive]
         public string? DeletionIncorrectData { get; set; }
 
         [Reactive]
         public bool DeletionLock { get; set; }
 
+        public ReactiveCommand<Unit, Unit> UpdateCommand { get; private set; }
         public ReactiveCommand<string, Unit> ChangeVisibilityCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> DeleteAccountCommand { get; private set; }
-        public ReactiveCommand<Unit, Unit> CancelCommand { get; private set; }
+        public ReactiveCommand<Unit, Unit> BackCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
 
         public UserSettingsViewModel(MainWindowViewModel? mainWindowContent)
@@ -41,10 +61,74 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             DeletionIncorrectData = string.Empty;
             DeletionLock = false;
 
+            UpdateCommand = ReactiveCommand.Create(UpdateUser);
             ChangeVisibilityCommand = ReactiveCommand.Create<string>(ChangeConfirmationVisibility);
             DeleteAccountCommand = ReactiveCommand.Create(DeleteAccount);
-            CancelCommand = ReactiveCommand.Create(Cancel);
+            BackCommand = ReactiveCommand.Create(Back);
             LogoutCommand = ReactiveCommand.Create(Logout);
+        }
+
+        public async void UpdateUser()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(PasswordUpdate) && string.IsNullOrEmpty(ConfirmPasswordUpdate))
+                {
+                    if (string.IsNullOrEmpty(UsernameUpdate) && string.IsNullOrEmpty(EmailUpdate))
+                    {
+                        UpdateIncorrectData = "At least one setting must be changed!";
+                        await Task.Delay(1500);
+                        UpdateIncorrectData = string.Empty;
+                    }
+                    else
+                    {
+                        var user = await ServerConnection.UpdateUser(MainWindowContent!.User!.UserId!, UsernameUpdate, EmailUpdate, PasswordUpdate);
+                        MainWindowContent!.User = user;
+                        MainWindowContent!.User!.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
+                        MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(PasswordUpdate) && !string.IsNullOrEmpty(ConfirmPasswordUpdate))
+                {
+                    if (PasswordUpdate == ConfirmPasswordUpdate)
+                    {
+                        var user = await ServerConnection.UpdateUser(MainWindowContent!.User!.UserId!, UsernameUpdate, EmailUpdate, PasswordUpdate);
+                        MainWindowContent!.User = user;
+                        MainWindowContent!.User!.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
+                        MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+                    }
+                    else
+                    {
+                        UpdateIncorrectData = "Password fields do not match each other!";
+                        await Task.Delay(1500);
+                        UpdateIncorrectData = string.Empty;
+                    }
+                }
+                else
+                {
+                    UpdateIncorrectData = "When updating password both password and confirm password fields must be filled!";
+                    await Task.Delay(2000);
+                    UpdateIncorrectData = string.Empty;
+                }
+            }
+            catch (UserConflictException ex)
+            {
+                UpdateIncorrectData = $"{ex}";
+                await Task.Delay(1500);
+                UpdateIncorrectData = string.Empty;
+            }
+            catch (ServiceUnavailableException)
+            {
+                UpdateIncorrectData = "Service is currently unavailable";
+                await Task.Delay(1500);
+                UpdateIncorrectData = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                UpdateIncorrectData = $"{ex}";
+                await Task.Delay(1500);
+                UpdateIncorrectData = string.Empty;
+            }
         }
 
         public void ChangeConfirmationVisibility(string parameter)
@@ -90,7 +174,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
-        public void Cancel()
+        public void Back()
         {
             MainWindowContent!.ToScenarios();
         }

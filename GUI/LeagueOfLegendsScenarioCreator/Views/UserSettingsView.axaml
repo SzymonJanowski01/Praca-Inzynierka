@@ -7,7 +7,7 @@
         x:Class="LeagueOfLegendsScenarioCreator.Views.UserSettingsView"
 		x:DataType="vm:UserSettingsViewModel">
 
-	<Grid ColumnDefinitions="100, *, *, 100" RowDefinitions="50, 1, 90, *, 50" Margin ="8">
+	<Grid ColumnDefinitions="100, *, *, 100" RowDefinitions="50, 1, 90, *, 100" Margin ="8">
 		<!-- Top section -->
 		<TextBlock Text="Settings" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Left" FontSize="20" Grid.Row="0" Grid.Column="0" Margin="{Binding $parent.Margin}"/>
 
@@ -54,12 +54,12 @@
 				<Grid RowDefinitions="*, *, *" Margin="{Binding $parent.Margin}">	
 					<StackPanel Grid.Row="0">
 						<TextBlock Text="Username:"/>
-						<TextBox Watermark="Provide new username"/>
+						<TextBox Name="UsernameUpdateBox" Watermark="Provide new username" Text="{Binding UsernameUpdate}"/>
 						<TextBlock Text="Email:" Margin="0, 20, 0, 0"/>
-						<TextBox Watermark="Provide new email"/>
+						<TextBox Name="EmailUpdateBox" Watermark="Provide new email" Text="{Binding EmailUpdate}"/>
 						<TextBlock Text="Password:" Margin="0, 20, 0, 0"/>
-						<TextBox Watermark="Provide new password"/>
-						<TextBox Watermark="Repeat the password" Margin="0, 2, 0, 0"/>
+						<TextBox Name="PasswordUpdateBox" Watermark="Provide new password" Text="{Binding PasswordUpdate}"/>
+						<TextBox Name="ConfirmPasswordUpdateBox" Watermark="Repeat the password" Text="{Binding ConfirmPasswordUpdate}" Margin="0, 2, 0, 0"/>
 					</StackPanel>
 					<Button Grid.Row="1" Content="Delete account" Command="{Binding ChangeVisibilityCommand}" CommandParameter="t" Background="Red" Margin="0, 20, 0, 0"/>
 					<StackPanel Grid.Row="2" IsVisible="{Binding DeletionConfirmation}">
@@ -73,13 +73,13 @@
 									<MultiBinding Converter="{x:Static BoolConverters.And}">
 										<Binding Path="#ConfirmPassowrdBox.Text" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
 										<Binding Path="!DeletionLock" RelativeSource="{RelativeSource DataContext}"/>
-								</MultiBinding>
-							</Button.IsEnabled>
+									</MultiBinding>
+								</Button.IsEnabled>
 							</Button>
 							<Button Content="Cancel" Command="{Binding ChangeVisibilityCommand}" CommandParameter="f"/>
 						</WrapPanel>
 						<Border Margin="5" CornerRadius="5" HorizontalAlignment="Center" Background="Black" BorderBrush="Red" BorderThickness="3" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" IsVisible="{Binding DeletionIncorrectData, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-							<TextBlock Name="IncorrectDataBox" Text="{Binding DeletionIncorrectData}" TextWrapping="Wrap" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5 10 5"/>
+							<TextBlock Name="IncorrectDeleteDataBox" Text="{Binding DeletionIncorrectData}" TextWrapping="Wrap" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5 10 5"/>
 						</Border>
 					</StackPanel>
 				</Grid>
@@ -97,11 +97,16 @@
 		</Border>
 		
 		<!-- Bottom buttons -->
-		<WrapPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{Binding $parent.Margin}">
-			<Button Content="Save and Exit" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
-			<Button Content="Save" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
-			<Button Content="Cancel" Command="{Binding CancelCommand}" Background="Red" MinWidth="120" HorizontalContentAlignment="Center"/>
-		</WrapPanel>
+		<StackPanel  Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{Binding $parent.Margin}">
+			<Border Margin="5" CornerRadius="5" HorizontalAlignment="Center" Background="Black" BorderBrush="Red" BorderThickness="3" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" IsVisible="{Binding UpdateIncorrectData, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+				<TextBlock Name="IncorrectUpdateDataBox" Text="{Binding UpdateIncorrectData}" TextWrapping="Wrap" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5 10 5"/>
+			</Border>
+			<WrapPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+				<Button Content="Save and Exit" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
+				<Button Content="Save" Command="{Binding UpdateCommand}" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
+				<Button Content="Back" Command="{Binding BackCommand}" Background="Red" MinWidth="120" HorizontalContentAlignment="Center"/>
+			</WrapPanel>
+		</StackPanel>
 	</Grid>
 
 </UserControl>

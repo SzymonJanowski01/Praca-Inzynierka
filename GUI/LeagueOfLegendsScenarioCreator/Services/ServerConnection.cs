@@ -117,7 +117,13 @@ namespace LeagueOfLegendsScenarioCreator.Services
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
                 {
-                    return null;
+                    var jsonErrorResponse = await response.Content.ReadAsStringAsync();
+                    var errorDetail = JsonDocument.Parse(jsonErrorResponse).RootElement.GetProperty("detail");
+                    throw new UserConflictException($"{errorDetail}");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    throw new ServiceUnavailableException();
                 }
                 else
                 {
