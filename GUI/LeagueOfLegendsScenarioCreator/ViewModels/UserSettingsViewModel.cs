@@ -49,6 +49,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public bool DeletionLock { get; set; }
 
         public ReactiveCommand<Unit, Unit> UpdateCommand { get; private set; }
+        public ReactiveCommand<Unit, Unit> SaveAndExitCommand { get; private set; }
         public ReactiveCommand<string, Unit> ChangeVisibilityCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> DeleteAccountCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> BackCommand { get; private set; }
@@ -62,6 +63,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             DeletionLock = false;
 
             UpdateCommand = ReactiveCommand.Create(UpdateUser);
+            SaveAndExitCommand = ReactiveCommand.Create(SaveAndExit);
             ChangeVisibilityCommand = ReactiveCommand.Create<string>(ChangeConfirmationVisibility);
             DeleteAccountCommand = ReactiveCommand.Create(DeleteAccount);
             BackCommand = ReactiveCommand.Create(Back);
@@ -129,6 +131,12 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                 await Task.Delay(1500);
                 UpdateIncorrectData = string.Empty;
             }
+        }
+
+        public void SaveAndExit()
+        {
+            UpdateUser();
+            Back();
         }
 
         public void ChangeConfirmationVisibility(string parameter)

@@ -102,8 +102,8 @@
 				<TextBlock Name="IncorrectUpdateDataBox" Text="{Binding UpdateIncorrectData}" TextWrapping="Wrap" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5 10 5"/>
 			</Border>
 			<WrapPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-				<Button Content="Save and Exit" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
-				<Button Content="Save" Command="{Binding UpdateCommand}" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
+				<Button Content="Save and Exit" Command="{Binding SaveAndExitCommand}" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
+				<Button Content="Save" Command="{Binding UpdateCommand}" Background="Green" MinWidth="120" HorizontalContentAlignment="Center" IsDefault="True"/>
 				<Button Content="Back" Command="{Binding BackCommand}" Background="Red" MinWidth="120" HorizontalContentAlignment="Center"/>
 			</WrapPanel>
 		</StackPanel>
