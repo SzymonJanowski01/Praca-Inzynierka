@@ -24,25 +24,32 @@
 		<GridSplitter Grid.ColumnSpan="7" Grid.Row="1" Background="Gray" VerticalAlignment="Top" Margin="{Binding $parent.Margin}"/>
 
 		<!-- Champions section -->
-		<Grid ColumnDefinitions="*, *" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="2"  Margin="{Binding $parent.Margin}">
-			<ItemsControl Grid.Column="0" Background="Transparent" Items="{Binding MainWindowContent.Scenario.Phases}"  Margin="{Binding $parent.Margin}">
+		<Grid ColumnDefinitions="*, 50, *" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="2" Margin="{Binding $parent.Margin}">
+			<ItemsControl Grid.Column="0" Background="Transparent" Items="{Binding BluePhases}" Margin="{Binding $parent.Margin}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Grid ColumnDefinitions="*, *" RowDefinitions="*, *">
-							<TextBlock Text="{Binding FirstAlternativeCharacter}" MinHeight="25" Grid.Column="0" Grid.Row="0" Margin="{Binding $parent.Margin}"/>
-							<TextBlock Text="{Binding SecondAlternativeCharacter}" MinHeight="25" Grid.Column="0" Grid.Row="1" Margin="{Binding $parent.Margin}"/>
-							<TextBlock Text="{Binding MainCharacter}" MinHeight="50" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="{Binding $parent.Margin}"/>
+						<Grid ColumnDefinitions="100, 100, *">
+							<Image Margin="{Binding $parent.Margin}" Height="100" Width="100" Grid.Column="0" Stretch="Uniform" Source="{Binding SecAltCImage}"/>
+							<Image Margin="{Binding $parent.Margin}" Height="100" Width="100" Grid.Column="1" Stretch="Uniform" Source="{Binding FirstAltCImage}"/>
+							<Image Margin="{Binding $parent.Margin}" Height="100" Width="400" Grid.Column="2" Stretch="Uniform" Source="{Binding MCImage}"/>
 						</Grid>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
-			<ItemsControl Grid.Column="1" Background="Transparent" Items="{Binding MainWindowContent.Scenario.Phases}"  Margin="{Binding $parent.Margin}">
+			<Grid Grid.Column="1" RowDefinitions="100, 100, 100, 100, 100" Margin="{Binding $parent.Margin}>">
+				<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="50" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
+				<Image Grid.Row="1" Margin="{Binding $parent.Margin}" Height="50" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-jungle.png"/>
+				<Image Grid.Row="2" Margin="{Binding $parent.Margin}" Height="50" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-middle.png"/>
+				<Image Grid.Row="3" Margin="{Binding $parent.Margin}" Height="50" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-bottom.png"/>
+				<Image Grid.Row="4" Margin="{Binding $parent.Margin}" Height="50" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-utility.png"/>
+			</Grid>
+			<ItemsControl Grid.Column="2" Background="Transparent" Items="{Binding RedPhases}" Margin="{Binding $parent.Margin}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Grid ColumnDefinitions="*, *" RowDefinitions="*, *">
-							<TextBlock Text="{Binding MainCharacter}" MinHeight="50" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="{Binding $parent.Margin}"/>
-							<TextBlock Text="{Binding FirstAlternativeCharacter}" MinHeight="25" Grid.Column="0" Grid.Row="0" Margin="{Binding $parent.Margin}"/>
-							<TextBlock Text="{Binding SecondAlternativeCharacter}" MinHeight="25" Grid.Column="0" Grid.Row="1" Margin="{Binding $parent.Margin}"/>
+						<Grid ColumnDefinitions="*, 100, 100">
+							<Image Margin="{Binding $parent.Margin}" Height="100" Width="400" Grid.Column="0" Stretch="Uniform" Source="{Binding MCImage}"/>
+							<Image Margin="{Binding $parent.Margin}" Height="100" Width="100" Grid.Column="1" Stretch="Uniform" Source="{Binding FirstAltCImage}"/>
+							<Image Margin="{Binding $parent.Margin}" Height="100" Width="100" Grid.Column="2" Stretch="Uniform" Source="{Binding SecAltCImage}"/>
 						</Grid>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
