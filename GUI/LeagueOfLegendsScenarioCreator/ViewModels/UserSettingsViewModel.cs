@@ -29,6 +29,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         [Reactive]
         public string? ConfirmPasswordUpdate { get; set; }
+
+        [Reactive]
+        public int ScenariosNumbers { get; set; }
         
         [Reactive]
         public string? UpdateMessage { get; set; }
@@ -64,6 +67,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public UserSettingsViewModel(MainWindowViewModel? mainWindowContent)
         {
             MainWindowContent = mainWindowContent;
+            ScenariosNumbers = MainWindowContent!.User!.ScenariosNames!.Count;
             InformationBorderColor = "Red";
             DeletionConfirmation = false;
             DeletionIncorrectData = string.Empty;
@@ -104,7 +108,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
             else
             {
-                IncorrectUpdate("When updating password both password and confirm password fields must be filled!", 2000);
+                IncorrectUpdate("When updating password both password and confirm password fields must be filled!", 2500);
             } 
         }
 

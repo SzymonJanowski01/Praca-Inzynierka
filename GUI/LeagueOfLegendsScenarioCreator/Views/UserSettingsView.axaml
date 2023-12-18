@@ -47,8 +47,25 @@
 			</StackPanel>
 		</Border>
 		
-		<!-- User settings -->
+		<!-- User informations -->
 		<Border Grid.Column="1" Grid.Row="3" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="{Binding $parent.Margin}">
+			<StackPanel Margin="{Binding $parent.Margin}">
+				<TextBlock Text="Your account" HorizontalAlignment="Center"/>
+				<Grid RowDefinitions="*, *, *" Margin="{Binding $parent.Margin}">	
+					<StackPanel Grid.Row="0">
+						<TextBlock Text="Current username:"/>
+						<TextBlock Text="{Binding MainWindowContent.User.Username}"/>
+						<TextBlock Text="Current email:" Margin="0, 20, 0, 0"/>
+						<TextBlock Text="{Binding MainWindowContent.User.Email}"/>
+						<TextBlock Text="Scenarios number:" Margin="0, 20, 0, 0"/>
+						<TextBlock Text="{Binding ScenariosNumbers}"/>
+					</StackPanel>
+				</Grid>
+			</StackPanel>
+		</Border>
+		
+		<!-- User settings -->
+		<Border Grid.Column="2" Grid.Row="3" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="{Binding $parent.Margin}">
 			<StackPanel Margin="{Binding $parent.Margin}">
 				<TextBlock Text="User settings" HorizontalAlignment="Center"/>
 				<Grid RowDefinitions="*, *, *" Margin="{Binding $parent.Margin}">	
@@ -82,16 +99,6 @@
 							<TextBlock Name="IncorrectDeleteDataBox" Text="{Binding DeletionIncorrectData}" TextWrapping="Wrap" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10 5 10 5"/>
 						</Border>
 					</StackPanel>
-				</Grid>
-			</StackPanel>
-		</Border>
-		
-		<!-- Scenarios settings -->
-		<Border Grid.Column="2" Grid.Row="3" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="{Binding $parent.Margin}">
-			<StackPanel Margin="{Binding $parent.Margin}">
-				<TextBlock Text="Scenarios settings" HorizontalAlignment="Center"/>
-				<Grid Margin="{Binding $parent.Margin}">
-					<Button Grid.Row="0" Content="Delete all scenarios" VerticalAlignment="Top" Background="Red" Margin="{Binding $parent.Margin}"/>				
 				</Grid>
 			</StackPanel>
 		</Border>
