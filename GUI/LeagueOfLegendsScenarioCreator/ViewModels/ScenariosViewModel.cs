@@ -34,19 +34,12 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public bool ScenarioCreationLock { get; set; }
 
         public ReactiveCommand<Unit, Unit> AddScenarioCommand { get; private set; }
-
         public ReactiveCommand<string, Unit> ChangePageCommand { get; private set; }
-
         public ReactiveCommand<Unit, Unit> OpenScenarioPresenterCommand { get; private set; }
-
         public ReactiveCommand<Unit, Unit> OpenScenarioEditorCommand { get; private set; }
-
         public ReactiveCommand<Unit, Unit> DeleteScenarioCommand { get; private set; }
-
         public ReactiveCommand<Unit, Unit> UserSettingsCommand { get; private set; }
-
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
-
 
         public ScenariosViewModel(MainWindowViewModel? mainWindowContent)
         {
