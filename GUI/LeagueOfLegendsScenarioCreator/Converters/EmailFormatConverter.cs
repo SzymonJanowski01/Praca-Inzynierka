@@ -12,7 +12,7 @@ namespace LeagueOfLegendsScenarioCreator.Converters
 {
     public class EmailFormatConverter : IValueConverter
     {
-        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is string email)
             {
@@ -27,7 +27,7 @@ namespace LeagueOfLegendsScenarioCreator.Converters
             return true;
         }
 
-        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             return true;
         }
