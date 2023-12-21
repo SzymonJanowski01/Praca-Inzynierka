@@ -292,7 +292,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
 
                 var jsonPhase = new
                 {
-                    phase_number = phaseNumber,
+                    phase_index = phaseNumber,
                     attributes
                 };
 
