@@ -60,29 +60,28 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                 }
                 else if (id == "Unauthorized")
                 {
-                    await Task.Delay(1500);
-                    LoginIncorrectData = "Wrong password!";
-                    LoginLock = false;
+                    IncorrectData(1500, "Wrong password!");
                 }
                 else
                 {
-                    await Task.Delay(1500);
-                    LoginIncorrectData = "User with provided username/email does not exist";
-                    LoginLock = false;
+                    IncorrectData(1500, "User with provided username/email does not exist");
                 }
             }
             catch (ServiceUnavailableException)
             {
-                await Task.Delay(1500);
-                LoginIncorrectData = "Service unavaible";
-                LoginLock = false;
+                IncorrectData(1500, "Service unavaible");
             }
             catch (Exception ex)
             {
-                await Task.Delay(1500);
-                LoginIncorrectData = $"{ex.Message}";
-                LoginLock = false;
+                IncorrectData(1500, $"{ex.Message}");
             }
+        }
+
+        public async void IncorrectData(int delay, string message)
+        {
+            await Task.Delay(delay);
+            LoginIncorrectData = message;
+            LoginLock = false;
         }
     }
 }

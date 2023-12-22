@@ -41,6 +41,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             RegisterLock = false;
         }
 
+        // TODO: Code repetition
         private async void Register()
         {
             RegisterIncorrectData = string.Empty;
@@ -59,23 +60,24 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
             catch (ServiceUnavailableException) 
             {
-                await Task.Delay(1500);
-                RegisterIncorrectData = "Service unavaible";
-                RegisterLock = false;
+                IncorrectData(1500, "Service unavaible");
             }
             catch (UserConflictException)
             {
-                await Task.Delay(1500);
-                RegisterIncorrectData = "E-mail or username already taken!";
-                RegisterLock = false;
+                IncorrectData(1500, "E-mail or username already taken!");
             }
             catch (Exception ex) 
             {
-                await Task.Delay(1500);
-                RegisterIncorrectData = $"{ex.Message}";
-                RegisterLock = false;
+                IncorrectData(1500, $"{ex.Message}");
             }
             
+        }
+
+        public async void IncorrectData(int delay, string message)
+        {
+            await Task.Delay(delay);
+            RegisterIncorrectData = message;
+            RegisterLock = false;
         }
     }
 }
