@@ -44,9 +44,10 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         {
             IEnumerable<Phase> selectedPhases = firstFive ? MainWindowContent!.Scenario!.Phases!.Take(5) : MainWindowContent!.Scenario!.Phases!.Skip(5);
 
-            return selectedPhases.Select(phase => new PhaseProjector(phase!.MainCharacter!, phase!.FirstAlternaticeCharacter!, phase!.SecondAlternaticeCharacter!));
+            return selectedPhases.Select(phase => new PhaseProjector(new Image("Splashes", phase!.MainCharacter!, "jpg"),
+                                                                     new Image("Icons", phase!.FirstAlternaticeCharacter!, "png"),
+                                                                     new Image("Icons", phase!.SecondAlternaticeCharacter!, "png")));
         }
-
         public async void Back()
         {
             MainWindowContent!.Scenario = null;
