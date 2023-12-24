@@ -41,7 +41,6 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             RegisterLock = false;
         }
 
-        // TODO: Code repetition
         private async void Register()
         {
             RegisterIncorrectData = string.Empty;
