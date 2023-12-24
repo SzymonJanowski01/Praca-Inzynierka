@@ -5,6 +5,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 
@@ -104,14 +105,15 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             MainWindowContent!.ToScenarioEditor();
         }
 
+        // TODO: exception handling and empty list handling
         public async void DeleteScenario()
         {
             try
             {
                 await ServerConnection.DeleteScenario(SelectedItem!.ScenarioId!);
 
-                MainWindowContent!.User!.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
-                MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+                MainWindowContent!.User!.ScenariosNames!.Remove(SelectedItem!.ScenarioName!);
+                MainWindowContent!.User!.Scenarios!.Remove(SelectedItem!);
 
                 MainWindowContent!.ToScenarios();
             }
