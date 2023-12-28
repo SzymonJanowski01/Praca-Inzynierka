@@ -1,7 +1,7 @@
 from typing import Optional
 
 
-def convert_to_optional(schema):
+def convert_to_optional(schema) -> dict:
     return {i: Optional[j] for i, j in schema.__annotations__.items()}
 
 

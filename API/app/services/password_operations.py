@@ -29,7 +29,7 @@ def password_hashing(password: str) -> Dict[str, bytes]:
     return password_data
 
 
-def password_check(password: str, key: bytes, salt: bytes):
+def password_check(password: str, key: bytes, salt: bytes) -> bool:
     """
     Function for checking whether one password matches the second one. The function uses correct salt to encrypt newly
     provided password. If the password encrypted this way matches the provided encrypted password, then both passwords
