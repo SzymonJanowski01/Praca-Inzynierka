@@ -30,9 +30,9 @@ namespace LeagueOfLegendsScenarioCreator.Models
     {
         public PhaseProjector(Image image1, Image image2, Image image3)
         {
-            MCImage = LoadImage(image1.Localisation, image1.Name, image1.Extension);
-            FirstAltCImage = LoadImage(image2.Localisation, image2.Name, image2.Extension);
-            SecAltCImage = LoadImage(image3.Localisation, image3.Name, image3.Extension);
+            MCImage = ImageLoader.LoadImage(image1.Localisation, image1.Name, image1.Extension);
+            FirstAltCImage = ImageLoader.LoadImage(image2.Localisation, image2.Name, image2.Extension);
+            SecAltCImage = ImageLoader.LoadImage(image3.Localisation, image3.Name, image3.Extension);
         }
 
         [Reactive]
@@ -44,12 +44,5 @@ namespace LeagueOfLegendsScenarioCreator.Models
         [Reactive]
         public Bitmap? SecAltCImage { get; set; }
 
-        private static Bitmap LoadImage(string type, string name, string extension)
-        {
-            var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-            string uri = $"avares://LeagueOfLegendsScenarioCreator/Assets/Champions-{type}/{name}.{extension}";
-
-            return new(assets?.Open(new Uri(uri)));
-        }
     }
 }
