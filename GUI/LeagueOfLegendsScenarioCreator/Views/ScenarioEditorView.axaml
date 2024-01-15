@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:LeagueOfLegendsScenarioCreator.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="LeagueOfLegendsScenarioCreator.Views.ScenarioEditorView">
-	<Grid ColumnDefinitions="100, *, *, *, 100" RowDefinitions="50, 1, *, 50" Margin ="8">
+	<Grid ColumnDefinitions="100, *, *, *, 100" RowDefinitions="50, 1, *, auto, 75" Margin="8">
 
 		<!-- Top section -->
 		<TextBlock Text="{Binding MainWindowContent.Scenario.ScenarioName}" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Left" FontSize="20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="{Binding $parent.Margin}"/>
@@ -22,9 +23,75 @@
 		<TextBlock Text="" VerticalAlignment="Top" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Margin="{Binding $parent.Margin}"/>
 
 		<GridSplitter Grid.ColumnSpan="7" Grid.Row="1" Background="Gray" VerticalAlignment="Top" Margin="{Binding $parent.Margin}"/>
-		
+
+		<!-- Blue team champions -->
+		<Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"  ColumnDefinitions="250, *, 250" Margin="{Binding $parent.Margin}">
+			<ItemsControl Grid.Column="0" Background="Transparent" Items="{Binding BluePhases}" Margin="{Binding $parent.Margin}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Grid ColumnDefinitions="75, 75, 75" Margin="{Binding $parent.Margin}">
+							<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="0" Stretch="Uniform" Source="{Binding SecAltCImage}"/>
+							<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="1" Stretch="Uniform" Source="{Binding FirstAltCImage}"/>
+							<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="2" Stretch="Uniform" Source="{Binding MCImage}"/>
+						</Grid>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+		<!-- All champions to pick-->	
+			<Grid Column="1" RowDefinitions="25, *" Margin="{Binding $parent.Margin}">
+				<WrapPanel Margin="{Binding $parent.Margin}" VerticalAlignment="Center" HorizontalAlignment="Center">
+					<TextBox Watermark="Search for champion:" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="{Binding $parent.Margin}"/>
+					<Button Content="Search" MinHeight="30" MinWidth="70" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="{Binding $parent.Margin}"/>
+				</WrapPanel>
+				<ScrollViewer Grid.Row="1" Margin="{Binding $parent.Margin}">
+					
+					<ItemsControl Background="Transparent" Items="{Binding RequestedChampions}" Margin="{Binding $parent.Margin}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Width="600" Height="2000" Columns="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{Binding $parent.Margin}">
+								</UniformGrid>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Stretch="Uniform" Source="{Binding ChampionImage}"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Grid>
+
+		<!-- Red team champions -->	
+			<ItemsControl Grid.Column="2" Background="Transparent" Items="{Binding RedPhases}" Margin="{Binding $parent.Margin}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Grid ColumnDefinitions="75, 75, 75" Margin="{Binding $parent.Margin}">
+							<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="0" Stretch="Uniform" Source="{Binding MCImage}"/>
+							<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="1" Stretch="Uniform" Source="{Binding FirstAltCImage}"/>
+							<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="2" Stretch="Uniform" Source="{Binding SecAltCImage}"/>
+						</Grid>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</Grid>
+
+		<!-- Regional suggestions -->
+		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" ColumnDefinitions="*, *, *, *" RowDefinitions="40, 40, 40, 40, 40">
+			<Border Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" BorderBrush="Gray" BorderThickness="1" CornerRadius="4">
+				<StackPanel Margin="{Binding $parent.Margin}">
+					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
+					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
+					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
+					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
+					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
+				</StackPanel>
+			</Border>
+		</Grid>
+
 		<!-- Bottom button section-->
-		<WrapPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="{Binding $parent.Margin}">
+		<WrapPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="{Binding $parent.Margin}">
 			<Button Content="Save and Exit" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
 			<Button Content="Save" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
 			<Button Content="Cancel" Command="{Binding CancelCommand}" Background="Red" MinWidth="120" HorizontalContentAlignment="Center"/>
