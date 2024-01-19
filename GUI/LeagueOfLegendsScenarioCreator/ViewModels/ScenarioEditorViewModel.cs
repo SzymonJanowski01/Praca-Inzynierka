@@ -7,6 +7,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -22,6 +23,12 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public MainWindowViewModel? MainWindowContent { get; set; }
 
         [Reactive]
+        public int? UniformGridHeight { get; set; }
+
+        [Reactive]
+        public string? Filter { get; set; }
+
+        [Reactive]
         public ObservableCollection<ImageLoader> RequestedChampions { get; set; }
 
         [Reactive]
@@ -30,8 +37,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         [Reactive]
         public ObservableCollection<PhaseProjector> RedPhases { get; set; }
 
+        [Reactive]
+        public Bitmap? SelectedImage { get; set; }
 
 
+        public ReactiveCommand<Bitmap, Unit> SelectChampionImageCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> CancelCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> UserSettingsCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
@@ -39,11 +49,15 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public ScenarioEditorViewModel(MainWindowViewModel? mainViewModel)
         {
             MainWindowContent = mainViewModel;
+            SelectedImage = null;
+            Filter = string.Empty;
+            UniformGridHeight = 72 * 28;
 
             BluePhases = new ObservableCollection<PhaseProjector>(MatchChampionsNames(true));
             RedPhases = new ObservableCollection<PhaseProjector>(MatchChampionsNames(false));
             RequestedChampions = new ObservableCollection<ImageLoader>(GetChampionsImages()!);
 
+            SelectChampionImageCommand = ReactiveCommand.Create<Bitmap>(SelectChampionImage);
             CancelCommand = ReactiveCommand.Create(Cancel);
             UserSettingsCommand = ReactiveCommand.Create(UserSettings);
             LogoutCommand = ReactiveCommand.Create(Logout);
@@ -60,7 +74,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         }
 
 
-        public ObservableCollection<ImageLoader?> GetChampionsImages(string? filter = null)
+        public ObservableCollection<ImageLoader?> GetChampionsImages()
         {
             var championsImages = new ObservableCollection<ImageLoader>();
 
@@ -113,15 +127,28 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
             foreach (var championName in championsNames)
             {
-                if(!string.IsNullOrEmpty(filter) && !championName.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                if(!string.IsNullOrEmpty(Filter) && !championName.Contains(Filter, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
 
-                championsImages.Add(new(championName));
+                championsImages.Add(new ImageLoader(championName));
             }
 
             return championsImages!;
+        }
+
+        public void SearchChampion()
+        {
+            RequestedChampions = new ObservableCollection<ImageLoader>(GetChampionsImages()!);
+            UniformGridHeight = 72 * (RequestedChampions.Count / 6);
+        }
+
+        public void SelectChampionImage(Bitmap image)
+        {
+            SelectedImage = image;
+            Debug.WriteLine(SelectedImage);
+            Debug.WriteLine("Im here");
         }
 
         public async void Cancel()
