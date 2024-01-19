@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ReactiveUI.Fody.Helpers;
 using ReactiveUI;
+using System.Diagnostics;
 
 namespace LeagueOfLegendsScenarioCreator.Models
 {
@@ -16,9 +17,13 @@ namespace LeagueOfLegendsScenarioCreator.Models
         [Reactive]
         public Bitmap? ChampionImage { get; set; }
 
+        [Reactive]
+        public string? Name { get; set; }
+
         public ImageLoader(string name)
         {
             ChampionImage = LoadImage("Icons", name, "png");
+            Name = name;
         }
 
         public static Bitmap LoadImage(string type, string name, string extension)
