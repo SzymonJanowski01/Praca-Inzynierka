@@ -28,11 +28,12 @@ namespace LeagueOfLegendsScenarioCreator.Models
 
     public class PhaseProjector : ReactiveObject
     {
-        public PhaseProjector(Image image1, Image image2, Image image3)
+        public PhaseProjector(Image image1, Image image2, Image image3, string phaseName)
         {
             MCImage = ImageLoader.LoadImage(image1.Localisation, image1.Name, image1.Extension);
             FirstAltCImage = ImageLoader.LoadImage(image2.Localisation, image2.Name, image2.Extension);
             SecAltCImage = ImageLoader.LoadImage(image3.Localisation, image3.Name, image3.Extension);
+            PhaseName = phaseName;
         }
 
         [Reactive]
@@ -43,6 +44,9 @@ namespace LeagueOfLegendsScenarioCreator.Models
 
         [Reactive]
         public Bitmap? SecAltCImage { get; set; }
+
+        [Reactive]
+        public string PhaseName { get; set; }
 
     }
 }
