@@ -30,17 +30,14 @@
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<Grid ColumnDefinitions="75, 75, 75" Margin="{Binding $parent.Margin}">
-							<Button Height="75" Width="75" Grid.Column="0">
-							<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="0" Stretch="Uniform" Source="{Binding SecAltCImage}"/>
-								
+							<Button Height="75" Width="75" Grid.Column="0" Command="{Binding $parent[ItemsControl].DataContext.SelectSACommand}" CommandParameter="{Binding}">
+								<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="0" Stretch="Uniform" Source="{Binding SecAltCImage}"/>
 							</Button>
-							<Button Height="75" Width="75" Grid.Column="1">
-							<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="1" Stretch="Uniform" Source="{Binding FirstAltCImage}"/>
-
+							<Button Height="75" Width="75" Grid.Column="1" Command="{Binding $parent[ItemsControl].DataContext.SelectFACommand}" CommandParameter="{Binding}">
+								<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="1" Stretch="Uniform" Source="{Binding FirstAltCImage}"/>
 							</Button>
-							<Button Height="75" Width="75" Grid.Column="2">
-							<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="2" Stretch="Uniform" Source="{Binding MCImage}"/>
-
+							<Button Height="75" Width="75" Grid.Column="2" Command="{Binding $parent[ItemsControl].DataContext.SelectMCCommand}" CommandParameter="{Binding}">
+								<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="2" Stretch="Uniform" Source="{Binding MCImage}"/>
 							</Button>
 						</Grid>
 					</DataTemplate>
@@ -51,7 +48,7 @@
 			<Grid Column="1" RowDefinitions="25, *" Margin="{Binding $parent.Margin}">
 				<WrapPanel Margin="{Binding $parent.Margin}" VerticalAlignment="Center" HorizontalAlignment="Center">
 					<TextBox Text="{Binding Filter}" Watermark="Search for champion:" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="{Binding $parent.Margin}"/>
-					<Button Content="Search" MinHeight="30" MinWidth="70" Command="{Binding SearchChampion}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="{Binding $parent.Margin}"/>
+					<Button Content="Search" MinHeight="30" MinWidth="70" Command="{Binding SearchChampion}" IsDefault="True" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="{Binding $parent.Margin}"/>
 				</WrapPanel>
 				<ScrollViewer Grid.Row="1" Margin="{Binding $parent.Margin}">		
 					<ItemsControl Background="Transparent" Items="{Binding RequestedChampions}" Margin="{Binding $parent.Margin}">
@@ -63,7 +60,7 @@
 						
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Button Height="75" Width="75" Command="{Binding $parent[Grid].DataContext.SelectChampionImageCommand}" CommandParameter="{Binding ChampionImage}">
+								<Button Height="75" Width="75" Command="{Binding $parent[Grid].DataContext.SelectChampionImageCommand}" CommandParameter="{Binding}">
 									<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Stretch="Uniform" Source="{Binding ChampionImage}"/>
 								</Button>
 							</DataTemplate>
@@ -77,16 +74,16 @@
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<Grid ColumnDefinitions="75, 75, 75" Margin="{Binding $parent.Margin}">
-							<Button Height="75" Width="75" Grid.Column="0">
+							<Button Height="75" Width="75" Grid.Column="0" Command="{Binding $parent[ItemsControl].DataContext.SelectMCCommand}" CommandParameter="{Binding}">
 								<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="0" Stretch="Uniform" Source="{Binding MCImage}"/>
 							</Button>
-							<Button Height="75" Width="75" Grid.Column="1">
+							<Button Height="75" Width="75" Grid.Column="1" Command="{Binding $parent[ItemsControl].DataContext.SelectFACommand}" CommandParameter="{Binding}">
 								<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="1" Stretch="Uniform" Source="{Binding FirstAltCImage}"/>
 							</Button>
-							<Button Height="75" Width="75" Grid.Column="2">
+							<Button Height="75" Width="75" Grid.Column="2" Command="{Binding $parent[ItemsControl].DataContext.SelectSACommand}" CommandParameter="{Binding}">
 								<Image Margin="{Binding $parent.Margin}" Height="75" Width="75" Grid.Column="2" Stretch="Uniform" Source="{Binding SecAltCImage}"/>
 							</Button>
-							</Grid>
+						</Grid>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
