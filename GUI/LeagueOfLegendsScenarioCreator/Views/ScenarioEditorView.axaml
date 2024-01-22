@@ -104,9 +104,9 @@
 
 		<!-- Bottom button section-->
 		<WrapPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="{Binding $parent.Margin}">
-			<Button Content="Save and Exit" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
-			<Button Content="Save" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
-			<Button Content="Cancel" Command="{Binding CancelCommand}" Background="Red" MinWidth="120" HorizontalContentAlignment="Center"/>
+			<Button Content="Save and Exit" Command="{Binding SaveAndExitCommand}" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
+			<Button Content="Save" Command="{Binding SaveCommand}" Background="Green" MinWidth="120" HorizontalContentAlignment="Center"/>
+			<Button Content="Cancel" Command="{Binding ExitCommand}" Background="Red" MinWidth="120" HorizontalContentAlignment="Center"/>
 		</WrapPanel>
 	</Grid>
 </UserControl>

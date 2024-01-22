@@ -273,37 +273,119 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return phasesIds!;
         }
 
-        public static async Task<bool?> UpdateScenarioPhases (string scenarioId, List<Phase> phases)
+        public static async Task<bool?> UpdateScenarioPhases (string scenarioId, Dictionary<int, string> phases)
         {
             List<object> jsonPhases = new();
+            List<int> indexesUsed = new();
+
+            var attributes = new Dictionary<string, string?>();
+            var storedPhaseIndex = 0;
 
             foreach (var phase in phases)
             {
-                var attributes = new Dictionary<string, string?>
+                int phaseNumber = (int)Math.Ceiling((double)phase.Key / 3) - 1;
+
+                if (indexesUsed.Count == 0)
                 {
-                    { "main_character", string.IsNullOrEmpty(phase.MainCharacter) ? null : phase.MainCharacter },
-                    { "first_alternative_character", string.IsNullOrEmpty(phase.FirstAlternaticeCharacter) ? null : phase.FirstAlternaticeCharacter},
-                    { "second_alternative_character", string.IsNullOrEmpty(phase.SecondAlternaticeCharacter) ? null : phase.SecondAlternaticeCharacter}
-                };
+                    indexesUsed.Add(phaseNumber);
 
-                int phaseNumber = phase.PhaseName!.StartsWith("B") 
-                    ? int.Parse(phase.PhaseName[1..]) - 1
-                    : int.Parse(phase.PhaseName[1..]) + 4;
+                    switch (phase.Key % 3)
+                    {
+                        case 0:
+                            attributes.Add("second_alternative_character", phase.Value);
+                            break;
+                        case 1:
+                            attributes.Add("main_character", phase.Value);
+                            break;
+                        case 2:
+                            attributes.Add("first_alternative_character", phase.Value);
+                            break;
+                    }
 
-                var jsonPhase = new
+                    if (phase.Key == phases.Keys.Last())
+                    {
+                        var jsonPhase = new
+                        {
+                            phase_index = phaseNumber,
+                            attributes
+                        };
+
+                        jsonPhases.Add(jsonPhase);
+                    }
+
+                    storedPhaseIndex = phaseNumber;
+                }
+                else if (indexesUsed.Contains(phaseNumber))
                 {
-                    phase_index = phaseNumber,
-                    attributes
-                };
+                    switch (phase.Key % 3)
+                    {
+                        case 0:
+                            attributes.Add("second_alternative_character", phase.Value);
+                            break;
+                        case 1:
+                            attributes.Add("main_character", phase.Value);
+                            break;
+                        case 2:
+                            attributes.Add("first_alternative_character", phase.Value);
+                            break;
+                    }
 
-                jsonPhases.Add(jsonPhase);
+                    if (phase.Key == phases.Keys.Last())
+                    {
+                        var jsonPhase = new
+                        {
+                            phase_index = storedPhaseIndex,
+                            attributes
+                        };
+
+                        jsonPhases.Add(jsonPhase);
+                    }
+                }
+                else
+                {
+                    var jsonPhase = new
+                    {
+                        phase_index = storedPhaseIndex,
+                        attributes
+                    };
+
+                    jsonPhases.Add(jsonPhase);
+
+                    attributes = new Dictionary<string, string?>();
+                    indexesUsed.Add(phaseNumber);
+
+                    switch (phase.Key % 3)
+                    {
+                        case 0:
+                            attributes.Add("second_alternative_character", phase.Value);
+                            break;
+                        case 1:
+                            attributes.Add("main_character", phase.Value);
+                            break;
+                        case 2:
+                            attributes.Add("first_alternative_character", phase.Value);
+                            break;
+                    }
+
+                    storedPhaseIndex = phaseNumber;
+
+                    if (phase.Key == phases.Keys.Last())
+                    {
+                        var jsonPhaseNew = new
+                        {
+                            phase_index = storedPhaseIndex,
+                            attributes
+                        };
+
+                        jsonPhases.Add(jsonPhaseNew);
+                    }
+                }
             }
 
             using StringContent json = new(
-                JsonSerializer.Serialize(new
-                {
-                    jsonPhases
-                }), Encoding.UTF8, "application/json");
+                JsonSerializer.Serialize(jsonPhases),
+                Encoding.UTF8,
+                "application/json");
 
             using HttpResponseMessage response = await sharedClient.PutAsync($"/api/phase/update-scenario-phases/{scenarioId}", json);
             

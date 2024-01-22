@@ -54,7 +54,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public ReactiveCommand<PhaseProjector, Unit> SelectMCCommand { get; private set; }
         public ReactiveCommand<PhaseProjector, Unit> SelectFACommand { get; private set; }
         public ReactiveCommand<PhaseProjector, Unit> SelectSACommand { get; private set; }
-        public ReactiveCommand<Unit, Unit> CancelCommand { get; private set; }
+        public ReactiveCommand<Unit, Unit> SaveCommand { get; private set; }
+        public ReactiveCommand<Unit, Unit> SaveAndExitCommand { get; private set; }
+        public ReactiveCommand<Unit, Unit> ExitCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> UserSettingsCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; private set; }
 
@@ -76,7 +78,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             SelectMCCommand = ReactiveCommand.Create<PhaseProjector>(SelectMC);
             SelectFACommand = ReactiveCommand.Create<PhaseProjector>(SelectFA);
             SelectSACommand = ReactiveCommand.Create<PhaseProjector>(SelectSA);
-            CancelCommand = ReactiveCommand.Create(Cancel);
+            SaveCommand = ReactiveCommand.Create(Save);
+            SaveAndExitCommand = ReactiveCommand.Create(SaveAndExit);
+            ExitCommand = ReactiveCommand.Create(Exit);
             UserSettingsCommand = ReactiveCommand.Create(UserSettings);
             LogoutCommand = ReactiveCommand.Create(Logout);
 
@@ -277,12 +281,86 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
-        public async void Cancel()
+        public async void Save()
         {
-            MainWindowContent!.Scenario = null;
-            MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+            if (NewPhaseChampions!.Count == 0)
+            {
+                return;
+            }
+            else
+            {
+                bool changesMatchOriginal = NewPhaseChampions.All(pair =>
+                {
+                    if (OriginalPhaseChampions!.TryGetValue(pair.Key, out string? originalChampion))
+                    {
+                        return pair.Value == originalChampion;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                });
 
-            MainWindowContent!.ToScenarios();
+                if (changesMatchOriginal)
+                {
+                    return;
+                }
+                else
+                {
+                    try
+                    {
+                        var result = await ServerConnection.UpdateScenarioPhases(MainWindowContent!.Scenario!.ScenarioId!, NewPhaseChampions!);
+                        NewPhaseChampions = new Dictionary<int, string>();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"{ex.Message}");
+                    }
+                }      
+            }
+        }
+
+        public void SaveAndExit()
+        {
+            Save();
+            Exit();
+        }
+
+        public async void Exit()
+        {
+            if (NewPhaseChampions!.Count == 0)
+            {
+                MainWindowContent!.Scenario = null;
+                MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+
+                MainWindowContent!.ToScenarios();
+            }
+            else
+            {
+                bool changesMatchOriginal = NewPhaseChampions.All(pair =>
+                {
+                    if (OriginalPhaseChampions!.TryGetValue(pair.Key, out string? originalChampion))
+                    {
+                        return pair.Value == originalChampion;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                });
+
+                if (changesMatchOriginal)
+                {
+                    MainWindowContent!.Scenario = null;
+                    MainWindowContent!.User!.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+
+                    MainWindowContent!.ToScenarios();
+                }
+                else
+                {
+                    //TODO: Add confirmation information
+                }
+            }
         }
 
         public void UserSettings()
