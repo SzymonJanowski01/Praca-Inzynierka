@@ -14,6 +14,9 @@ using LeagueOfLegendsScenarioCreator.Models;
 
 namespace LeagueOfLegendsScenarioCreator.Services
 {
+    /// <summary>
+    /// Class for handling communication with the server.
+    /// </summary>
     public static class ServerConnection
     {
         private readonly static string _baseAddress = "http://127.0.0.1:8000";
@@ -21,6 +24,13 @@ namespace LeagueOfLegendsScenarioCreator.Services
         private static readonly HttpClient sharedClient = new() { BaseAddress = new Uri(_baseAddress) };
 
         #region User
+        /// <summary>
+        /// Get user from the server.
+        /// </summary>
+        /// <param name="userId">ID of the user to get.</param>
+        /// <returns>
+        /// <see cref="User"/> object.
+        /// </returns>
         public static async Task<User> GetUser(string userId)
         {
             using HttpResponseMessage response = await sharedClient.GetAsync($"/api/user/get-user/{userId}");
@@ -31,6 +41,24 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return user!;
         }
 
+        /// <summary>
+        /// Create user on the server.
+        /// </summary>
+        /// <param name="username">Username of the user.</param>
+        /// <param name="email">Email of the user.</param>
+        /// <param name="password">Password of the user.</param>
+        /// <returns>
+        /// <see cref="User"/> object.
+        /// </returns>
+        /// <exception cref="UserConflictException">
+        /// Thrown when the username or email is already taken.
+        /// </exception>
+        /// <exception cref="ServiceUnavailableException">
+        /// Thrown when the server is unavailable.
+        /// </exception>
+        /// <exception cref="Exception">
+        /// Thrown when the server returns an unexpected status code.
+        /// </exception>
         public static async Task<User?> CreateUser(string username, string email, string password)
         {
             using StringContent json = new(
@@ -64,6 +92,16 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return user;
         }
 
+        /// <summary>
+        /// Check if the user with the given credentials exists on the server.
+        /// </summary>
+        /// <param name="usernameOrEmail">Username or email of the user.</param>
+        /// <param name="password">Password of the user.</param>
+        /// <returns>
+        /// <see cref="string"/> with the ID of the user if the user exists.
+        /// </returns>
+        /// <exception cref="ServiceUnavailableException"></exception>
+        /// <exception cref="Exception"></exception>
         public static async Task<string?> CheckCredentials(string usernameOrEmail, string password)
         {
             using StringContent json = new(
@@ -102,6 +140,25 @@ namespace LeagueOfLegendsScenarioCreator.Services
             }        
         }
 
+        /// <summary>
+        /// Update user on the server.
+        /// </summary>
+        /// <param name="userId">The ID of the user to update.</param>
+        /// <param name="username">New username (optional).</param>
+        /// <param name="email">New email (optional).</param>
+        /// <param name="password">New password (optional).</param>
+        /// <returns>
+        /// <see cref="User"/> object with updated fields.
+        /// </returns>
+        /// <exception cref="UserConflictException">
+        /// Thrown when the username or email is already taken.
+        /// </exception>
+        /// <exception cref="ServiceUnavailableException">
+        /// Thrown when the server is unavailable.
+        /// </exception>
+        /// <exception cref="Exception">
+        /// Thrown when the server returns an unexpected status code.
+        /// </exception>
         public static async Task<User?> UpdateUser(string userId, string? username, string? email, string? password)
         {
             using StringContent json = new(
@@ -135,7 +192,11 @@ namespace LeagueOfLegendsScenarioCreator.Services
             User? user = JsonSerializer.Deserialize<User>(jsonResponse);
             return user!;
         }
-
+        /// <summary>
+        /// Delete user from the server.
+        /// </summary>
+        /// <param name="userId">ID of the user to delete</param>
+        /// <returns></returns>
         public static async Task DeleteUser(string userId)
         {
             using HttpResponseMessage response = await sharedClient.DeleteAsync($"/api/user/delete-user/{userId}");
@@ -143,6 +204,16 @@ namespace LeagueOfLegendsScenarioCreator.Services
         }
         #endregion
         #region Scenario
+        /// <summary>
+        /// Get user scenarios from the server.
+        /// </summary>
+        /// <param name="userId">ID of the user to get scenarios for.</param>
+        /// <param name="skip">How many scenarios to omit.</param>
+        /// <param name="limit">How many scenarios to get.</param>
+        /// <param name="filter"> <paramref name="string"/> that must be included in the returned scenarios names.</param>
+        /// <returns>
+        /// <see cref="ObservableCollection{T}"/> of <see cref="Scenario"/> objects.
+        /// </returns>
         public static async Task<ObservableCollection<Scenario>> GetUserScenarios(string userId, int? skip, int? limit, string? filter)
         {
             string requestUrl = $"/api/scenario/get-user-scenarios/{userId}";
@@ -165,6 +236,13 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return scenarios!;
         }
 
+        /// <summary>
+        /// Get scenario names from the server.
+        /// </summary>
+        /// <param name="userId">ID of the user to get scenarios names for.</param>
+        /// <returns>
+        /// <see cref="ObservableCollection{T}"/> of scenarios names in a <paramref name="string"/> format.
+        /// </returns>
         public static async Task<ObservableCollection<string>> GetUserScenariosNames(string userId)
         {
             using HttpResponseMessage response = await sharedClient.GetAsync($"/api/scenario/get-user-scenarios-names/{userId}");
@@ -174,6 +252,15 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return scenarios!;
         }
 
+        /// <summary>
+        /// Create scenario on the server.
+        /// </summary>
+        /// <param name="userId">ID of the user to create scenario for.</param>
+        /// <param name="name">Name of the scenario to create.</param>
+        /// <returns>
+        /// Newly created <see cref="Scenario"/> object.
+        /// </returns>
+        /// <exception cref="Exception"></exception>
         public static async Task<Scenario?> CreateScenario(string userId, string name)
         {
             using StringContent json = new(
@@ -220,6 +307,17 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return scenario!;
         }
 
+        /// <summary>
+        /// Delete scenario from the server.
+        /// </summary>
+        /// <param name="scenarioId">ID of the scenario to delete.</param>
+        /// <returns></returns>
+        /// <exception cref="NotFoundException">
+        /// Thrown when the scenario is not found.
+        /// </exception>
+        /// <exception cref="Exception">
+        /// Thrown when the server returns an unexpected status code.
+        /// </exception>
         public static async Task DeleteScenario(string scenarioId)
         {
             using HttpResponseMessage response = await sharedClient.DeleteAsync($"/api/scenario/delete-scenario/{scenarioId}");
@@ -238,6 +336,19 @@ namespace LeagueOfLegendsScenarioCreator.Services
         }
         #endregion
         #region Phase
+        /// <summary>
+        /// Get scenario phases from the server.
+        /// </summary>
+        /// <param name="scenarioId">ID of the scenario to get phases for.</param>
+        /// <returns>
+        /// <see cref="ObservableCollection{T}"/> of <see cref="Phase"/> objects.
+        /// </returns>
+        /// <exception cref="NotFoundException">
+        /// Thrown when the scenario is not found.
+        /// </exception>
+        /// <exception cref="Exception">
+        /// Thrown when the server returns an unexpected status code.
+        /// </exception>
         public static async Task<ObservableCollection<Phase>?> GetScenarioPhases(string scenarioId)
         {
             using HttpResponseMessage response = await sharedClient.GetAsync($"/api/phase/get-scenario-phases/{scenarioId}");
@@ -259,6 +370,14 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return phases!;
         }
 
+        /// <summary>
+        /// Create empty phases after scenario creation and commit them to the server.
+        /// </summary>
+        /// <param name="scenarioId">ID of the scenario to create phases for.</param>
+        /// <returns></returns>
+        /// <exception cref="Exception">
+        /// Thrown when the server returns an unexpected status code.
+        /// </exception>
         public static async Task<ObservableCollection<string>> CreateEmptyPhases(string scenarioId)
         {
             using HttpResponseMessage response = await sharedClient.PostAsync($"/api/phase/create-empty-phases/{scenarioId}", null);
@@ -273,18 +392,34 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return phasesIds!;
         }
 
-        public static async Task<bool?> UpdateScenarioPhases (string scenarioId, Dictionary<int, string> phases)
+        /// <summary>
+        /// Get updated phases from ViewModel and send them to the server.
+        /// </summary>
+        /// <param name="scenarioId">ID of the scenario to perform update on.</param>
+        /// <param name="newPhases">Dictionary of indexed changes for the scenario.</param>
+        /// <returns>
+        /// <paramref name="true"/> for a successful update, <paramref name="false"/> if the request have wrong data.
+        /// </returns>
+        /// <exception cref="NotFoundException">
+        /// Thrown when the scenario is not found.
+        /// </exception>
+        /// <exception cref="Exception">
+        /// Thrown when the server returns an unexpected status code.
+        /// </exception>
+        public static async Task<bool?> UpdateScenarioPhases (string scenarioId, Dictionary<int, string> newPhases)
         {
             List<object> jsonPhases = new();
             List<int> indexesUsed = new();
 
-            var attributes = new Dictionary<string, string?>();
+            var attributes = new Dictionary<string, string>();
             var storedPhaseIndex = 0;
 
-            foreach (var phase in phases)
+            foreach (var phase in newPhases)
             {
+                // Divide the newPhases dict by 3 to get phaseNumber as single phase can contain up to 3 indexed attributes.
                 int phaseNumber = (int)Math.Ceiling((double)phase.Key / 3) - 1;
 
+                // If the phase is the first one, add its attribute to dict and continue.
                 if (indexesUsed.Count == 0)
                 {
                     indexesUsed.Add(phaseNumber);
@@ -302,7 +437,8 @@ namespace LeagueOfLegendsScenarioCreator.Services
                             break;
                     }
 
-                    if (phase.Key == phases.Keys.Last())
+                    // If there are no more phases, create a json object and add it to the list.
+                    if (phase.Key == newPhases.Keys.Last())
                     {
                         var jsonPhase = new
                         {
@@ -315,6 +451,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
 
                     storedPhaseIndex = phaseNumber;
                 }
+                // If the phaseNumber is the same as the previous one, add its content to attributes and continue.
                 else if (indexesUsed.Contains(phaseNumber))
                 {
                     switch (phase.Key % 3)
@@ -330,7 +467,8 @@ namespace LeagueOfLegendsScenarioCreator.Services
                             break;
                     }
 
-                    if (phase.Key == phases.Keys.Last())
+                    // If there are no more phases, create a json object and add it to the list.
+                    if (phase.Key == newPhases.Keys.Last())
                     {
                         var jsonPhase = new
                         {
@@ -341,6 +479,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
                         jsonPhases.Add(jsonPhase);
                     }
                 }
+                // If the phaseNumber is different from the previous one, create a json object for the previous phase, and start the creation of new json object.
                 else
                 {
                     var jsonPhase = new
@@ -369,7 +508,8 @@ namespace LeagueOfLegendsScenarioCreator.Services
 
                     storedPhaseIndex = phaseNumber;
 
-                    if (phase.Key == phases.Keys.Last())
+                    // If there are no more phases, create a json object and add it to the list.
+                    if (phase.Key == newPhases.Keys.Last())
                     {
                         var jsonPhaseNew = new
                         {
