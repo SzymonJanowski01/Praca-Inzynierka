@@ -185,19 +185,23 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
                 var CheckPassword = await ServerConnection.CheckCredentials(MainWindowContent!.User!.Email!, Password!);
 
-                if (CheckPassword != "Unauthorized")
-                {
-                    await ServerConnection.DeleteUser(CheckPassword!);
-                    MainWindowContent!.WipeData();
-                    MainWindowContent!.ToRegister();
-                }
-                else
-                {
-                    DeletionIncorrectData = "Wrong password provided";
-                    await Task.Delay(1500);
-                    DeletionIncorrectData = string.Empty;
-                    DeletionLock = false;
-                }
+                await ServerConnection.DeleteUser(CheckPassword!);
+                MainWindowContent!.WipeData();
+                MainWindowContent!.ToRegister();
+            }
+            catch (NotFoundException)
+            {
+                DeletionIncorrectData = "User with provided username/email does not exist";
+                await Task.Delay(1500);
+                DeletionIncorrectData = string.Empty;
+                DeletionLock = false;
+            }
+            catch (UnauthorizedException)
+            {
+                DeletionIncorrectData = "Wrong password!";
+                await Task.Delay(1500);
+                DeletionIncorrectData = string.Empty;
+                DeletionLock = false;
             }
             catch (ServiceUnavailableException)
             {

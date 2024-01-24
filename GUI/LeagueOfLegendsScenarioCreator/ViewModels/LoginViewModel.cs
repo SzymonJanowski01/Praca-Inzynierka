@@ -49,23 +49,20 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
                 var id = await ServerConnection.CheckCredentials(UsernameOrEmail!, Password!);
 
-                if (id != "NotFound" && id != "Unauthorized")
-                {
-                    var user = await ServerConnection.GetUser(id!);
-                    MainWindowContent!.User = user;
-                    MainWindowContent!.User.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
-                    MainWindowContent!.User.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
+                var user = await ServerConnection.GetUser(id!);
+                MainWindowContent!.User = user;
+                MainWindowContent!.User.ScenariosNames = await ServerConnection.GetUserScenariosNames(MainWindowContent!.User!.UserId!);
+                MainWindowContent!.User.Scenarios = await ServerConnection.GetUserScenarios(MainWindowContent!.User!.UserId!, null, null, null);
 
-                    MainWindowContent!.ToScenarios();
-                }
-                else if (id == "Unauthorized")
-                {
-                    IncorrectData(1500, "Wrong password!");
-                }
+                MainWindowContent!.ToScenarios();
             }
             catch (NotFoundException)
             {
                 IncorrectData(1500, "User with provided username/email does not exist");
+            }
+            catch (UnauthorizedException)
+            {
+                IncorrectData(1500, "Wrong password!");
             }
             catch (ServiceUnavailableException)
             {

@@ -121,7 +121,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    return "Unauthorized";
+                    throw new UnauthorizedException();
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
                 {
