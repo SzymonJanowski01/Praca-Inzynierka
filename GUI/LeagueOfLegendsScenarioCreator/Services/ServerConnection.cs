@@ -424,18 +424,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
                 {
                     indexesUsed.Add(phaseNumber);
 
-                    switch (phase.Key % 3)
-                    {
-                        case 0:
-                            attributes.Add("second_alternative_character", phase.Value);
-                            break;
-                        case 1:
-                            attributes.Add("main_character", phase.Value);
-                            break;
-                        case 2:
-                            attributes.Add("first_alternative_character", phase.Value);
-                            break;
-                    }
+                    attributes = MatchKey(attributes!, phase);
 
                     // If there are no more phases, create a json object and add it to the list.
                     if (phase.Key == newPhases.Keys.Last())
@@ -454,18 +443,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
                 // If the phaseNumber is the same as the previous one, add its content to attributes and continue.
                 else if (indexesUsed.Contains(phaseNumber))
                 {
-                    switch (phase.Key % 3)
-                    {
-                        case 0:
-                            attributes.Add("second_alternative_character", phase.Value);
-                            break;
-                        case 1:
-                            attributes.Add("main_character", phase.Value);
-                            break;
-                        case 2:
-                            attributes.Add("first_alternative_character", phase.Value);
-                            break;
-                    }
+                    attributes = MatchKey(attributes!, phase);
 
                     // If there are no more phases, create a json object and add it to the list.
                     if (phase.Key == newPhases.Keys.Last())
@@ -490,21 +468,10 @@ namespace LeagueOfLegendsScenarioCreator.Services
 
                     jsonPhases.Add(jsonPhase);
 
-                    attributes = new Dictionary<string, string?>();
+                    attributes = new Dictionary<string, string>();
                     indexesUsed.Add(phaseNumber);
 
-                    switch (phase.Key % 3)
-                    {
-                        case 0:
-                            attributes.Add("second_alternative_character", phase.Value);
-                            break;
-                        case 1:
-                            attributes.Add("main_character", phase.Value);
-                            break;
-                        case 2:
-                            attributes.Add("first_alternative_character", phase.Value);
-                            break;
-                    }
+                    attributes = MatchKey(attributes!, phase);
 
                     storedPhaseIndex = phaseNumber;
 
@@ -548,5 +515,31 @@ namespace LeagueOfLegendsScenarioCreator.Services
             return true;
         }
         #endregion
+
+        /// <summary>
+        /// Helper method to add correct key-value pair to attribute list.
+        /// </summary>
+        /// <param name="attr">Old dictionary to undergo addition.</param>
+        /// <param name="phase">Phase to get key-value pair from.</param>
+        /// <returns>
+        /// <see cref="Dictionary{TKey, TValue}"/> with added key-value pair.
+        /// </returns>
+        private static Dictionary<string, string> MatchKey(Dictionary<string, string?> attr, KeyValuePair<int, string> phase)
+        {
+            switch (phase.Key % 3)
+            {
+                case 0:
+                    attr.Add("second_alternative_character", phase.Value);
+                    break;
+                case 1:
+                    attr.Add("main_character", phase.Value);
+                    break;
+                case 2:
+                    attr.Add("first_alternative_character", phase.Value);
+                    break;
+            }
+
+            return attr!;
+        }
     }
 }
