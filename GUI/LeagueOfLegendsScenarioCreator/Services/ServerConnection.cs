@@ -117,7 +117,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    return "NotFound";
+                    throw new NotFoundException();
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
@@ -294,7 +294,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound) 
                 {
-                    return null;
+                    throw new NotFoundException();
                 }
                 else
                 {
@@ -357,7 +357,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    return null;
+                    throw new NotFoundException();
                 }
                 else
                 {
@@ -500,7 +500,7 @@ namespace LeagueOfLegendsScenarioCreator.Services
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound) 
                 {
-                    return null;
+                    throw new NotFoundException();
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {

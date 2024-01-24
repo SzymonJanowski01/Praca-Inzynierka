@@ -62,10 +62,10 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                 {
                     IncorrectData(1500, "Wrong password!");
                 }
-                else
-                {
-                    IncorrectData(1500, "User with provided username/email does not exist");
-                }
+            }
+            catch (NotFoundException)
+            {
+                IncorrectData(1500, "User with provided username/email does not exist");
             }
             catch (ServiceUnavailableException)
             {
