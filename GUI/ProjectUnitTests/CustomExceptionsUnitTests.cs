@@ -153,4 +153,52 @@ namespace ProjectUnitTests
             Assert.AreEqual(innerException, innerEx);
         }
     }
+
+    [TestClass]
+    public class UnauthorizedExceptionTests
+    {
+        [TestMethod]
+        public void Constructor_DefaultConstructor_MessageIsNull()
+        {
+            // Arrange
+            var exception = new UnauthorizedException();
+
+            // Act
+            var message = exception.Message;
+
+            // Assert
+            Assert.AreEqual(message, "Exception of type 'LeagueOfLegendsScenarioCreator.CustomExceptions.UnauthorizedException' was thrown.");
+        }
+
+        [TestMethod]
+        public void Constructor_MessageConstructor_MessageIsSet()
+        {
+            // Arrange
+            var errorMessage = "Unauthorized";
+            var exception = new UnauthorizedException(errorMessage);
+
+            // Act
+            var message = exception.Message;
+
+            // Assert
+            Assert.AreEqual(errorMessage, message);
+        }
+
+        [TestMethod]
+        public void Constructor_InnerExceptionConstructor_MessageAndInnerExceptionAreSet()
+        {
+            // Arrange
+            var errorMessage = "Unauthorized";
+            var innerException = new Exception("Inner exception");
+            var exception = new UnauthorizedException(errorMessage, innerException);
+
+            // Act
+            var message = exception.Message;
+            var innerEx = exception.InnerException;
+
+            // Assert
+            Assert.AreEqual(errorMessage, message);
+            Assert.AreEqual(innerException, innerEx);
+        }
+    }
 }
