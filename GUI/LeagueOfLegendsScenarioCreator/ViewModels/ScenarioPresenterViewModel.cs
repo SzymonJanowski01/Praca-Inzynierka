@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
+    /// <summary>
+    /// Class responsible for presenting scenario to user
+    /// </summary>
     public class ScenarioPresenterViewModel : ViewModelBase
     {
         [Reactive]
@@ -40,6 +43,13 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             LogoutCommand = ReactiveCommand.Create(Logout);
         }
 
+        /// <summary>
+        /// Matches champions names from server with images from local assets, and return them in <see cref="PhaseProjector"/> form.
+        /// </summary>
+        /// <param name="firstFive">Server returns 10 champions, they should be divided into two 5 champions each portion. The bool represents which portion should be returned.</param>
+        /// <returns>
+        /// <see cref="IEnumerable{T}"/> of <see cref="PhaseProjector"/> containing images and names of champions.
+        /// </returns>
         public IEnumerable<PhaseProjector> MatchChampionsNames(bool firstFive)
         {
             IEnumerable<Phase> selectedPhases = firstFive ? MainWindowContent!.Scenario!.Phases!.Take(5) : MainWindowContent!.Scenario!.Phases!.Skip(5);
@@ -49,6 +59,10 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                                                                      new Image("Icons", phase!.SecondAlternaticeCharacter!, "png"),
                                                                      phase.PhaseName!));
         }
+
+        /// <summary>
+        /// Returns to <see cref="ScenariosViewModel"/>.
+        /// </summary>
         public async void Back()
         {
             MainWindowContent!.Scenario = null;
@@ -57,11 +71,17 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             MainWindowContent!.ToScenarios();
         }
 
+        /// <summary>
+        /// Redirects to <see cref="UserSettingsViewModel"/>.
+        /// </summary>
         public void UserSettings()
         {
             MainWindowContent!.ToUserSettings();
         }
 
+        /// <summary>
+        /// Logs out user.
+        /// </summary>
         public void Logout()
         {
             MainWindowContent!.LogOut();

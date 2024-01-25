@@ -82,6 +82,10 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             LogoutCommand = ReactiveCommand.Create(Logout);
         }
 
+        /// <summary>
+        /// Function responsible for updating user data.
+        /// At least one setting must be changed, if password is being updated, both password and confirm password fields must be filled.
+        /// </summary>
         public void UpdateUser()
         {
             if (string.IsNullOrEmpty(PasswordUpdate) && string.IsNullOrEmpty(ConfirmPasswordUpdate))
@@ -112,6 +116,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             } 
         }
 
+        /// <summary>
+        /// Helper function for <see cref="UpdateUser"/> function. Commits changes to server and shows message to user.
+        /// </summary>
         public async void CorrectUpdate()
         {
             try
@@ -147,6 +154,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
+        /// <summary>
+        /// Helper function for <see cref="UpdateUser"/> function. Shows message of inccorect update attempt to user.
+        /// </summary>
+        /// <param name="message">Content of the message to show.</param>
+        /// <param name="delay">How long the message will be shown.</param>
         public async void IncorrectUpdate(string message, int delay)
         {
             InformationBorderColor = "Red";
@@ -155,6 +167,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             UpdateMessage = string.Empty;
         }
 
+        /// <summary>
+        /// Updates user data and if the update is correct returns to <see cref="ScenariosViewModel"/>.
+        /// </summary>
         public async void SaveAndExit()
         {
             UpdateUser();
@@ -164,7 +179,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                 Back();
             }
         }
-
+        
+        /// <summary>
+        /// Helperf function to show/hide deletion confirmation message.
+        /// </summary>
+        /// <param name="parameter"></param>
         public void ChangeConfirmationVisibility(string parameter)
         {
             if (parameter == "t") 
@@ -177,6 +196,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
+        /// <summary>
+        /// Deletes user account, shows message to user if the deletion was not successful.
+        /// </summary>
         public async void DeleteAccount()
         {
             try
@@ -212,6 +234,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
+        /// <summary>
+        /// If there are unsaved changes, shows message to user, if not returns to <see cref="ScenariosViewModel"/>.
+        /// </summary>
         public void Back()
         {
             if (BackConfirmation)
@@ -233,6 +258,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
+        /// <summary>
+        /// Logs out user.
+        /// </summary>
         public void Logout()
         {
             MainWindowContent!.LogOut();

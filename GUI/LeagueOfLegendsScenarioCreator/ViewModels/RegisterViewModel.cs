@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
+    /// <summary>
+    /// Class responsible for registering user
+    /// </summary>
     public class RegisterViewModel : ViewModelBase
     {
         [Reactive]
@@ -41,6 +44,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             RegisterLock = false;
         }
 
+        /// <summary>
+        /// Method responsible for registering user, if username or email is already taken, it will display message.
+        /// </summary>
         private async void Register()
         {
             RegisterIncorrectData = string.Empty;
@@ -72,6 +78,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             
         }
 
+        /// <summary>
+        /// Helper method for displaying message about inccorect register attempt for a short time.
+        /// </summary>
+        /// <param name="delay">How long the message will be shown.</param>
+        /// <param name="message">Content of the message to show.</param>
         public async void IncorrectData(int delay, string message)
         {
             await Task.Delay(delay);

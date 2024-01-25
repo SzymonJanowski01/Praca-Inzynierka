@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
+    /// <summary>
+    /// Class responsible for controlling which ViewModel is in use, and globally storing user and scenario data.
+    /// </summary>
     public class MainWindowViewModel : ViewModelBase
     {
         [Reactive]

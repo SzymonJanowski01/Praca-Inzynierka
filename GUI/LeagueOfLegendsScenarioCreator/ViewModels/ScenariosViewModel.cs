@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
+    /// <summary>
+    /// Class responsible for providing user with list of scenarios, and managing them.
+    /// </summary>
     public class ScenariosViewModel : ViewModelBase
     {
         [Reactive]
@@ -61,6 +64,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             LogoutCommand = ReactiveCommand.Create(Logout);
         }
 
+        /// <summary>
+        /// Creates new scenario, and adds it to user's scenarios list.
+        /// Also creates empty phases for scenario.
+        /// Blocks user from creating multiple scenarios until the process of creating one is finished.
+        /// </summary>
         public async void AddScenario()
         {
             ScenarioCreationLock = true;
@@ -75,6 +83,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             ScenarioCreationLock = false;
         }
 
+        /// <summary>
+        /// Changes page of scenarios list.
+        /// Used also for filtering scenarios list.
+        /// </summary>
+        /// <param name="parameter"> <c>p</c> for previous page, <c>n</c> for next page.</param>
         public async void ChangePage(string parameter)
         {
 
@@ -89,6 +102,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             TotalPages = string.IsNullOrEmpty(Filter) ? (int)Math.Ceiling((double)MainWindowContent!.User!.ScenariosNames!.Count / 5) : (int)Math.Ceiling((double)MainWindowContent!.User!.Scenarios!.Count / 5);
         }
 
+        /// <summary>
+        /// Redirects to <see cref="ScenarioPresenterViewModel"/>.
+        /// </summary>
         public async void OpenScenarioPresenter()
         {
             MainWindowContent!.Scenario = SelectedItem;
@@ -97,6 +113,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             MainWindowContent!.ToScenarioPresenter();
         }
 
+        /// <summary>
+        /// Redirects to <see cref="ScenarioEditorViewModel"/>.
+        /// </summary>
         public async void OpenScenarioEditor()
         {
             MainWindowContent!.Scenario = SelectedItem;
@@ -106,6 +125,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         }
 
         // TODO: exception handling and empty list handling
+        /// <summary>
+        /// Deletes selected scenario from user's scenarios list and also from server.
+        /// </summary>
         public async void DeleteScenario()
         {
             try
@@ -127,11 +149,17 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
         }
 
+        /// <summary>
+        /// Redirects to <see cref="UserSettingsViewModel"/>.
+        /// </summary>
         public void UserSettings()
         {
             MainWindowContent!.ToUserSettings();
         }
 
+        /// <summary>
+        /// Logs out user.
+        /// </summary>
         public void Logout()
         {
             MainWindowContent!.LogOut();

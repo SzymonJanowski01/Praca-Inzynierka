@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
+    /// <summary>
+    /// Class responsible for logging in user
+    /// </summary>
     public class LoginViewModel : ViewModelBase
     {
         [Reactive]
@@ -39,6 +42,9 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             LoginLock = false;
         }
 
+        /// <summary>
+        /// Method responsible for logging in user, if user does not exist or password is wrong, it will display message.
+        /// </summary>
         private async void Login()
         {
             LoginIncorrectData = string.Empty;
@@ -73,7 +79,12 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                 IncorrectData(1500, $"{ex.Message}");
             }
         }
-
+        
+        /// <summary>
+        /// Helper method for displaying message about inccorect log-in attempt for a short time
+        /// </summary>
+        /// <param name="delay">How long the message will be shown.</param>
+        /// <param name="message">Content of the shown message.</param>
         public async void IncorrectData(int delay, string message)
         {
             await Task.Delay(delay);

@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace LeagueOfLegendsScenarioCreator.Converters
 {
+    /// <summary>
+    /// Class responsible for ensuring that email is in correct format.
+    /// </summary>
     public class EmailFormatConverter : IValueConverter
     {
         public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
