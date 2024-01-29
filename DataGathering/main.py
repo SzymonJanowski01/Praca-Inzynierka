@@ -92,7 +92,6 @@ def main():
     print(f"\n {most_recent_games}")
     if testing:
         check_id_matching(most_recent_games)
-    pass
 
 
 if __name__ == "__main__":
