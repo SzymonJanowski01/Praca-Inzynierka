@@ -85,7 +85,7 @@ def check_id_matching(games: pd.DataFrame):
 
 def main():
     regions = ['EMEA', 'China', 'Korea', 'North America']
-    year = 2024
+    year = datetime.now().year
 
     most_recent_tournaments = find_most_recent_tournament(regions, year)
     most_recent_games = get_most_recent_games(most_recent_tournaments)
