@@ -89,6 +89,7 @@ def main():
 
     most_recent_tournaments = find_most_recent_tournament(regions, year)
     most_recent_games = get_most_recent_games(most_recent_tournaments)
+    most_recent_games.to_csv('most_recent_games.csv', index=False)
     print(f"\n {most_recent_games}")
     if testing:
         check_id_matching(most_recent_games)
