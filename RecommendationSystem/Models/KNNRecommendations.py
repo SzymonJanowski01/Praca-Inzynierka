@@ -26,6 +26,8 @@ def encode_data(data: pd.DataFrame) -> pd.DataFrame:
 
 
 def extract_target_for_each_row(data: pd.DataFrame, encoded_data: pd.DataFrame, target_position: str) -> pd.DataFrame:
+    encoded_data.reset_index(drop=True, inplace=True)
+    data.reset_index(drop=True, inplace=True)
     encoded_data['target'] = None
     for i, row in encoded_data.iterrows():
         original_value = data.loc[i, target_position]
@@ -54,7 +56,6 @@ class KNNRecommendation:
 
             y_pred = model.predict(x_test)
             print(f"Accuracy for {position}: %.2f%%" % (accuracy_score(y_test, y_pred) * 100.0))
-            print(f"Predicted {y_pred} vs actual {y_test}")
 
     def fit(self):
         for position, model in self.models.items():
@@ -99,19 +100,19 @@ def get_knn_models() -> dict:
     knn_eu.fit()
     knn_regions['eu'] = knn_eu
 
-    # knn_na = KNNRecommendation(data_na)
-    # knn_na.test()
-    # knn_na.fit()
-    # knn_regions['na'] = knn_na
-    #
-    # knn_kr = KNNRecommendation(data_kr)
-    # knn_kr.test()
-    # knn_kr.fit()
-    # knn_regions['kr'] = knn_kr
-    #
-    # knn_cn = KNNRecommendation(data_cn)
-    # knn_cn.test()
-    # knn_cn.fit()
-    # knn_regions['cn'] = knn_cn
+    knn_na = KNNRecommendation(data_na)
+    knn_na.test()
+    knn_na.fit()
+    knn_regions['na'] = knn_na
+
+    knn_kr = KNNRecommendation(data_kr)
+    knn_kr.test()
+    knn_kr.fit()
+    knn_regions['kr'] = knn_kr
+
+    knn_cn = KNNRecommendation(data_cn)
+    knn_cn.test()
+    knn_cn.fit()
+    knn_regions['cn'] = knn_cn
 
     return knn_regions
