@@ -8,15 +8,15 @@ from data_constants import champions_ids
 def get_recommendations(user_input, target_position):
     knn_models = get_knn_models()
     knn_recommendations = {
-        'eu': knn_models["eu"].recommend(user_input, target_position)
-        # 'na': knn_models["na"].recommend(user_input, target_position),
-        # 'kr': knn_models["kr"].recommend(user_input, target_position),
-        # 'cn': knn_models["cn"].recommend(user_input, target_position)
+        'eu': knn_models["eu"].recommend(user_input, target_position),
+        'na': knn_models["na"].recommend(user_input, target_position),
+        'kr': knn_models["kr"].recommend(user_input, target_position),
+        'cn': knn_models["cn"].recommend(user_input, target_position)
     }
 
-    # similarity_recommendations = get_similarity_recommendations(user_input, target_position)
-    # print(similarity_recommendations)
-    print(knn_recommendations)
+    similarity_recommendations = get_similarity_recommendations(user_input, target_position)
+    print(f"Cosine: {similarity_recommendations}")
+    print(f"KNN: {knn_recommendations}")
 
 
 def create_game_scenario(user_input):
