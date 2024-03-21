@@ -7,7 +7,6 @@ from datetime import datetime
 import leaguepedia_parser as lp
 import lol_id_tools as lit
 import pandas as pd
-from icecream import ic
 
 
 def find_most_recent_tournament(regions: List[str], year: int) -> List[str]:
