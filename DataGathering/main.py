@@ -45,10 +45,14 @@ def get_most_recent_games(most_recent_tournaments: List[str]) -> pd.DataFrame:
     data_for_ml = []
 
     for region_tournament in most_recent_tournaments:
+        counter = 0
         games = lp.get_games(region_tournament)
-        print(f"\n{region_tournament}: {len(games)}")
+
+        current_patch = max([game.patch for game in games])
 
         for game in games:
+            if game.patch != current_patch:
+                continue
             row = {
                 'Region': region_tournament[0:3],
                 'Blue_Champion_1': game.teams.BLUE.players[0].championId,
@@ -64,6 +68,9 @@ def get_most_recent_games(most_recent_tournaments: List[str]) -> pd.DataFrame:
                 'Bans': game.teams.BLUE.bans + game.teams.RED.bans
             }
             data_for_ml.append(row)
+            counter += 1
+
+        print(f"Games from {region_tournament}: {counter}")
 
     time.sleep(5)
 
@@ -116,7 +123,7 @@ def restore_from_backup(file_path: str):
     :return:
     """
     backup_file_path = file_path.split('.')[0] + '_backup.csv'
-    shutil.move(backup_file_path, file_path)
+    shutil.copy(backup_file_path, file_path)
 
 
 def main():
