@@ -65,7 +65,6 @@ def get_most_recent_games(most_recent_tournaments: List[str]) -> pd.DataFrame:
             }
             data_for_ml.append(row)
 
-        print("\n.", end="")
     time.sleep(5)
 
     df = pd.DataFrame(data_for_ml)
