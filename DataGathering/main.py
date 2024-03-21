@@ -74,6 +74,11 @@ def get_most_recent_games(most_recent_tournaments: List[str]) -> pd.DataFrame:
 
 
 def check_id_matching(games: pd.DataFrame):
+    """
+    Checks if the champion ids match the names.
+    :param games: Games from the most recent tournaments from all regions.
+    :return:
+    """
     latest_game_lpl = games[games['Region'] == 'LPL'].iloc[-1]
     latest_game_lec = games[games['Region'] == 'LEC'].iloc[-1]
     latest_game_lck = games[games['Region'] == 'LCK'].iloc[-1]
@@ -90,6 +95,11 @@ def check_id_matching(games: pd.DataFrame):
 
 
 def create_backup_and_write_csv(games: pd.DataFrame):
+    """
+    Creates a backup of the most recent games and writes the new games to a csv file.
+    :param games: Most recent games from all regions.
+    :return:
+    """
     file_path = 'most_recent_games.csv'
     if os.path.exists(file_path):
         backup_file_path = file_path.split('.')[0] + '_backup.csv'
@@ -101,6 +111,11 @@ def create_backup_and_write_csv(games: pd.DataFrame):
 
 
 def restore_from_backup(file_path: str):
+    """
+    Restores the csv file with games from the backup.
+    :param file_path: Path to the file to restore.
+    :return:
+    """
     backup_file_path = file_path.split('.')[0] + '_backup.csv'
     shutil.move(backup_file_path, file_path)
 
