@@ -1,10 +1,13 @@
+import os
 import time
+import shutil
 from typing import List
 from datetime import datetime
 
 import leaguepedia_parser as lp
 import lol_id_tools as lit
 import pandas as pd
+from icecream import ic
 
 
 def find_most_recent_tournament(regions: List[str], year: int) -> List[str]:
@@ -25,6 +28,8 @@ def find_most_recent_tournament(regions: List[str], year: int) -> List[str]:
         if valid_tournaments:
             most_recent_tournament = max(valid_tournaments, key=lambda t: t.end)
             tournaments_overview_pages.append(most_recent_tournament.overviewPage)
+        else:
+            raise ValueError(f"No valid tournaments found for {region} in {year}")
 
         print(".", end="")
         time.sleep(5)
@@ -37,11 +42,12 @@ def get_most_recent_games(most_recent_tournaments: List[str]) -> pd.DataFrame:
     :param most_recent_tournaments: List of tournaments
     :return: List of games for each region
     """
-    print("\nGathering games data", end="")
+    print("\nGathering games data")
     data_for_ml = []
 
     for region_tournament in most_recent_tournaments:
         games = lp.get_games(region_tournament)
+        print(f"\n{region_tournament}: {len(games)}")
 
         for game in games:
             row = {
@@ -56,10 +62,11 @@ def get_most_recent_games(most_recent_tournaments: List[str]) -> pd.DataFrame:
                 'Red_Champion_3': game.teams.RED.players[2].championId,
                 'Red_Champion_4': game.teams.RED.players[3].championId,
                 'Red_Champion_5': game.teams.RED.players[4].championId,
+                'Bans': game.teams.BLUE.bans + game.teams.RED.bans
             }
             data_for_ml.append(row)
 
-        print(".", end="")
+        print("\n.", end="")
     time.sleep(5)
 
     df = pd.DataFrame(data_for_ml)
@@ -83,18 +90,41 @@ def check_id_matching(games: pd.DataFrame):
         print(f"{game['Region']}: {blue_champions_names} vs {red_champions_names}")
 
 
+def create_backup_and_write_csv(games: pd.DataFrame):
+    file_path = 'most_recent_games.csv'
+    if os.path.exists(file_path):
+        backup_file_path = file_path.split('.')[0] + '_backup.csv'
+        shutil.copy(file_path, backup_file_path)
+        games.to_csv('most_recent_games.csv', index=False)
+    else:
+        games.to_csv('most_recent_games.csv', index=False)
+        games.to_csv('most_recent_games_backup.csv', index=False)
+
+
+def restore_from_backup(file_path: str):
+    backup_file_path = file_path.split('.')[0] + '_backup.csv'
+    shutil.move(backup_file_path, file_path)
+
+
 def main():
+    testing = False
+
     regions = ['EMEA', 'China', 'Korea', 'North America']
     year = datetime.now().year
 
-    most_recent_tournaments = find_most_recent_tournament(regions, year)
-    most_recent_games = get_most_recent_games(most_recent_tournaments)
-    most_recent_games.to_csv('most_recent_games.csv', index=False)
-    print(f"\n {most_recent_games}")
-    if testing:
-        check_id_matching(most_recent_games)
+    try:
+        most_recent_tournaments = find_most_recent_tournament(regions, year)
+        most_recent_games = get_most_recent_games(most_recent_tournaments)
+        create_backup_and_write_csv(most_recent_games)
+
+        print(f"\n {most_recent_games}")
+
+        if testing:
+            check_id_matching(most_recent_games)
+    except ValueError as e:
+        print(e)
+        restore_from_backup('most_recent_games.csv')
 
 
 if __name__ == "__main__":
-    testing = False
     main()
