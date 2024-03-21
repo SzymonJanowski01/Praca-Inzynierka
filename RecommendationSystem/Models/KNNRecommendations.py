@@ -84,11 +84,12 @@ class KNNRecommendation:
                     correct_predictions += 1
                 total_predictions += 1
 
-            accuracy = correct_predictions / total_predictions
+            accuracy = (correct_predictions / total_predictions) * 100
             all_accuracies.append(accuracy)
 
         total_accuracy = sum(all_accuracies) / len(all_accuracies)
-        ic(f"KNN accuracy: {total_accuracy}")
+        total_accuracy = round(total_accuracy, 2)
+        ic(f"KNN accuracy: {total_accuracy}%")
 
         return total_accuracy
 
@@ -133,19 +134,19 @@ class KNNRecommendation:
 def get_knn_models() -> dict:
     knn_regions = {}
 
-    knn_eu = KNNRecommendation(data_eu, k=19, metric='chebyshev', weights='uniform', algorithm='ball_tree')
+    knn_eu = KNNRecommendation(data_eu, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')
     knn_eu.fit()
     knn_regions['eu'] = knn_eu
 
-    knn_na = KNNRecommendation(data_na, k=14, metric='chebyshev', weights='uniform', algorithm='brute')
+    knn_na = KNNRecommendation(data_na, k=6, metric='minkowski', weights='uniform', algorithm='ball_tree')
     knn_na.fit()
     knn_regions['na'] = knn_na
 
-    knn_kr = KNNRecommendation(data_kr, k=15, metric='minkowski', weights='uniform', algorithm='ball_tree')
+    knn_kr = KNNRecommendation(data_kr, k=5, metric='chebyshev', weights='uniform', algorithm='ball_tree')
     knn_kr.fit()
     knn_regions['kr'] = knn_kr
 
-    knn_cn = KNNRecommendation(data_cn, k=14, metric='chebyshev', weights='uniform', algorithm='kd_tree')
+    knn_cn = KNNRecommendation(data_cn, k=5, metric='chebyshev', weights='uniform', algorithm='brute')
     knn_cn.fit()
     knn_regions['cn'] = knn_cn
 
@@ -155,19 +156,19 @@ def get_knn_models() -> dict:
 def test_knn_models():
     print("Testing:")
 
-    knn_eu = KNNRecommendation(data_eu, k=19, metric='chebyshev', weights='uniform', algorithm='ball_tree')
+    knn_eu = KNNRecommendation(data_eu, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')
     print("EU")
     knn_eu.test(bans_eu)
 
-    knn_na = KNNRecommendation(data_na, k=14, metric='chebyshev', weights='uniform', algorithm='brute')
+    knn_na = KNNRecommendation(data_na, k=6, metric='minkowski', weights='uniform', algorithm='ball_tree')
     print("NA")
     knn_na.test(bans_na)
 
-    knn_kr = KNNRecommendation(data_kr, k=15, metric='minkowski', weights='uniform', algorithm='ball_tree')
+    knn_kr = KNNRecommendation(data_kr, k=5, metric='chebyshev', weights='uniform', algorithm='ball_tree')
     print("KR")
     knn_kr.test(bans_kr)
 
-    knn_cn = KNNRecommendation(data_cn, k=14, metric='chebyshev', weights='uniform', algorithm='kd_tree')
+    knn_cn = KNNRecommendation(data_cn, k=5, metric='chebyshev', weights='uniform', algorithm='brute')
     print("CN")
     knn_cn.test(bans_cn)
 
@@ -176,87 +177,81 @@ def pick_best_knn_settings():
     best_accuracy_eu = 0
     best_k_eu = 0
     best_metric_eu = ""
-    best_weight_eu = ""
     best_algorithm_eu = ""
     best_accuracy_na = 0
     best_k_na = 0
     best_metric_na = ""
-    best_weight_na = ""
     best_algorithm_na = ""
     best_accuracy_kr = 0
     best_k_kr = 0
     best_metric_kr = ""
-    best_weight_kr = ""
     best_algorithm_kr = ""
     best_accuracy_cn = 0
     best_k_cn = 0
     best_metric_cn = ""
-    best_weight_cn = ""
     best_algorithm_cn = ""
 
     warnings.filterwarnings("ignore", category=DataConversionWarning)
 
     start = time.perf_counter()
-    for weight in ['uniform', 'distance']:
-        for algorithm in ['ball_tree', 'kd_tree', 'brute']:
-            for k in range(3, 25):
-                for metric in ['minkowski', 'euclidean', 'manhattan', 'cosine', 'canberra', 'braycurtis', 'chebyshev',
-                               'correlation', 'cityblock', 'sqeuclidean', 'jaccard', 'dice', 'hamming', 'rogerstanimoto',
-                               'russellrao', 'sokalmichener', 'sokalsneath', 'yule']:
-                    try:
-                        ic(k, metric, weight, algorithm)
-                        knn_cn = KNNRecommendation(data_cn, k, metric, weight, algorithm)
-                        knn_eu = KNNRecommendation(data_eu, k, metric, weight, algorithm)
-                        knn_na = KNNRecommendation(data_na, k, metric, weight, algorithm)
-                        knn_kr = KNNRecommendation(data_kr, k, metric, weight, algorithm)
+    for algorithm in ['ball_tree', 'kd_tree', 'brute']:
+        for k in range(5, 20):
+            for metric in ['minkowski', 'euclidean', 'manhattan', 'cosine', 'canberra', 'braycurtis', 'chebyshev',
+                           'correlation', 'cityblock', 'sqeuclidean', 'jaccard', 'dice', 'hamming', 'rogerstanimoto',
+                           'russellrao', 'sokalmichener', 'sokalsneath', 'yule']:
+                ic(k, metric, algorithm)
+                try:
+                    ic.disable()
+                    knn_cn = KNNRecommendation(data_cn, k, metric, 'uniform', algorithm)
+                    knn_cn.fit()
 
-                        knn_cn.fit()
-                        knn_eu.fit()
-                        knn_na.fit()
-                        knn_kr.fit()
+                    accuracy_cn = knn_cn.test(bans_cn)
+                    if accuracy_cn > best_accuracy_cn:
+                        best_accuracy_cn = accuracy_cn
+                        best_k_cn = k
+                        best_metric_cn = metric
+                        best_algorithm_cn = algorithm
 
-                        ic.disable()
-                        accuracy_cn = knn_cn.test(bans_cn)
-                        accuracy_eu = knn_eu.test(bans_eu)
-                        accuracy_na = knn_na.test(bans_na)
-                        accuracy_kr = knn_kr.test(bans_kr)
-                        ic.enable()
+                    knn_eu = KNNRecommendation(data_eu, k, metric, 'uniform', algorithm)
+                    knn_eu.fit()
+                    accuracy_eu = knn_eu.test(bans_eu)
+                    if accuracy_eu > best_accuracy_eu:
+                        best_accuracy_eu = accuracy_eu
+                        best_k_eu = k
+                        best_metric_eu = metric
+                        best_algorithm_eu = algorithm
 
-                        if accuracy_cn > best_accuracy_cn:
-                            best_accuracy_cn = accuracy_cn
-                            best_k_cn = k
-                            best_metric_cn = metric
-                            best_weight_cn = weight
-                            best_algorithm_cn = algorithm
-                        if accuracy_eu > best_accuracy_eu:
-                            best_accuracy_eu = accuracy_eu
-                            best_k_eu = k
-                            best_metric_eu = metric
-                            best_weight_eu = weight
-                            best_algorithm_eu = algorithm
-                        if accuracy_na > best_accuracy_na:
-                            best_accuracy_na = accuracy_na
-                            best_k_na = k
-                            best_metric_na = metric
-                            best_weight_na = weight
-                            best_algorithm_na = algorithm
-                        if accuracy_kr > best_accuracy_kr:
-                            best_accuracy_kr = accuracy_kr
-                            best_k_kr = k
-                            best_metric_kr = metric
-                            best_weight_kr = weight
-                            best_algorithm_kr = algorithm
-                    except ValueError:
-                        continue
+                    knn_na = KNNRecommendation(data_na, k, metric, 'uniform', algorithm)
+                    knn_na.fit()
+                    accuracy_na = knn_na.test(bans_na)
+                    if accuracy_na > best_accuracy_na:
+                        best_accuracy_na = accuracy_na
+                        best_k_na = k
+                        best_metric_na = metric
+                        best_algorithm_na = algorithm
 
-    best_accuracy_cn = "{:.2f}".format(best_accuracy_cn * 100)
-    best_accuracy_eu = "{:.2f}".format(best_accuracy_eu * 100)
-    best_accuracy_na = "{:.2f}".format(best_accuracy_na * 100)
-    best_accuracy_kr = "{:.2f}".format(best_accuracy_kr * 100)
-    ic(best_accuracy_cn, best_k_cn, best_metric_cn, best_weight_cn, best_algorithm_cn)
-    ic(best_accuracy_eu, best_k_eu, best_metric_eu, best_weight_eu, best_algorithm_eu)
-    ic(best_accuracy_na, best_k_na, best_metric_na, best_weight_na, best_algorithm_na)
-    ic(best_accuracy_kr, best_k_kr, best_metric_kr, best_weight_kr, best_algorithm_kr)
+                    knn_kr = KNNRecommendation(data_kr, k, metric, 'uniform', algorithm)
+                    knn_kr.fit()
+                    accuracy_kr = knn_kr.test(bans_kr)
+                    if accuracy_kr > best_accuracy_kr:
+                        best_accuracy_kr = accuracy_kr
+                        best_k_kr = k
+                        best_metric_kr = metric
+                        best_algorithm_kr = algorithm
+
+                    ic.enable()
+                except ValueError:
+                    ic.enable()
+                    continue
+
+    best_accuracy_cn = "{:.2f}".format(best_accuracy_cn)
+    best_accuracy_eu = "{:.2f}".format(best_accuracy_eu)
+    best_accuracy_na = "{:.2f}".format(best_accuracy_na)
+    best_accuracy_kr = "{:.2f}".format(best_accuracy_kr)
+    ic(best_accuracy_cn, best_k_cn, best_metric_cn, best_algorithm_cn)
+    ic(best_accuracy_eu, best_k_eu, best_metric_eu, best_algorithm_eu)
+    ic(best_accuracy_na, best_k_na, best_metric_na, best_algorithm_na)
+    ic(best_accuracy_kr, best_k_kr, best_metric_kr, best_algorithm_kr)
 
     end = time.perf_counter()
     final = end - start
