@@ -45,7 +45,6 @@ def get_most_recent_games(most_recent_tournaments: List[str]) -> pd.DataFrame:
     data_for_ml = []
 
     for region_tournament in most_recent_tournaments:
-        counter = 0
         games = lp.get_games(region_tournament)
 
         current_patch = max([game.patch for game in games])
@@ -68,9 +67,6 @@ def get_most_recent_games(most_recent_tournaments: List[str]) -> pd.DataFrame:
                 'Bans': game.teams.BLUE.bans + game.teams.RED.bans
             }
             data_for_ml.append(row)
-            counter += 1
-
-        print(f"Games from {region_tournament}: {counter}")
 
     time.sleep(5)
 
