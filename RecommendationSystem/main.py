@@ -80,6 +80,12 @@ def main() -> None:
     if testing_knn:
         test_knn()
     else:
+        print("Set:")
+        example_user_input = [150,526,42,429,0,58,78,163,110,81]
+        example_target_position = "Blue_Champion_5"
+
+        get_recommendations(example_user_input, example_target_position)
+
         print("\nRandom:")
         for x in range(5):
             example_user_input = random.choices(CHAMPIONS_IDS, k=10)
