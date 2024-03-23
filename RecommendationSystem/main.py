@@ -1,10 +1,23 @@
 from RecomAlgs.KNNRecommendations import get_knn_models, test_knn_models
 from RecomAlgs.CosineSim import get_similarity_recommendations
+from RecomAlgs.occurance_counter import get_most_common_champions
 
-from data_constants import CHAMPIONS_IDS
+from data_constants import CHAMPIONS_IDS, POSITIONS
 
 
 def get_recommendations(user_input: list[int], target_position: str) -> dict[str, list[int]]:
+    if all(x == 0 for x in user_input):
+        recommendation = get_most_common_champions(target_position)
+        print(f"Occurance recommendation: {recommendation}")
+        return recommendation
+    elif user_input.count(0) == len(user_input) - 1:
+        index_of_target_position = POSITIONS.index(target_position)
+
+        if user_input[index_of_target_position] != 0:
+            recommendation = get_most_common_champions(target_position)
+            print(f"Occurance recommendation: {recommendation}")
+            return recommendation
+
     game_state = create_game_scenario(user_input)
 
     knn_models = get_knn_models()
