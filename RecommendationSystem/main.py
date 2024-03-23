@@ -1,3 +1,5 @@
+import random
+
 from RecomAlgs.KNNRecommendations import get_knn_for_each_region, test_knn
 from RecomAlgs.CosineSim import get_similarity_recommendations
 from RecomAlgs.occurance_counter import get_most_common_champions
@@ -78,10 +80,37 @@ def main() -> None:
     if testing_knn:
         test_knn()
     else:
-        example_user_input = [897,78,268,110,0,24,5,101,236,267]
-        example_target_position = "Blue_Champion_5"
+        print("\nRandom:")
+        for x in range(5):
+            example_user_input = random.choices(CHAMPIONS_IDS, k=10)
+            example_target_position = random.choice(POSITIONS)
 
-        get_recommendations(example_user_input, example_target_position)
+            get_recommendations(example_user_input, example_target_position)
+            print()
+        print("\nZeroes:")
+        for x in range(5):
+            example_user_input = [0] * 10
+            example_target_position = random.choice(POSITIONS)
+
+            get_recommendations(example_user_input, example_target_position)
+            print()
+        print("Only one champion:")
+        for x in range(5):
+            example_user_input = [0] * 10
+            example_target_position = random.choice(POSITIONS)
+            example_user_input[POSITIONS.index(example_target_position)] = random.choice(CHAMPIONS_IDS)
+
+            get_recommendations(example_user_input, example_target_position)
+            print()
+        print("Zeroes with random:")
+        for x in range(5):
+            example_user_input = [0] * 10
+            example_target_position = random.choice(POSITIONS)
+            example_user_input[POSITIONS.index(example_target_position)] = random.choice(CHAMPIONS_IDS)
+            example_user_input[random.choice(range(10))] = random.choice(CHAMPIONS_IDS)
+
+            get_recommendations(example_user_input, example_target_position)
+            print()
 
 
 if __name__ == "__main__":
