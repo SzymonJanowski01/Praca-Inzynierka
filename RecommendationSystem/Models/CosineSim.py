@@ -32,7 +32,11 @@ def get_similarity_recommendations(base_list: list, target_position: str) -> dic
             if len(unique_recommendations) == 3:
                 break
 
-        cos_sim_regions[region_name] = list(unique_recommendations)
+        final_recommendations = list(unique_recommendations)
+        while len(final_recommendations) < 3:
+            final_recommendations.append(0)
+
+        cos_sim_regions[region_name] = final_recommendations
 
     return cos_sim_regions
 
