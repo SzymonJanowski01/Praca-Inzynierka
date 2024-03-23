@@ -39,5 +39,3 @@ def get_similarity_recommendations(base_list: list, target_position: str) -> dic
         cos_sim_regions[region_name] = final_recommendations
 
     return cos_sim_regions
-
-
