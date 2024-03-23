@@ -54,13 +54,13 @@ class KNNRecommendation:
         self.weights = weights
         self.metric = metric
         self.algorithm = algorithm
-        self.models = {position: KNeighborsClassifier(n_neighbors=self.k, metric=self.metric, weights=self.weights,
-                                                      algorithm=self.algorithm) for position in POSITIONS}
+        self.roles = {position: KNeighborsClassifier(n_neighbors=self.k, metric=self.metric, weights=self.weights,
+                                                     algorithm=self.algorithm) for position in POSITIONS}
 
     def test(self, bans: pd.DataFrame) -> float:
         all_accuracies = []
 
-        for position, model in self.models.items():
+        for position, model in self.roles.items():
             prepared_data = extract_target_for_each_row(self.data, self.encoded_data, position)
 
             x = prepared_data.drop(columns=["target"])
@@ -94,7 +94,7 @@ class KNNRecommendation:
         return total_accuracy
 
     def fit(self) -> None:
-        for position, model in self.models.items():
+        for position, model in self.roles.items():
             prepared_data = extract_target_for_each_row(self.data, self.encoded_data, position)
             x = prepared_data.drop(columns=["target"])
             y = prepared_data["target"]
@@ -102,7 +102,7 @@ class KNNRecommendation:
             model.fit(x, y)
 
     def recommend(self, user_input: list, target_position: str) -> list[int]:
-        knn_model = self.models[target_position]
+        knn_model = self.roles[target_position]
 
         user_input_reshaped = np.array(user_input).reshape(1, -1)
 
