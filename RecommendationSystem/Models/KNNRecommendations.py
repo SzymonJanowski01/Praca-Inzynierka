@@ -126,7 +126,11 @@ class KNNRecommendation:
             if len(unique_recommendations) == 3:
                 break
 
-        return list(unique_recommendations)
+        final_recommendations = list(unique_recommendations)
+        while len(final_recommendations) < 3:
+            final_recommendations.append(0)
+
+        return final_recommendations
 
 
 def get_knn_models() -> dict:
