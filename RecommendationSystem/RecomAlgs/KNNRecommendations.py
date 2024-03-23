@@ -60,7 +60,7 @@ class KNNRecommendation:
     def test(self, bans: pd.DataFrame) -> float:
         all_accuracies = []
 
-        for position, model in self.roles.items():
+        for position, role in self.roles.items():
             prepared_data = extract_target_for_each_row(self.data, self.encoded_data, position)
 
             x = prepared_data.drop(columns=["target"])
@@ -68,7 +68,7 @@ class KNNRecommendation:
 
             x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-            model.fit(x_train, y_train)
+            role.fit(x_train, y_train)
 
             correct_predictions = 0
             total_predictions = 0
@@ -94,19 +94,19 @@ class KNNRecommendation:
         return total_accuracy
 
     def fit(self) -> None:
-        for position, model in self.roles.items():
+        for position, role in self.roles.items():
             prepared_data = extract_target_for_each_row(self.data, self.encoded_data, position)
             x = prepared_data.drop(columns=["target"])
             y = prepared_data["target"]
 
-            model.fit(x, y)
+            role.fit(x, y)
 
     def recommend(self, user_input: list, target_position: str) -> list[int]:
-        knn_model = self.roles[target_position]
+        knn_role = self.roles[target_position]
 
         user_input_reshaped = np.array(user_input).reshape(1, -1)
 
-        neighbors_indices = knn_model.kneighbors(user_input_reshaped, return_distance=False)[0]
+        neighbors_indices = knn_role.kneighbors(user_input_reshaped, return_distance=False)[0]
 
         unique_recommendations = set()
         attempts = 0
@@ -133,7 +133,7 @@ class KNNRecommendation:
         return final_recommendations
 
 
-def get_knn_models() -> dict[str, KNNRecommendation]:
+def get_knn_for_each_region() -> dict[str, KNNRecommendation]:
     knn_regions = {}
 
     knn_eu = KNNRecommendation(DATA_EU, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')
@@ -155,7 +155,7 @@ def get_knn_models() -> dict[str, KNNRecommendation]:
     return knn_regions
 
 
-def test_knn_models() -> None:
+def test_knn() -> None:
     print("Testing:")
 
     knn_eu = KNNRecommendation(DATA_EU, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')

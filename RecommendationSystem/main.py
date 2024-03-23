@@ -1,4 +1,4 @@
-from RecomAlgs.KNNRecommendations import get_knn_models, test_knn_models
+from RecomAlgs.KNNRecommendations import get_knn_for_each_region, test_knn
 from RecomAlgs.CosineSim import get_similarity_recommendations
 from RecomAlgs.occurance_counter import get_most_common_champions
 
@@ -10,6 +10,7 @@ def get_recommendations(user_input: list[int], target_position: str) -> dict[str
         recommendation = get_most_common_champions(target_position)
         print(f"Occurance recommendation: {recommendation}")
         return recommendation
+
     elif user_input.count(0) == len(user_input) - 1:
         index_of_target_position = POSITIONS.index(target_position)
 
@@ -20,7 +21,7 @@ def get_recommendations(user_input: list[int], target_position: str) -> dict[str
 
     game_state = create_game_scenario(user_input)
 
-    knn_models = get_knn_models()
+    knn_models = get_knn_for_each_region()
     knn_recommendations = {
         'eu': knn_models["eu"].recommend(game_state, target_position),
         'na': knn_models["na"].recommend(game_state, target_position),
@@ -75,7 +76,7 @@ def create_game_scenario(user_input: list[int]) -> list[int]:
 def main() -> None:
     testing_models = False
     if testing_models:
-        test_knn_models()
+        test_knn()
     else:
         example_user_input = [897,78,268,110,0,24,5,101,236,267]
         example_target_position = "Blue_Champion_5"
