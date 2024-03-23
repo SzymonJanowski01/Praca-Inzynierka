@@ -4,7 +4,7 @@ from RecomAlgs.CosineSim import get_similarity_recommendations
 from data_constants import CHAMPIONS_IDS
 
 
-def get_recommendations(user_input, target_position) -> dict[str, list[int]]:
+def get_recommendations(user_input: list[int], target_position: str) -> dict[str, list[int]]:
     game_state = create_game_scenario(user_input)
 
     knn_models = get_knn_models()
@@ -51,7 +51,7 @@ def get_recommendations(user_input, target_position) -> dict[str, list[int]]:
     return final_recommendations
 
 
-def create_game_scenario(user_input) -> list[int]:
+def create_game_scenario(user_input: list[int]) -> list[int]:
     game_scenario = [0] * len(CHAMPIONS_IDS)
     for champ_id in user_input:
         if champ_id != 0:
