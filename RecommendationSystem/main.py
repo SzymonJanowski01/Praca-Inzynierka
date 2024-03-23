@@ -21,12 +21,12 @@ def get_recommendations(user_input: list[int], target_position: str) -> dict[str
 
     game_state = create_game_scenario(user_input)
 
-    knn_models = get_knn_for_each_region()
+    knn_from_region = get_knn_for_each_region()
     knn_recommendations = {
-        'eu': knn_models["eu"].recommend(game_state, target_position),
-        'na': knn_models["na"].recommend(game_state, target_position),
-        'kr': knn_models["kr"].recommend(game_state, target_position),
-        'cn': knn_models["cn"].recommend(game_state, target_position)
+        'eu': knn_from_region["eu"].recommend(game_state, target_position),
+        'na': knn_from_region["na"].recommend(game_state, target_position),
+        'kr': knn_from_region["kr"].recommend(game_state, target_position),
+        'cn': knn_from_region["cn"].recommend(game_state, target_position)
     }
 
     cos_recommendations = get_similarity_recommendations(user_input, target_position)
@@ -74,8 +74,8 @@ def create_game_scenario(user_input: list[int]) -> list[int]:
 
 
 def main() -> None:
-    testing_models = False
-    if testing_models:
+    testing_knn = False
+    if testing_knn:
         test_knn()
     else:
         example_user_input = [897,78,268,110,0,24,5,101,236,267]
