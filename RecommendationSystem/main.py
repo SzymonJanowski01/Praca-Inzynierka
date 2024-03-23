@@ -22,15 +22,30 @@ def get_recommendations(user_input, target_position) -> dict[str, list[int]]:
 
     final_recommendations = {'eu': [], 'na': [], 'kr': [], 'cn': []}
 
-    # TODO: take 0 into account
     for region in ['eu', 'na', 'kr', 'cn']:
         for recommendation in knn_recommendations[region]:
-            if recommendation in cos_recommendations[region]:
+            if recommendation == 0:
+                continue
+            elif recommendation in cos_recommendations[region]:
                 final_recommendations[region].append(recommendation)
-        if len(final_recommendations[region]) < 3:
-            for recommendation in knn_recommendations[region]:
-                if recommendation not in final_recommendations[region]:
-                    final_recommendations[region].append(recommendation)
+
+        for recommendation in knn_recommendations[region]:
+            if len(final_recommendations[region]) == 3:
+                break
+            if recommendation == 0:
+                continue
+            elif recommendation not in final_recommendations[region]:
+                final_recommendations[region].append(recommendation)
+
+        for recommendation in cos_recommendations[region]:
+            if len(final_recommendations[region]) == 3:
+                break
+            if recommendation == 0:
+                continue
+            elif recommendation not in final_recommendations[region]:
+                final_recommendations[region].append(recommendation)
+        while len(final_recommendations[region]) < 3:
+            final_recommendations[region].append(0)
 
     print(f"Final: {final_recommendations}")
     return final_recommendations
