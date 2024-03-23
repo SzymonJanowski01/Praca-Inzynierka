@@ -1,7 +1,7 @@
 from Models.KNNRecommendations import get_knn_models, test_knn_models
 from Models.CosineSim import get_similarity_recommendations
 
-from data_constants import champions_ids
+from data_constants import CHAMPIONS_IDS
 
 
 def get_recommendations(user_input, target_position) -> dict:
@@ -36,10 +36,10 @@ def get_recommendations(user_input, target_position) -> dict:
 
 
 def create_game_scenario(user_input):
-    game_scenario = [0] * len(champions_ids)
+    game_scenario = [0] * len(CHAMPIONS_IDS)
     for champ_id in user_input:
         if champ_id != 0:
-            game_scenario[champions_ids.index(champ_id)] = 1
+            game_scenario[CHAMPIONS_IDS.index(champ_id)] = 1
     return game_scenario
 
 

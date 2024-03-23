@@ -11,21 +11,21 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from icecream import ic
 
-from data_constants import data_eu, data_na, data_kr, data_cn, positions, champions_ids, bans_cn, bans_eu, bans_kr, \
-    bans_na
+from data_constants import DATA_EU, DATA_NA, DATA_KR, DATA_CN, POSITIONS, CHAMPIONS_IDS, BANS_CN, BANS_EU, BANS_KR, \
+    BANS_NA
 
 
 def encode_data(data: pd.DataFrame) -> pd.DataFrame:
     champions_list = []
     for _, row in data.iterrows():
         row_list = []
-        for champ_id in champions_ids:
+        for champ_id in CHAMPIONS_IDS:
             if champ_id in row.values:
                 row_list.append(1)
             else:
                 row_list.append(0)
         champions_list.append(row_list)
-    encoded_data = pd.DataFrame(champions_list, columns=champions_ids)
+    encoded_data = pd.DataFrame(champions_list, columns=CHAMPIONS_IDS)
     # encoded_data.to_csv("encoded_data.csv", index=False)
     return encoded_data
 
@@ -55,7 +55,7 @@ class KNNRecommendation:
         self.metric = metric
         self.algorithm = algorithm
         self.models = {position: KNeighborsClassifier(n_neighbors=self.k, metric=self.metric, weights=self.weights,
-                                                      algorithm=self.algorithm) for position in positions}
+                                                      algorithm=self.algorithm) for position in POSITIONS}
 
     def test(self, bans: pd.DataFrame) -> float:
         all_accuracies = []
@@ -108,7 +108,6 @@ class KNNRecommendation:
 
         neighbors_indices = knn_model.kneighbors(user_input_reshaped, return_distance=False)[0]
 
-        recommendations = []
         unique_recommendations = set()
         attempts = 0
 
@@ -123,7 +122,6 @@ class KNNRecommendation:
                 attempts += 1
 
             unique_recommendations.add(recommendation)
-            recommendations.append(recommendation)
 
             if len(unique_recommendations) == 3:
                 break
@@ -134,19 +132,19 @@ class KNNRecommendation:
 def get_knn_models() -> dict:
     knn_regions = {}
 
-    knn_eu = KNNRecommendation(data_eu, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')
+    knn_eu = KNNRecommendation(DATA_EU, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')
     knn_eu.fit()
     knn_regions['eu'] = knn_eu
 
-    knn_na = KNNRecommendation(data_na, k=6, metric='minkowski', weights='uniform', algorithm='ball_tree')
+    knn_na = KNNRecommendation(DATA_NA, k=6, metric='minkowski', weights='uniform', algorithm='ball_tree')
     knn_na.fit()
     knn_regions['na'] = knn_na
 
-    knn_kr = KNNRecommendation(data_kr, k=5, metric='chebyshev', weights='uniform', algorithm='ball_tree')
+    knn_kr = KNNRecommendation(DATA_KR, k=5, metric='chebyshev', weights='uniform', algorithm='ball_tree')
     knn_kr.fit()
     knn_regions['kr'] = knn_kr
 
-    knn_cn = KNNRecommendation(data_cn, k=5, metric='chebyshev', weights='uniform', algorithm='brute')
+    knn_cn = KNNRecommendation(DATA_CN, k=5, metric='chebyshev', weights='uniform', algorithm='brute')
     knn_cn.fit()
     knn_regions['cn'] = knn_cn
 
@@ -156,21 +154,21 @@ def get_knn_models() -> dict:
 def test_knn_models():
     print("Testing:")
 
-    knn_eu = KNNRecommendation(data_eu, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')
+    knn_eu = KNNRecommendation(DATA_EU, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')
     print("EU")
-    knn_eu.test(bans_eu)
+    knn_eu.test(BANS_EU)
 
-    knn_na = KNNRecommendation(data_na, k=6, metric='minkowski', weights='uniform', algorithm='ball_tree')
+    knn_na = KNNRecommendation(DATA_NA, k=6, metric='minkowski', weights='uniform', algorithm='ball_tree')
     print("NA")
-    knn_na.test(bans_na)
+    knn_na.test(BANS_NA)
 
-    knn_kr = KNNRecommendation(data_kr, k=5, metric='chebyshev', weights='uniform', algorithm='ball_tree')
+    knn_kr = KNNRecommendation(DATA_KR, k=5, metric='chebyshev', weights='uniform', algorithm='ball_tree')
     print("KR")
-    knn_kr.test(bans_kr)
+    knn_kr.test(BANS_KR)
 
-    knn_cn = KNNRecommendation(data_cn, k=5, metric='chebyshev', weights='uniform', algorithm='brute')
+    knn_cn = KNNRecommendation(DATA_CN, k=5, metric='chebyshev', weights='uniform', algorithm='brute')
     print("CN")
-    knn_cn.test(bans_cn)
+    knn_cn.test(BANS_CN)
 
 
 def pick_best_knn_settings():
@@ -202,37 +200,37 @@ def pick_best_knn_settings():
                 ic(k, metric, algorithm)
                 try:
                     ic.disable()
-                    knn_cn = KNNRecommendation(data_cn, k, metric, 'uniform', algorithm)
+                    knn_cn = KNNRecommendation(DATA_CN, k, metric, 'uniform', algorithm)
                     knn_cn.fit()
 
-                    accuracy_cn = knn_cn.test(bans_cn)
+                    accuracy_cn = knn_cn.test(BANS_CN)
                     if accuracy_cn > best_accuracy_cn:
                         best_accuracy_cn = accuracy_cn
                         best_k_cn = k
                         best_metric_cn = metric
                         best_algorithm_cn = algorithm
 
-                    knn_eu = KNNRecommendation(data_eu, k, metric, 'uniform', algorithm)
+                    knn_eu = KNNRecommendation(DATA_EU, k, metric, 'uniform', algorithm)
                     knn_eu.fit()
-                    accuracy_eu = knn_eu.test(bans_eu)
+                    accuracy_eu = knn_eu.test(BANS_EU)
                     if accuracy_eu > best_accuracy_eu:
                         best_accuracy_eu = accuracy_eu
                         best_k_eu = k
                         best_metric_eu = metric
                         best_algorithm_eu = algorithm
 
-                    knn_na = KNNRecommendation(data_na, k, metric, 'uniform', algorithm)
+                    knn_na = KNNRecommendation(DATA_NA, k, metric, 'uniform', algorithm)
                     knn_na.fit()
-                    accuracy_na = knn_na.test(bans_na)
+                    accuracy_na = knn_na.test(BANS_NA)
                     if accuracy_na > best_accuracy_na:
                         best_accuracy_na = accuracy_na
                         best_k_na = k
                         best_metric_na = metric
                         best_algorithm_na = algorithm
 
-                    knn_kr = KNNRecommendation(data_kr, k, metric, 'uniform', algorithm)
+                    knn_kr = KNNRecommendation(DATA_KR, k, metric, 'uniform', algorithm)
                     knn_kr.fit()
-                    accuracy_kr = knn_kr.test(bans_kr)
+                    accuracy_kr = knn_kr.test(BANS_KR)
                     if accuracy_kr > best_accuracy_kr:
                         best_accuracy_kr = accuracy_kr
                         best_k_kr = k
