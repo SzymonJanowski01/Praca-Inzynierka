@@ -1,5 +1,5 @@
-from Models.KNNRecommendations import get_knn_models, test_knn_models
-from Models.CosineSim import get_similarity_recommendations
+from RecomAlgs.KNNRecommendations import get_knn_models, test_knn_models
+from RecomAlgs.CosineSim import get_similarity_recommendations
 
 from data_constants import CHAMPIONS_IDS
 
