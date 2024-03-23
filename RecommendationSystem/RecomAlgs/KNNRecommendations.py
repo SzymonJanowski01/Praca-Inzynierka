@@ -109,17 +109,10 @@ class KNNRecommendation:
         neighbors_indices = knn_role.kneighbors(user_input_reshaped, return_distance=False)[0]
 
         unique_recommendations = set()
-        attempts = 0
 
         for i, neighbor_index in enumerate(neighbors_indices):
             neighbor_labels = np.array([self.data.iloc[neighbor_index][target_position]])
             recommendation = Counter(neighbor_labels).most_common(1)[0][0]
-
-            while recommendation in unique_recommendations and attempts < len(neighbors_indices):
-                i = (i + 1) % len(neighbors_indices)
-                neighbor_labels = np.array([self.data.iloc[neighbors_indices[i]][target_position]])
-                recommendation = Counter(neighbor_labels).most_common(1)[0][0]
-                attempts += 1
 
             unique_recommendations.add(recommendation)
 
