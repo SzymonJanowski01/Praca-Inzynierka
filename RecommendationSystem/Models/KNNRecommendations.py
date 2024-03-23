@@ -93,7 +93,7 @@ class KNNRecommendation:
 
         return total_accuracy
 
-    def fit(self):
+    def fit(self) -> None:
         for position, model in self.models.items():
             prepared_data = extract_target_for_each_row(self.data, self.encoded_data, position)
             x = prepared_data.drop(columns=["target"])
@@ -101,7 +101,7 @@ class KNNRecommendation:
 
             model.fit(x, y)
 
-    def recommend(self, user_input: list, target_position: str) -> list:
+    def recommend(self, user_input: list, target_position: str) -> list[int]:
         knn_model = self.models[target_position]
 
         user_input_reshaped = np.array(user_input).reshape(1, -1)
@@ -133,7 +133,7 @@ class KNNRecommendation:
         return final_recommendations
 
 
-def get_knn_models() -> dict:
+def get_knn_models() -> dict[str, KNNRecommendation]:
     knn_regions = {}
 
     knn_eu = KNNRecommendation(DATA_EU, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')
@@ -155,7 +155,7 @@ def get_knn_models() -> dict:
     return knn_regions
 
 
-def test_knn_models():
+def test_knn_models() -> None:
     print("Testing:")
 
     knn_eu = KNNRecommendation(DATA_EU, k=18, metric='chebyshev', weights='uniform', algorithm='ball_tree')
@@ -175,7 +175,7 @@ def test_knn_models():
     knn_cn.test(BANS_CN)
 
 
-def pick_best_knn_settings():
+def pick_best_knn_settings() -> None:
     best_accuracy_eu = 0
     best_k_eu = 0
     best_metric_eu = ""

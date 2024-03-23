@@ -4,7 +4,7 @@ from Models.CosineSim import get_similarity_recommendations
 from data_constants import CHAMPIONS_IDS
 
 
-def get_recommendations(user_input, target_position) -> dict:
+def get_recommendations(user_input, target_position) -> dict[str, list[int]]:
     game_state = create_game_scenario(user_input)
 
     knn_models = get_knn_models()
@@ -22,6 +22,7 @@ def get_recommendations(user_input, target_position) -> dict:
 
     final_recommendations = {'eu': [], 'na': [], 'kr': [], 'cn': []}
 
+    # TODO: take 0 into account
     for region in ['eu', 'na', 'kr', 'cn']:
         for recommendation in knn_recommendations[region]:
             if recommendation in cos_recommendations[region]:
@@ -35,7 +36,7 @@ def get_recommendations(user_input, target_position) -> dict:
     return final_recommendations
 
 
-def create_game_scenario(user_input):
+def create_game_scenario(user_input) -> list[int]:
     game_scenario = [0] * len(CHAMPIONS_IDS)
     for champ_id in user_input:
         if champ_id != 0:
@@ -43,7 +44,7 @@ def create_game_scenario(user_input):
     return game_scenario
 
 
-def main():
+def main() -> None:
     testing_models = False
     if testing_models:
         test_knn_models()

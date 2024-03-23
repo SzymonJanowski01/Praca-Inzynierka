@@ -4,7 +4,7 @@ import numpy as np
 from data_constants import DATA_EU, DATA_NA, DATA_KR, DATA_CN, POSITIONS
 
 
-def get_similarity_recommendations(base_list: list, target_position: str) -> dict:
+def get_similarity_recommendations(base_list: list, target_position: str) -> dict[str, list[int]]:
     cos_sim_regions = {'eu': [], 'na': [], 'kr': [], 'cn': []}
 
     for region_data, region_name in zip([DATA_EU, DATA_NA, DATA_KR, DATA_CN], ['eu', 'na', 'kr', 'cn']):

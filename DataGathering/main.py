@@ -75,7 +75,7 @@ def get_most_recent_games(most_recent_tournaments: List[str]) -> pd.DataFrame:
     return df
 
 
-def check_id_matching(games: pd.DataFrame):
+def check_id_matching(games: pd.DataFrame) -> None:
     """
     Checks if the champion ids match the names.
     :param games: Games from the most recent tournaments from all regions.
@@ -96,7 +96,7 @@ def check_id_matching(games: pd.DataFrame):
         print(f"{game['Region']}: {blue_champions_names} vs {red_champions_names}")
 
 
-def create_backup_and_write_csv(games: pd.DataFrame):
+def create_backup_and_write_csv(games: pd.DataFrame) -> None:
     """
     Creates a backup of the most recent games and writes the new games to a csv file.
     :param games: Most recent games from all regions.
@@ -112,7 +112,7 @@ def create_backup_and_write_csv(games: pd.DataFrame):
         games.to_csv('most_recent_games_backup.csv', index=False)
 
 
-def restore_from_backup(file_path: str):
+def restore_from_backup(file_path: str) -> None:
     """
     Restores the csv file with games from the backup.
     :param file_path: Path to the file to restore.
@@ -122,7 +122,7 @@ def restore_from_backup(file_path: str):
     shutil.copy(backup_file_path, file_path)
 
 
-def main():
+def main() -> None:
     testing = False
 
     regions = ['EMEA', 'China', 'Korea', 'North America']
