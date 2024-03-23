@@ -108,22 +108,16 @@ class KNNRecommendation:
 
         neighbors_indices = knn_role.kneighbors(user_input_reshaped, return_distance=False)[0]
 
-        unique_recommendations = set()
+        neighbor_labels = np.array([self.data.iloc[index][target_position] for index in neighbors_indices])
 
-        for i, neighbor_index in enumerate(neighbors_indices):
-            neighbor_labels = np.array([self.data.iloc[neighbor_index][target_position]])
-            recommendation = Counter(neighbor_labels).most_common(1)[0][0]
+        most_common_recommendations = Counter(neighbor_labels).most_common(3)
 
-            unique_recommendations.add(recommendation)
+        recommendations = [recommendation for recommendation, _ in most_common_recommendations]
 
-            if len(unique_recommendations) == 3:
-                break
+        while len(recommendations) < 3:
+            recommendations.append(0)
 
-        final_recommendations = list(unique_recommendations)
-        while len(final_recommendations) < 3:
-            final_recommendations.append(0)
-
-        return final_recommendations
+        return recommendations
 
 
 def get_knn_for_each_region() -> dict[str, KNNRecommendation]:
