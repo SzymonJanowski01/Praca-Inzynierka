@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.database import Base
 from app.services.password_operations import password_hashing, password_check
-from app.supporting_functions import match_champions_with_ids
+from app.supporting_functions import match_champions_with_ids, match_champions_with_names
 
 from RecommendationSystem.main import get_recommendations
 
@@ -402,4 +402,6 @@ class Phase(Base):
 
         recommendation: dict[str, list[int]] = get_recommendations(champions_ids, target_position)
 
-        return recommendation
+        final_recommendation = match_champions_with_names(recommendation)
+
+        return final_recommendation
