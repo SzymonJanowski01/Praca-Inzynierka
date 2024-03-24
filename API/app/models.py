@@ -1,3 +1,5 @@
+import sys
+import os
 from uuid import uuid4
 from typing import List, Dict, Union
 from datetime import datetime
@@ -9,6 +11,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.database import Base
 from app.services.password_operations import password_hashing, password_check
+from app.supporting_functions import match_champions_with_ids
+
+from RecommendationSystem.main import get_recommendations
 
 
 class User(Base):
@@ -296,7 +301,8 @@ class Phase(Base):
         for i in range(1, 6):
             phase_id = uuid4().hex
             name = f"B{i}"
-            phase = cls(phase_id=phase_id, scenario_id=scenario_id, name=name, main_character="Any")
+            phase = cls(phase_id=phase_id, scenario_id=scenario_id, name=name, main_character="None",
+                        first_alternative_character="None", second_alternative_character="None")
             phase_ids.append(phase_id)
             db.add(phase)
 
@@ -304,7 +310,8 @@ class Phase(Base):
         for i in range(1, 6):
             phase_id = uuid4().hex
             name = f"R{i}"
-            phase = cls(phase_id=phase_id, scenario_id=scenario_id, name=name, main_character="Any")
+            phase = cls(phase_id=phase_id, scenario_id=scenario_id, name=name, main_character="None",
+                        first_alternative_character="None", second_alternative_character="None")
             phase_ids.append(phase_id)
             db.add(phase)
 
@@ -382,3 +389,17 @@ class Phase(Base):
         await db.commit()
 
         return phases
+
+    @classmethod
+    async def get_recommendations(cls, db: AsyncSession, user_id: str, champions_list: list[str],
+                                  target_position: str) -> Union[dict | None]:
+
+        user = await db.get(User, user_id)
+        if not user:
+            return None
+
+        champions_ids: list[int] = match_champions_with_ids(champions_list)
+
+        recommendation: dict[str, list[int]] = get_recommendations(champions_ids, target_position)
+
+        return recommendation
