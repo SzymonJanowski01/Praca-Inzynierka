@@ -1,5 +1,4 @@
 import pandas as pd
-from icecream import ic
 from typing import List
 
 DATA: pd.DataFrame = pd.read_csv(r'D:\GitHubDesktop - new\Praca-Inzynierka\DataGathering\most_recent_games.csv')
@@ -32,10 +31,10 @@ DATA_KR = DATA[DATA['Region'] == 'LCK'].drop(columns=['Region', 'Bans'])
 DATA_CN = DATA[DATA['Region'] == 'LPL'].drop(columns=['Region', 'Bans'])
 
 if __name__ == "__main__":
-    ic(len(DATA_CN))
-    ic(len(DATA_EU))
-    ic(len(DATA_NA))
-    ic(len(DATA_KR))
+    print(len(DATA_CN))
+    print(len(DATA_EU))
+    print(len(DATA_NA))
+    print(len(DATA_KR))
 
     # DATA_CN.to_csv("data_cn.csv", index=False)
     # BANS_CN.to_csv("bans_cn.csv", index=False)

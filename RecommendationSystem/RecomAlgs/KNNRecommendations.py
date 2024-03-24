@@ -9,7 +9,6 @@ import pandas as pd
 from sklearn.exceptions import DataConversionWarning
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
-from icecream import ic
 
 from data_constants import DATA_EU, DATA_NA, DATA_KR, DATA_CN, POSITIONS, CHAMPIONS_IDS, BANS_CN, BANS_EU, BANS_KR, \
     BANS_NA
@@ -89,7 +88,7 @@ class KNNRecommendation:
 
         total_accuracy = sum(all_accuracies) / len(all_accuracies)
         total_accuracy = round(total_accuracy, 2)
-        ic(f"KNN accuracy: {total_accuracy}%")
+        print(f"KNN accuracy: {total_accuracy}%")
 
         return total_accuracy
 
@@ -188,9 +187,8 @@ def pick_best_knn_settings() -> None:
             for metric in ['minkowski', 'euclidean', 'manhattan', 'cosine', 'canberra', 'braycurtis', 'chebyshev',
                            'correlation', 'cityblock', 'sqeuclidean', 'jaccard', 'dice', 'hamming', 'rogerstanimoto',
                            'russellrao', 'sokalmichener', 'sokalsneath', 'yule']:
-                ic(k, metric, algorithm)
+                print(k, metric, algorithm)
                 try:
-                    ic.disable()
                     knn_cn = KNNRecommendation(DATA_CN, k, metric, 'uniform', algorithm)
                     knn_cn.fit()
 
@@ -227,24 +225,21 @@ def pick_best_knn_settings() -> None:
                         best_k_kr = k
                         best_metric_kr = metric
                         best_algorithm_kr = algorithm
-
-                    ic.enable()
                 except ValueError:
-                    ic.enable()
                     continue
 
     best_accuracy_cn = "{:.2f}".format(best_accuracy_cn)
     best_accuracy_eu = "{:.2f}".format(best_accuracy_eu)
     best_accuracy_na = "{:.2f}".format(best_accuracy_na)
     best_accuracy_kr = "{:.2f}".format(best_accuracy_kr)
-    ic(best_accuracy_cn, best_k_cn, best_metric_cn, best_algorithm_cn)
-    ic(best_accuracy_eu, best_k_eu, best_metric_eu, best_algorithm_eu)
-    ic(best_accuracy_na, best_k_na, best_metric_na, best_algorithm_na)
-    ic(best_accuracy_kr, best_k_kr, best_metric_kr, best_algorithm_kr)
+    print(best_accuracy_cn, best_k_cn, best_metric_cn, best_algorithm_cn)
+    print(best_accuracy_eu, best_k_eu, best_metric_eu, best_algorithm_eu)
+    print(best_accuracy_na, best_k_na, best_metric_na, best_algorithm_na)
+    print(best_accuracy_kr, best_k_kr, best_metric_kr, best_algorithm_kr)
 
     end = time.perf_counter()
     final = end - start
-    ic(f"Time: {timedelta(seconds=final)}")
+    print(f"Time: {timedelta(seconds=final)}")
 
 
 if __name__ == "__main__":
