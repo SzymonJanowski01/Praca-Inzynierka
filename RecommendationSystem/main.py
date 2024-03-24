@@ -1,10 +1,10 @@
 import random
 
-from RecomAlgs.KNNRecommendations import get_knn_for_each_region, test_knn
-from RecomAlgs.CosineSim import get_similarity_recommendations
-from RecomAlgs.occurance_counter import get_most_common_champions
+from .RecomAlgs.KNNRecommendations import get_knn_for_each_region, test_knn
+from .RecomAlgs.CosineSim import get_similarity_recommendations
+from .RecomAlgs.occurance_counter import get_most_common_champions
 
-from data_constants import CHAMPIONS_IDS, POSITIONS
+from .data_constants import CHAMPIONS_IDS, POSITIONS
 
 
 def get_recommendations(user_input: list[int], target_position: str) -> dict[str, list[int]]:
