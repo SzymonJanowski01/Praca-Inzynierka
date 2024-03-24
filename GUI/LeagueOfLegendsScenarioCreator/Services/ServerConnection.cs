@@ -541,5 +541,27 @@ namespace LeagueOfLegendsScenarioCreator.Services
 
             return attr!;
         }
+
+        #region Recommendations
+        public static async Task<Dictionary<string, ObservableCollection<string>>> GetRecommendations(string userId, ObservableCollection<string> championsList)
+        {
+            using StringContent json = new(
+                JsonSerializer.Serialize(new
+                {
+                    championsList
+                }), Encoding.UTF8, "application/json");
+
+            using HttpResponseMessage response = await sharedClient.PostAsync($"/api/phase/get_recommendation/{userId}", json);
+
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception($"Unexpected response status code: {response.StatusCode}");
+            }
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var recommendations = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<string>>>(jsonResponse);
+            return recommendations!;
+        }
+        #endregion
     }
 }
