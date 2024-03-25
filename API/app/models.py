@@ -394,8 +394,8 @@ class Phase(Base):
     async def get_recommendations(cls, db: AsyncSession, user_id: str, champions_list: list[str],
                                   target_position: str) -> Union[dict | None]:
 
-        user = await db.get(User, user_id)
-        if not user:
+        users_ids = (await db.execute(select(User.user_id))).scalars().all()
+        if user_id not in users_ids:
             return None
 
         champions_ids: list[int] = match_champions_with_ids(champions_list)

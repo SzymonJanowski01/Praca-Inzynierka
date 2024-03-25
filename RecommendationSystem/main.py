@@ -10,7 +10,6 @@ from .data_constants import CHAMPIONS_IDS, POSITIONS
 def get_recommendations(user_input: list[int], target_position: str) -> dict[str, list[int]]:
     if all(x == 0 for x in user_input):
         recommendation = get_most_common_champions(target_position)
-        print(f"Occurance recommendation: {recommendation}")
         return recommendation
 
     elif user_input.count(0) == len(user_input) - 1:
@@ -18,7 +17,6 @@ def get_recommendations(user_input: list[int], target_position: str) -> dict[str
 
         if user_input[index_of_target_position] != 0:
             recommendation = get_most_common_champions(target_position)
-            print(f"Occurance recommendation: {recommendation}")
             return recommendation
 
     game_state = create_game_scenario(user_input)
@@ -32,9 +30,6 @@ def get_recommendations(user_input: list[int], target_position: str) -> dict[str
     }
 
     cos_recommendations = get_similarity_recommendations(user_input, target_position)
-
-    print(f"Cos: {cos_recommendations}")
-    print(f"KNN: {knn_recommendations}")
 
     final_recommendations = {'eu': [], 'na': [], 'kr': [], 'cn': []}
 
@@ -63,7 +58,6 @@ def get_recommendations(user_input: list[int], target_position: str) -> dict[str
         while len(final_recommendations[region]) < 3:
             final_recommendations[region].append(0)
 
-    print(f"Final: {final_recommendations}")
     return final_recommendations
 
 
