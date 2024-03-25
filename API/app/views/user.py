@@ -49,15 +49,14 @@ async def get_user(user_id: str, db: AsyncSession = Depends(get_db)):
     return user
 
 
-# delete before production
-@router.get("/get-users", response_model=list[UserSchema])
-async def get_users(db: AsyncSession = Depends(get_db)):
-    users = await UserModel.get_all_users(db)
-
-    if not users:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No users found.")
-
-    return users
+    # @router.get("/get-users", response_model=list[UserSchema])
+    # async def get_users(db: AsyncSession = Depends(get_db)):
+    #     users = await UserModel.get_all_users(db)
+    #
+    #     if not users:
+    #         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No users found.")
+    #
+    # return users
 
 
 @router.post("/create-user", response_model=UserSchema)
