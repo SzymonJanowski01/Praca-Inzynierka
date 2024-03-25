@@ -24,7 +24,7 @@ def client(app):
         yield c
 
 
-test_db = factories.postgresql_proc(port=None, dbname="test_db")
+test_db = factories.postgresql_proc(port=5555, dbname="test_db")
 
 
 @pytest.fixture(scope="session")
