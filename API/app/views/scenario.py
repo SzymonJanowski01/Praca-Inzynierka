@@ -36,7 +36,7 @@ class ScenarioSchema(ScenarioSchemaBase):
 
 
 @router.get("/get-user-scenarios-names/{user_id}")
-async def get_scenario(user_id: str, db: AsyncSession = Depends(get_db)):
+async def get_user_scenarios_names(user_id: str, db: AsyncSession = Depends(get_db)):
     scenario = await ScenarioModel.get_scenarios_names(db, user_id)
 
     if not scenario:
