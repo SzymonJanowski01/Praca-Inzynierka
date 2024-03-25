@@ -543,15 +543,13 @@ namespace LeagueOfLegendsScenarioCreator.Services
         }
 
         #region Recommendations
-        public static async Task<Dictionary<string, ObservableCollection<string>>> GetRecommendations(string userId, ObservableCollection<string> championsList)
+        public static async Task<Dictionary<string, ObservableCollection<string>>> GetRecommendations(string userId, ObservableCollection<string> championsList, string TargetPosition)
         {
             using StringContent json = new(
-                JsonSerializer.Serialize(new
-                {
-                    championsList
-                }), Encoding.UTF8, "application/json");
-
-            using HttpResponseMessage response = await sharedClient.PostAsync($"/api/phase/get_recommendation/{userId}", json);
+                JsonSerializer.Serialize(championsList), 
+                Encoding.UTF8, 
+                "application/json");
+            using HttpResponseMessage response = await sharedClient.PostAsync($"/api/phase/recommendations/{userId}?target_position={TargetPosition}", json);
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
