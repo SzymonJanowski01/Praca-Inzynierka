@@ -10,14 +10,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
     /// </summary>
     public class MainWindowViewModel : ViewModelBase
     {
-        [Reactive]
-        public ViewModelBase? Content { get; set; }
+        [Reactive] public ViewModelBase? Content { get; set; }
 
-        [Reactive]
-        public User? User { get; set; }
+        [Reactive] public User? User { get; set; }
 
-        [Reactive]
-        public Scenario? Scenario { get; set; }
+        [Reactive] public Scenario? Scenario { get; set; }
 
         public MainWindowViewModel() 
         {

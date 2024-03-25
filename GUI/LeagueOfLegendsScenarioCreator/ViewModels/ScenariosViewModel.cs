@@ -16,26 +16,19 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
     /// </summary>
     public class ScenariosViewModel : ViewModelBase
     {
-        [Reactive]
-        public MainWindowViewModel? MainWindowContent { get; set; }
+        [Reactive] public MainWindowViewModel? MainWindowContent { get; set; }
 
-        [Reactive]
-        public Scenario? SelectedItem { get; set; }
+        [Reactive] public Scenario? SelectedItem { get; set; }
 
-        [Reactive]
-        public string NameInput { get; set; }
+        [Reactive] public string NameInput { get; set; }
 
-        [Reactive]
-        public string? Filter { get; set; }
+        [Reactive] public string? Filter { get; set; }
 
-        [Reactive]
-        public int? CurrentPage { get; set; }
+        [Reactive] public int? CurrentPage { get; set; }
 
-        [Reactive]
-        public int? TotalPages { get; set; }
+        [Reactive] public int? TotalPages { get; set; }
 
-        [Reactive]
-        public bool ScenarioCreationLock { get; set; }
+        [Reactive] public bool ScenarioCreationLock { get; set; }
 
         public ReactiveCommand<Unit, Unit> AddScenarioCommand { get; private set; }
         public ReactiveCommand<string, Unit> ChangePageCommand { get; private set; }

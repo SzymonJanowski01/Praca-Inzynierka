@@ -17,20 +17,15 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
     /// </summary>
     public class LoginViewModel : ViewModelBase
     {
-        [Reactive]
-        public MainWindowViewModel? MainWindowContent { get; set; }
+        [Reactive] public MainWindowViewModel? MainWindowContent { get; set; }
 
-        [Reactive]
-        public string? UsernameOrEmail { get; set; }
+        [Reactive] public string? UsernameOrEmail { get; set; }
 
-        [Reactive]
-        public string? Password { get; set; }
+        [Reactive] public string? Password { get; set; }
 
-        [Reactive]
-        public string? LoginIncorrectData { get; set; }
+        [Reactive] public string? LoginIncorrectData { get; set; }
 
-        [Reactive]
-        public bool LoginLock { get; set; }
+        [Reactive] public bool LoginLock { get; set; }
 
         public ReactiveCommand<Unit, Unit> LoginCommand { get; private set; }
 

@@ -53,7 +53,6 @@ async def create_empty_phases(scenario_id: str, db: AsyncSession = Depends(get_d
 async def get_recommendations(user_id: str, champions_list: list[str], target_position: str,
                              db: AsyncSession = Depends(get_db)):
     recommendations = await PhaseModel.get_recommendations(db, user_id, champions_list, target_position)
-    print(recommendations)
 
     if not recommendations:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

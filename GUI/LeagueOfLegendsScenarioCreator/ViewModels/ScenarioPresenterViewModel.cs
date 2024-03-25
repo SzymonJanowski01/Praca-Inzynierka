@@ -19,14 +19,11 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
     /// </summary>
     public class ScenarioPresenterViewModel : ViewModelBase
     {
-        [Reactive]
-        public MainWindowViewModel? MainWindowContent { get; set; }
+        [Reactive] public MainWindowViewModel? MainWindowContent { get; set; }
 
-        [Reactive]
-        public ObservableCollection<PhaseProjector> BluePhases { get; set; }
+        [Reactive] public ObservableCollection<PhaseProjector> BluePhases { get; set; }
 
-        [Reactive]
-        public ObservableCollection<PhaseProjector> RedPhases { get; set; }
+        [Reactive] public ObservableCollection<PhaseProjector> RedPhases { get; set; }
 
         public ReactiveCommand<Unit, Unit> BackCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> UserSettingsCommand { get; private set; }

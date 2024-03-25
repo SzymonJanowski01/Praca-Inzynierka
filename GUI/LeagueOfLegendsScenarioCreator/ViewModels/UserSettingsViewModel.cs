@@ -15,47 +15,33 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
     public class UserSettingsViewModel : ViewModelBase
     {
-        [Reactive]
-        public MainWindowViewModel? MainWindowContent { get; set; }
+        [Reactive] public MainWindowViewModel? MainWindowContent { get; set; }
 
-        [Reactive]
-        public string? UsernameUpdate { get; set; }
+        [Reactive] public string? UsernameUpdate { get; set; }
 
-        [Reactive]
-        public string? EmailUpdate { get; set; }
+        [Reactive] public string? EmailUpdate { get; set; }
 
-        [Reactive]
-        public string? PasswordUpdate { get; set; }
+        [Reactive] public string? PasswordUpdate { get; set; }
 
-        [Reactive]
-        public string? ConfirmPasswordUpdate { get; set; }
+        [Reactive] public string? ConfirmPasswordUpdate { get; set; }
 
-        [Reactive]
-        public int ScenariosNumbers { get; set; }
+        [Reactive] public int ScenariosNumbers { get; set; }
         
-        [Reactive]
-        public string? UpdateMessage { get; set; }
+        [Reactive] public string? UpdateMessage { get; set; }
 
-        [Reactive]
-        public string? InformationBorderColor { get; set; }
+        [Reactive] public string? InformationBorderColor { get; set; }
 
-        [Reactive]
-        public bool IsButtonEnabled { get; set; }
+        [Reactive] public bool IsButtonEnabled { get; set; }
 
-        [Reactive]
-        public bool DeletionConfirmation { get; set; }
+        [Reactive] public bool DeletionConfirmation { get; set; }
 
-        [Reactive]
-        public string? Password { get; set; }
+        [Reactive] public string? Password { get; set; }
 
-        [Reactive]
-        public string? DeletionIncorrectData { get; set; }
+        [Reactive] public string? DeletionIncorrectData { get; set; }
 
-        [Reactive]
-        public bool DeletionLock { get; set; }
+        [Reactive] public bool DeletionLock { get; set; }
 
-        [Reactive]
-        public bool BackConfirmation { get; set; }
+        [Reactive] public bool BackConfirmation { get; set; }
 
         public ReactiveCommand<Unit, Unit> UpdateCommand { get; private set; }
         public ReactiveCommand<Unit, Unit> SaveAndExitCommand { get; private set; }
