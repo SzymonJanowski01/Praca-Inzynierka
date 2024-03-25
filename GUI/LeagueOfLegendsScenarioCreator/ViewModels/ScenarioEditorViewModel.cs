@@ -20,37 +20,21 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
     public class ScenarioEditorViewModel : ViewModelBase
     {
         [Reactive] public MainWindowViewModel? MainWindowContent { get; set; }
-
         [Reactive] public int? UniformGridHeight { get; set; }
-
         [Reactive] public string? Filter { get; set; }
-
         [Reactive] public Dictionary<int, string>? OriginalPhaseChampions { get; set; }
-
         [Reactive] public Dictionary<int, string>? NewPhaseChampions { get; set; }
-
         [Reactive] public ObservableCollection<ImageLoader> RequestedChampions { get; set; }
-
         [Reactive] public ObservableCollection<PhaseProjector> BluePhases { get; set; }
-
         [Reactive] public ObservableCollection<PhaseProjector> RedPhases { get; set; }
-
         [Reactive] public Bitmap? SelectedImage { get; set; }
-
         [Reactive] public string? SelectedChampionName { get; set; }
-
         [Reactive] public ObservableCollection<string> PhaseChampionsNames { get; set; }
-
         [Reactive] public Dictionary<string, ObservableCollection<string>> Recommendations { get; set; }
-
         [Reactive] public ObservableCollection<PhaseProjector> LPLChampions { get; set; }
-
         [Reactive] public ObservableCollection<PhaseProjector> LCKChampions { get; set; }
-
         [Reactive] public ObservableCollection<PhaseProjector> LECChampions { get; set; }
-
         [Reactive] public ObservableCollection<PhaseProjector> LCSChampions { get; set; }
-
 
         public ReactiveCommand<ImageLoader, Unit> SelectChampionImageCommand { get; private set; }
         public ReactiveCommand<PhaseProjector, Unit> SelectMCCommand { get; private set; }
