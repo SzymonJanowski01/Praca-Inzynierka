@@ -70,47 +70,7 @@ def create_game_scenario(user_input: list[int]) -> list[int]:
 
 
 def main() -> None:
-    testing_knn = False
-    if testing_knn:
-        test_knn()
-    else:
-        print("Set:")
-        example_user_input = [150,526,42,429,0,58,78,163,110,81]
-        example_target_position = "Blue_Champion_5"
-
-        get_recommendations(example_user_input, example_target_position)
-
-        print("\nRandom:")
-        for x in range(5):
-            example_user_input = random.choices(CHAMPIONS_IDS, k=10)
-            example_target_position = random.choice(POSITIONS)
-
-            get_recommendations(example_user_input, example_target_position)
-            print()
-        print("\nZeroes:")
-        for x in range(5):
-            example_user_input = [0] * 10
-            example_target_position = random.choice(POSITIONS)
-
-            get_recommendations(example_user_input, example_target_position)
-            print()
-        print("Only one champion:")
-        for x in range(5):
-            example_user_input = [0] * 10
-            example_target_position = random.choice(POSITIONS)
-            example_user_input[POSITIONS.index(example_target_position)] = random.choice(CHAMPIONS_IDS)
-
-            get_recommendations(example_user_input, example_target_position)
-            print()
-        print("Zeroes with random:")
-        for x in range(5):
-            example_user_input = [0] * 10
-            example_target_position = random.choice(POSITIONS)
-            example_user_input[POSITIONS.index(example_target_position)] = random.choice(CHAMPIONS_IDS)
-            example_user_input[random.choice(range(10))] = random.choice(CHAMPIONS_IDS)
-
-            get_recommendations(example_user_input, example_target_position)
-            print()
+    test_knn()
 
 
 if __name__ == "__main__":
