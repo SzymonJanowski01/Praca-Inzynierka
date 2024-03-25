@@ -13,14 +13,22 @@ def test_set_values():
         assert all(recommendation >= 0 for recommendation in region_recommendations)
 
 def test_random_values():
+    recommendation_list = []
+
     for x in range(5):
         example_user_input = random.choices(CHAMPIONS_IDS, k=10)
         example_target_position = random.choice(POSITIONS)
 
         recommendations = get_recommendations(example_user_input, example_target_position)
-        for region, region_recommendations in recommendations.items():
-            assert len(region_recommendations) == 3
-            assert all(recommendation >= 0 for recommendation in region_recommendations)
+        recommendation_list.append(recommendations)
+
+    for region, region_recommendations in recommendations.items():
+        assert len(region_recommendations) == 3
+        assert all(recommendation >= 0 for recommendation in region_recommendations)
+
+    random_index = random.choice(range(5))
+    different_index = random.choice([x for x in range(5) if x != random_index])
+    assert recommendation_list[random_index] != recommendation_list[different_index]
 
 def test_zeroes_values():
     for x in range(5):
