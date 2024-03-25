@@ -19,35 +19,37 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 {
     public class ScenarioEditorViewModel : ViewModelBase
     {
-        [Reactive]
-        public MainWindowViewModel? MainWindowContent { get; set; }
+        [Reactive] public MainWindowViewModel? MainWindowContent { get; set; }
 
-        [Reactive]
-        public int? UniformGridHeight { get; set; }
+        [Reactive] public int? UniformGridHeight { get; set; }
 
-        [Reactive]
-        public string? Filter { get; set; }
+        [Reactive] public string? Filter { get; set; }
 
-        [Reactive]
-        public Dictionary<int, string>? OriginalPhaseChampions { get; set; }
+        [Reactive] public Dictionary<int, string>? OriginalPhaseChampions { get; set; }
 
-        [Reactive]
-        public Dictionary<int, string>? NewPhaseChampions { get; set; }
+        [Reactive] public Dictionary<int, string>? NewPhaseChampions { get; set; }
 
-        [Reactive]
-        public ObservableCollection<ImageLoader> RequestedChampions { get; set; }
+        [Reactive] public ObservableCollection<ImageLoader> RequestedChampions { get; set; }
 
-        [Reactive]
-        public ObservableCollection<PhaseProjector> BluePhases { get; set; }
+        [Reactive] public ObservableCollection<PhaseProjector> BluePhases { get; set; }
 
-        [Reactive]
-        public ObservableCollection<PhaseProjector> RedPhases { get; set; }
+        [Reactive] public ObservableCollection<PhaseProjector> RedPhases { get; set; }
 
-        [Reactive]
-        public Bitmap? SelectedImage { get; set; }
+        [Reactive] public Bitmap? SelectedImage { get; set; }
 
-        [Reactive]
-        public string? SelectedChampionName { get; set; }
+        [Reactive] public string? SelectedChampionName { get; set; }
+
+        [Reactive] public ObservableCollection<string> PhaseChampionsNames { get; set; }
+
+        [Reactive] public Dictionary<string, ObservableCollection<string>> Recommendations { get; set; }
+
+        [Reactive] public ObservableCollection<PhaseProjector> LPLChampions { get; set; }
+
+        [Reactive] public ObservableCollection<PhaseProjector> LCKChampions { get; set; }
+
+        [Reactive] public ObservableCollection<PhaseProjector> LECChampions { get; set; }
+
+        [Reactive] public ObservableCollection<PhaseProjector> LCSChampions { get; set; }
 
 
         public ReactiveCommand<ImageLoader, Unit> SelectChampionImageCommand { get; private set; }
@@ -71,6 +73,13 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             BluePhases = new ObservableCollection<PhaseProjector>(MatchChampionsNames(true));
             RedPhases = new ObservableCollection<PhaseProjector>(MatchChampionsNames(false));
             RequestedChampions = new ObservableCollection<ImageLoader>(GetChampionsImages()!);
+            PhaseChampionsNames = GetPhaseChampionsNames()!;
+            Recommendations = new Dictionary<string, ObservableCollection<string>>();
+
+            LPLChampions = new ObservableCollection<PhaseProjector>();
+            LCKChampions = new ObservableCollection<PhaseProjector>();
+            LECChampions = new ObservableCollection<PhaseProjector>();
+            LCSChampions = new ObservableCollection<PhaseProjector>();
 
             UniformGridHeight = 75 * ((RequestedChampions.Count + 5) / 6);
 
@@ -102,6 +111,17 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             }
 
             return originalPhaseChampions;
+        }
+
+        public ObservableCollection<string> GetPhaseChampionsNames()
+        {
+            var phaseChampionsNames = new ObservableCollection<string>();
+            foreach (var phase in MainWindowContent!.Scenario!.Phases!)
+            {
+                phaseChampionsNames.Add(phase.MainCharacter!);
+            }
+
+            return phaseChampionsNames;
         }
 
         public IEnumerable<PhaseProjector> MatchChampionsNames(bool firstFive)
@@ -152,7 +172,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
              "Rumble", "Ryze", "Samira", "Sejuani",
              "Senna", "Seraphine", "Sett", "Shaco",
              "Shen", "Shyvana", "Singed", "Sion",
-             "Sivir", "Skarner", "Sona", "Soraka",
+             "Sivir", "Skarner", "Smolder", "Sona", "Soraka",
              "Swain", "Sylas", "Syndra", "TahmKench",
              "Taliyah", "Talon", "Taric", "Teemo",
              "Thresh", "Tristana", "Trundle", "Tryndamere",
@@ -190,35 +210,97 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             SelectedImage = champion.ChampionImage;
             SelectedChampionName = champion.Name;
         }
+        
+        public async void GetRecommendations(string TargetPosition)
+        {
+            Recommendations = await ServerConnection.GetRecommendations(MainWindowContent!.User!.UserId!, GetPhaseChampionsNames()!, TargetPosition);
+
+            LPLChampions.Clear();
+            LCKChampions.Clear();
+            LECChampions.Clear();
+            LCSChampions.Clear();
+
+            foreach (var champion in Recommendations["cn"])
+            {
+                LPLChampions.Add(new PhaseProjector(new Image("Splashes", champion, "jpg"), null, null, "LPL"));
+            }
+            foreach (var champion in Recommendations["kr"])
+            {
+                LCKChampions.Add(new PhaseProjector(new Image("Splashes", champion, "jpg"), null, null, "LCK"));
+            }
+            foreach (var champion in Recommendations["eu"])
+            {
+                LECChampions.Add(new PhaseProjector(new Image("Splashes", champion, "jpg"), null, null, "LEC"));
+            }
+            foreach (var champion in Recommendations["na"])
+            {
+                LCSChampions.Add(new PhaseProjector(new Image("Splashes", champion, "jpg"), null, null, "LCS"));
+            }
+
+        }
+
+        public static string ExpandPhaseName(string phaseName)
+        {
+            if (phaseName[0] == 'B')
+            {
+                return $"{phaseName[0]}lue_Champion_{phaseName[1]}";
+            }
+            else
+            {
+                return $"{phaseName[0]}ed_Champion_{phaseName[1]}";
+            }
+            
+        }
 
         public void SelectMC(PhaseProjector phase)
         {
+            var phaseName = phase.PhaseName;
+            var full_name = ExpandPhaseName(phaseName);
+
             if (SelectedImage == null || SelectedChampionName == null)
             {
+                GetRecommendations(full_name);
+
                 return;
             }
-            var phaseName = phase.PhaseName;
+            
             ReplaceChampion(phaseName, "MainCharacter");
+
+            GetRecommendations(full_name);
         }
 
         public void SelectFA(PhaseProjector phase)
         {
+            var phaseName = phase.PhaseName;
+            var full_name = ExpandPhaseName(phaseName);
+
             if (SelectedImage == null || SelectedChampionName == null)
             {
+                GetRecommendations(full_name);
+
                 return;
             }
-            var phaseName = phase.PhaseName;
+
             ReplaceChampion(phaseName, "FirstAlternative");
+
+            GetRecommendations(full_name);
         }
 
         public void SelectSA(PhaseProjector phase)
         {
+            var phaseName = phase.PhaseName;
+            var full_name = ExpandPhaseName(phaseName);
+
             if (SelectedImage == null || SelectedChampionName == null)
             {
+                GetRecommendations(full_name);
+
                 return;
             }
-            var phaseName = phase.PhaseName;
+
             ReplaceChampion(phaseName, "SecondAlternative");
+
+            GetRecommendations(full_name);
         }
 
         public void ReplaceChampion(string phaseName, string champion)
@@ -310,6 +392,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                     try
                     {
                         var result = await ServerConnection.UpdateScenarioPhases(MainWindowContent!.Scenario!.ScenarioId!, NewPhaseChampions!);
+                        MainWindowContent!.Scenario!.Phases = await ServerConnection.GetScenarioPhases(MainWindowContent!.Scenario!.ScenarioId!);
                         NewPhaseChampions = new Dictionary<int, string>();
                     }
                     catch (Exception ex)
@@ -358,7 +441,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                 }
                 else
                 {
-                    //TODO: Add confirmation information
+                    
                 }
             }
         }

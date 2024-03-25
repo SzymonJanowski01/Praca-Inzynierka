@@ -90,15 +90,58 @@
 		</Grid>
 
 		<!-- Regional suggestions -->
-		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" ColumnDefinitions="*, *, *, *" RowDefinitions="40, 40, 40, 40, 40">
-			<Border Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" BorderBrush="Gray" BorderThickness="1" CornerRadius="4">
-				<StackPanel Margin="{Binding $parent.Margin}">
-					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
-					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
-					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
-					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
-					<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="40" Width="50" Stretch="UniformToFill" Source="avares://LeagueOfLegendsScenarioCreator/Assets/Icons/icon-position-top.png"/>
-				</StackPanel>
+		<Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Margin="{Binding $parent.Margin}">
+			<Border Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="0" Grid.RowSpan="5" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="{Binding $parent.Margin}">
+				<Grid ColumnDefinitions="*, *, *, *" RowDefinitions="160" Margin="{Binding $parent.Margin}">
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="LPL" HorizontalAlignment="Center"/>
+						<ItemsControl Items="{Binding LPLChampions}" Background="Transparent">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid RowDefinitions="50">
+										<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="50" Width="150" Stretch="UniformToFill" Source="{Binding MCImage}"/>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+					<StackPanel Grid.Column="1">
+						<TextBlock Text="LCK" HorizontalAlignment="Center"/>
+						<ItemsControl Items="{Binding LCKChampions}" Background="Transparent">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid RowDefinitions="50">
+										<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="50" Width="150" Stretch="UniformToFill" Source="{Binding MCImage}"/>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="LEC" HorizontalAlignment="Center"/>
+						<ItemsControl Items="{Binding LECChampions}" Background="Transparent">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid RowDefinitions="50">
+										<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="50" Width="150" Stretch="UniformToFill" Source="{Binding MCImage}"/>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+					<StackPanel Grid.Column="3">
+						<TextBlock Text="LCS" HorizontalAlignment="Center"/>
+						<ItemsControl Items="{Binding LCSChampions}" Background="Transparent">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid RowDefinitions="50">
+										<Image Grid.Row="0" Margin="{Binding $parent.Margin}" Height="50" Width="150" Stretch="UniformToFill" Source="{Binding MCImage}"/>
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+				</Grid>
 			</Border>
 		</Grid>
 
