@@ -543,6 +543,17 @@ namespace LeagueOfLegendsScenarioCreator.Services
         }
 
         #region Recommendations
+        /// <summary>
+        /// Method to get recommendations from the server.
+        /// </summary>
+        /// <param name="userId">ID of the user to prevent end-point spamm from unregistered sources.</param>
+        /// <param name="championsList">List of champions to provide context for recommendation.</param>
+        /// <param name="TargetPosition">Position to get recommendation for.</param>
+        /// <returns>
+        /// <see cref="Dictionary{TKey, TValue}"/> with added key-value pair 
+        /// (Key being the region of the <see cref="string"/> type, value is <see cref="ObservableCollection{T}"/> of <see cref="int"/> typed values).
+        /// </returns>
+        /// <exception cref="Exception"></exception>
         public static async Task<Dictionary<string, ObservableCollection<string>>> GetRecommendations(string userId, ObservableCollection<string> championsList, string TargetPosition)
         {
             using StringContent json = new(
