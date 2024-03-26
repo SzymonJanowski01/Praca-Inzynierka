@@ -317,7 +317,7 @@ namespace ProjectUnitTests
         }
 
         [TestMethod]
-        public void Scenario_Serialization_Deserliazation()
+        public void Scenario_Serialization_Deserialiazation()
         {
             // Arrange
             var scenario = new Scenario

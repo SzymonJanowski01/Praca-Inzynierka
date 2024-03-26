@@ -2,7 +2,7 @@ import app.supporting_functions as sf
 
 
 def test_match_champions_with_ids():
-    champions_names = ["Ahri", "Kled", "Irelia", "Taric", "Lilia", "KogMaw"]
+    champions_names = ["Ahri", "Kled", "Irelia", "Taric", "Lillia", "KogMaw"]
     expected_ids = [103, 240, 39, 44, 876, 96]
 
     ids = sf.match_champions_with_ids(champions_names)
@@ -19,11 +19,11 @@ def test_match_champions_with_ids_empty():
 def test_match_champions_with_names():
     champions_ids = {
         "eu": [103, 240, 39, 44, 876, 96],
-        "na": [90, 8, 777, 68, 51, 96],
+        "na": [90, 8, 777, 68, 51]
     }
     expected_names = {
-        "eu": ["Ahri", "Kled", "Irelia", "Taric", "Lilia", "KogMaw"],
-        "na": ["Malzahar", "Vladimir", "Yone", "Rumble", "Caitlyn"],
+        "eu": ["Ahri", "Kled", "Irelia", "Taric", "Lillia", "KogMaw"],
+        "na": ["Malzahar", "Vladimir", "Yone", "Rumble", "Caitlyn"]
     }
 
     names = sf.match_champions_with_names(champions_ids)
