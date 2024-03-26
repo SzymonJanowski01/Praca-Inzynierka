@@ -105,7 +105,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
                 MainWindowContent!.User!.Scenarios = tempScenarios;
 
                 UpdateMessage = "Successfully updated!";
-                await Task.Delay(1500);
+                await Task.Delay(500);
                 UpdateMessage = string.Empty;
 
                 UsernameUpdate = string.Empty;
@@ -146,7 +146,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public async void SaveAndExit()
         {
             UpdateUser();
-            await Task.Delay(500);
+            await Task.Delay(600);
             if (InformationBorderColor == "Green")
             {
                 Back();
