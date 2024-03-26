@@ -40,7 +40,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         public UserSettingsViewModel(MainWindowViewModel? mainWindowContent)
         {
             MainWindowContent = mainWindowContent;
-            ScenariosNumbers = MainWindowContent!.User!.ScenariosNames!.Count;
+            ScenariosNumbers = MainWindowContent!.User!.ScenariosNames != null ? MainWindowContent!.User!.ScenariosNames.Count : 0;
             InformationBorderColor = "Red";
             DeletionConfirmation = false;
             DeletionIncorrectData = string.Empty;

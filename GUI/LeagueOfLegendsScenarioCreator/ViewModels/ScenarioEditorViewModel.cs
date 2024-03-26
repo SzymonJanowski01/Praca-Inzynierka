@@ -220,7 +220,6 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
             {
                 LCSChampions.Add(new PhaseProjector(new Image("Splashes", champion, "jpg"), null, null, "LCS"));
             }
-
         }
 
         public static string ExpandPhaseName(string phaseName)
