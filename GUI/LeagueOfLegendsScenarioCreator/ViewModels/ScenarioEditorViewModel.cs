@@ -125,7 +125,7 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
             List<string> championsNames = new()
             {
-             "None",
+             "Reset", "None",
              "Aatrox", "Ahri", "Akali", "Akshan",
              "Alistar", "Amumu", "Anivia", "Annie",
              "Aphelios", "Ashe", "AurelionSol", "Azir",
@@ -193,6 +193,12 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
         {
             SelectedImage = champion.ChampionImage;
             SelectedChampionName = champion.Name;
+
+            if (SelectedChampionName == "Reset")
+            {
+                SelectedImage = null;
+                SelectedChampionName = null;
+            }
         }
         
         public async void GetRecommendations(string TargetPosition)
@@ -394,6 +400,8 @@ namespace LeagueOfLegendsScenarioCreator.ViewModels
 
         public async void Exit()
         {
+            await Task.Delay(500);
+
             if (NewPhaseChampions!.Count == 0)
             {
                 MainWindowContent!.Scenario = null;
