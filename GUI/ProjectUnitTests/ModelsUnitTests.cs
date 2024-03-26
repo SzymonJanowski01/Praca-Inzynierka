@@ -702,5 +702,6 @@ namespace ProjectUnitTests
         // TODO: Add tests for PhaseProjector
     }
     #endregion
-
+    #region ImageLoaderTests
+    #endregion
 }
